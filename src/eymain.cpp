@@ -12,7 +12,7 @@ int main(){
     cout<<_NORMAL;
     cout<<"ObjectScript [Shell]"<<endl;
     cout<<"You can enter 'help' to get console help"<<endl;
-    string cmd; //指令
+    string cmd;
     while(true){
         try{
             cout<<"\n"<<_FONT_YELLOW<<"> "<<_NORMAL;
