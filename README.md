@@ -1,6 +1,8 @@
 # EytionLang -- an programming
 ***tip:All contents of this document obtained by translation. Please forgive me if there are any inappropriate parts***  
   
+***now version: <u>202106a-v0.01</u>***
+
 select a language to read:  
 [简体中文文档](doc/zh-cn.md)  
 [EnglishDocument](doc/en-us.md)  
