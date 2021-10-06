@@ -168,7 +168,7 @@ namespace eycodegen {
     }
 
     void CodeGenerator::visitAssignStmt(AssignStmtNode* node) {
-        char op_type = TY_DEC;
+        char op_type = TY_IMM;
         if(node->ValueString() != nullptr) {
             op_type = TY_CON;
             visitString(node->ValueString());
