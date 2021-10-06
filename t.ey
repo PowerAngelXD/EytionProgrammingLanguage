@@ -1,0 +1,15 @@
+out "hello world!\n";
+var <int> a = 12;
+var <deci> b = 1.1;
+out a + b;
+{
+	out "\none\n";
+	out a*2;
+	var <string> s = "\nhello\n";
+	{
+		out "\ninside\n";
+		out s;
+	}
+	out b+3;
+}
+out s;
