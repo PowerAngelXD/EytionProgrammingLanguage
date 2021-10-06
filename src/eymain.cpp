@@ -7,7 +7,7 @@ using namespace osstd;
 using namespace std;
 
 int main(){
-    system("title ObjectScript Shell");
+    system("title ObjectScript Shell (202106a-v0.01)");
     std::cout<<_FONT_BLUE<<"build date: "<<_FONT_GREEN<<__DATE__<<endl;
     cout<<_NORMAL;
     cout<<"ObjectScript [Shell]"<<endl;
