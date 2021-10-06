@@ -12,7 +12,7 @@ namespace eyv{
             int* int_value;
             float* decimal_value;
             std::string* string_value;
-            bool bool_value;
+            bool* bool_value;
         };
         const bool isconst = false;
         const eytype::EybType type;
@@ -25,9 +25,11 @@ namespace eyv{
         int getValueAsInt();
         float getValueAsDecimal();
         std::string getValueAsString();
+        bool getValueAsBool();
         void setValue(int value);
         void setValue(float value);
         void setValue(std::string value);
+        void setValue(bool value);
         bool getConst();
 
         eytype::EybType getType();

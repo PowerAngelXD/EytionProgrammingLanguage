@@ -31,7 +31,7 @@ EyValue::EyValue(std::string value, bool isconst) : type(eytype::String), iscons
   //  }
 //}
 
-#define chkty(except) if (eytype::except != type) throw "cannot control a not avaliable type value!"
+#define chkty(except) if (eytype::except != type) throw "cannot control a not avaliable type value!";
 
 int EyValue::getValueAsInt() {
     chkty(Integer);
@@ -46,6 +46,11 @@ float EyValue::getValueAsDecimal() {
 std::string EyValue::getValueAsString() {
     chkty(String);
     return *string_value;
+}
+
+bool EyValue::getValueAsBool(){
+    chkty(Bool);
+    return *bool_value;
 }
 
 void EyValue::setValue(int value) {
@@ -68,6 +73,14 @@ void EyValue::setValue(std::string value) {
     if(isconst != false){
         chkty(String);
         *string_value = value;   
+    }
+    else{throw "Cannot assign a value to a constant";}
+}
+
+void EyValue::setValue(bool value){
+    if(isconst != false){
+        chkty(Bool);
+        *bool_value = value;   
     }
     else{throw "Cannot assign a value to a constant";}
 }

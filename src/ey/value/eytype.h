@@ -8,7 +8,8 @@ namespace eytype{
     enum EybType{
         Integer = 0,
         Decimal,
-        String
+        String,
+        Bool
     };
     EybType typeMapping(int type);
 }
