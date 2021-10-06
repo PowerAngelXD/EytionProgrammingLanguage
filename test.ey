@@ -12,4 +12,4 @@ out a + b;
 	}
 	out b+3;
 }
-out s;
+out s; // visit a unknown identifier must throw an error
