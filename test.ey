@@ -3,10 +3,12 @@ out "this is your first eytion program!\n";
 out "try it!\n";
 var <string>str = "this is your first variable\n";
 out str;
-delete str; // and you can delete it!
+delete str; # and you can delete it!
 var <int>n1 = 1;
 var <int>n2 = n1+1;
 out n2;
 out "\n";
-n1 = n1 + 1;
+n1 = n1*n2 + 3;
 out n1;
+out "\n";
+out (1+n1)/2;
