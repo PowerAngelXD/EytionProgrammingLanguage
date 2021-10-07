@@ -258,12 +258,9 @@ Token Lexer::Start() {
         //put(ch);
         return String();
     }
-    else if (ch == '/') { //以/开头，也许是注释
+    else if (ch == '#') { //以/开头，也许是注释
         ch = get();
-        if(ch == '/')
-            Comment();
-        else
-            return {"/", Symbol::Div, line, column};
+        Comment();
         return {};
     }
     else if (ch == '\n' || ch == '\r' || ch == ' ' || ch == '\t') { //以\n, \r, ,\t开头，空白符，跳过
