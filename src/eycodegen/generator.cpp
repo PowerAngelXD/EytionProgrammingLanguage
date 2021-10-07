@@ -169,11 +169,15 @@ namespace eycodegen {
 
     void CodeGenerator::visitAssignStmt(AssignStmtNode* node) {
         char op_type = TY_IMM;
+        bool dot = true;
         if(node->ValueString() != nullptr) {
             op_type = TY_CON;
             visitString(node->ValueString());
         }
         else if(node->ValueExpr() != nullptr) {
+            if(node->ValueExpr()->toString().find('.') != node->ValueExpr()->toString().npos){
+                op_type = TY_DEC;
+            }
             visitAddExpr(node->ValueExpr());
         }
         else{ throw (string)"try to assign an incorrect value to identifier: '" +  node->Iden()->token().content + "'"; }
