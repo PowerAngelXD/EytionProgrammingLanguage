@@ -11,18 +11,18 @@ namespace eycodegen {
 
     void CodeGenerator::visitMulOperator(MulOperatorNode* node) {
         if (node->MulOperator()->token().symbol == Symbol::Mul)
-            instructions.push_back(Instruction{Instruction::MUL, 0});
+            instructions.push_back(Instruction{Instruction::MUL, node->MulOperator()->token().line, node->MulOperator()->token().column, 0});
         else if (node->MulOperator()->token().symbol == Symbol::Div)
-            instructions.push_back(Instruction{Instruction::DIV, 0});
+            instructions.push_back(Instruction{Instruction::DIV, node->MulOperator()->token().line, node->MulOperator()->token().column, 0});
         else if (node->MulOperator()->token().symbol == Symbol::Mod)
-            instructions.push_back(Instruction{Instruction::MOD, 0});
+            instructions.push_back(Instruction{Instruction::MOD, node->MulOperator()->token().line, node->MulOperator()->token().column, 0});
     }
 
     void CodeGenerator::visitAddOperator(AddOperatorNode* node) {
         if (node->AddOperator()->token().symbol == Symbol::Add)
-            instructions.push_back(Instruction{Instruction::ADD, 0});
+            instructions.push_back(Instruction{Instruction::ADD, node->AddOperator()->token().line, node->AddOperator()->token().column, 0});
         else if (node->AddOperator()->token().symbol == Symbol::Sub)
-            instructions.push_back(Instruction{Instruction::SUB, 0});
+            instructions.push_back(Instruction{Instruction::SUB, node->AddOperator()->token().line, node->AddOperator()->token().column, 0});
     }
 
     void CodeGenerator::visitPrimExpr(PrimExprNode* node) {
@@ -31,10 +31,10 @@ namespace eycodegen {
         }
         else {
             if(node->Number() != nullptr) {
-                instructions.push_back(Instruction{Instruction::PUSH, visitNumber(node->Number())});
+                instructions.push_back(Instruction{Instruction::PUSH, 0, 0, visitNumber(node->Number())});
             }
             else if(node->Iden() != nullptr) {
-                instructions.push_back(Instruction{Instruction::POP, node->Iden()->token().content});
+                instructions.push_back(Instruction{Instruction::POP, 0, 0, node->Iden()->token().content});
             }
         }
     }
@@ -78,7 +78,7 @@ namespace eycodegen {
         }
         ConstantPool.push_back(result);
         CPoolIndex = ConstantPool.size()-1;
-        instructions.push_back(Instruction{Instruction::STRING, CPoolIndex});
+        instructions.push_back(Instruction{Instruction::STRING, node->token().line, node->token().column, CPoolIndex});
     }
 
     void CodeGenerator::visitStmt(StmtNode* node){
@@ -105,7 +105,7 @@ namespace eycodegen {
             visitAddExpr(node->AddExpr());
             op_type = TY_DEC;
         }
-        instructions.push_back(Instruction{Instruction::OSOUT, 0, op_type});
+        instructions.push_back(Instruction{Instruction::OSOUT, node->OutMark()->token().line, node->OutMark()->token().column, 0, op_type});
     }
 
     void CodeGenerator::visitVorcStmt(VorcStmtNode* node) {
@@ -136,7 +136,8 @@ namespace eycodegen {
                 }
             }
             else {throw "you tried to declare an string quantity, but the value you specified does not correspond to it";}
-            instructions.push_back(Instruction{Instruction::DEFINE_VORC, node->IdenName()->token().content, op_value_type, op_type, true});
+            instructions.push_back(Instruction{Instruction::DEFINE_VORC, node->VarMark()->token().line, node->VarMark()->token().column, 
+            node->IdenName()->token().content, op_value_type, op_type, true});
         }
         else {
             if(node->Type()->token().content == "int") {
@@ -163,7 +164,8 @@ namespace eycodegen {
                 }
             }
             else {throw "you tried to declare an string quantity, but the value you specified does not correspond to it";}
-            instructions.push_back(Instruction{Instruction::DEFINE_VORC, node->IdenName()->token().content, op_value_type, op_type, false});
+            instructions.push_back(Instruction{Instruction::DEFINE_VORC, node->ConstMark()->token().line, node->ConstMark()->token().column, 
+            node->IdenName()->token().content, op_value_type, op_type, false});
         }
     }
 
@@ -181,18 +183,18 @@ namespace eycodegen {
             visitAddExpr(node->ValueExpr());
         }
         else{ throw (string)"try to assign an incorrect value to identifier: '" +  node->Iden()->token().content + "'"; }
-        instructions.push_back(Instruction{Instruction::ASSIGN, node->Iden()->token().content, 0, op_type});
+        instructions.push_back(Instruction{Instruction::ASSIGN, node->Iden()->token().line, node->Iden()->token().column, node->Iden()->token().content, 0, op_type});
     }
 
     void CodeGenerator::visitDelStmt(DeleteStmtNode* node) {
-        instructions.push_back(Instruction{Instruction::DEL, node->Iden()->token().content});
+        instructions.push_back(Instruction{Instruction::DEL,node->DeleteMark()->token().line, node->DeleteMark()->token().column, node->Iden()->token().content});
     }
 
     void CodeGenerator::visitBlockStmt(BlockStmtNode* node) {
-        instructions.push_back(Instruction{Instruction::SCOPE_BEGIN, 0});
+        instructions.push_back(Instruction{Instruction::SCOPE_BEGIN, 0, 0, 0});
         for(auto stmt : node->Stmts()){
             visitStmt(stmt);
         }
-        instructions.push_back(Instruction{Instruction::SCOPE_END, 0});
+        instructions.push_back(Instruction{Instruction::SCOPE_END, 0, 0, 0});
     }
 }
