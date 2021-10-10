@@ -2,11 +2,13 @@
 
 #include "../ey/value/eyvalue.h"
 #include "../ey/scope/eyscope.h"
+#include "../eexception/eexcp.h"
 #include <vector>
 #include <stack>
 #include <iostream>
 #include <string>
 #include <map>
+using namespace eexcp;
 
 namespace eyexec {
     class Instruction {
@@ -37,12 +39,13 @@ namespace eyexec {
         string op_str;
         bool op_bool;
         char op_type;
+        int line, col;
         #define TY_IMM 0 //立即数
         #define TY_DEC 1 //小数
         #define TY_CON 2 //常量池编号
         Instruction()=default;
-        Instruction(Ins ins_type, float op = 0, char op_type = TY_DEC);
-        Instruction(Ins ins_type, string op1 = " ", float op = 0, char op_type = TY_DEC, bool op_bool = false);
+        Instruction(Ins ins_type, int l = 0, int c = 0, float op = 0, char op_type = TY_DEC);
+        Instruction(Ins ins_type, int l = 0, int c = 0, string op1 = " ", float op = 0, char op_type = TY_DEC, bool op_bool = false);
     };
 
     std::string to_string(Instruction::Ins ins); 

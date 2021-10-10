@@ -2,8 +2,8 @@
 
 using namespace eyexec;
 
-Instruction::Instruction(Ins ins_type, float op, char op_type) : ins_type(ins_type), op(op), op_type(op_type) {}
-Instruction::Instruction(Ins ins_type, string op1, float op, char op_type, bool op_bool) : ins_type(ins_type), op_str(op1), op(op), op_type(op_type), op_bool(op_bool) {}
+Instruction::Instruction(Ins ins_type, int l, int c, float op, char op_type) : ins_type(ins_type), line(l), col(c), op(op), op_type(op_type) {}
+Instruction::Instruction(Ins ins_type, int l, int c, string op1, float op, char op_type, bool op_bool) : ins_type(ins_type), line(l), col(c), op_str(op1), op(op), op_type(op_type), op_bool(op_bool) {}
 
 void Environment::reset() {
     runtime_stack.clear();
@@ -62,7 +62,7 @@ void Executer::run() {
                         }
                     }
                 }
-                else{throw (std::string)"Unknown identifier: '" + ins.op_str + "'";}
+                else{throw EyparseError("NameError", "Unknown Identifier:" + ins.op_str, ins.line, ins.col);}
                 break;
             }
             case Instruction::ADD: {
@@ -161,7 +161,7 @@ void Executer::run() {
                     else if(value_int != 9999999) env.ScopeUnit.ScopeStack.at(env.ScopeUnit.findWhere(ins.op_str)).BoardPool.at(ins.op_str).setValue(value_int);
                     else if(value_deci != 9999999) env.ScopeUnit.ScopeStack.at(env.ScopeUnit.findWhere(ins.op_str)).BoardPool.at(ins.op_str).setValue(value_deci);
                 }
-                else {throw (std::string)"Unknown identifier: '" + ins.op_str + "'";}
+                else {throw EyparseError("NameError", "Unknown Identifier:" + ins.op_str, ins.line, ins.col);}
                 break;
             }
             case Instruction::DEL: {
@@ -173,7 +173,7 @@ void Executer::run() {
                             it++;
                     }
                 }
-                else {throw (std::string)"Unknown identifier: '" + ins.op_str + "'";}
+                else {throw EyparseError("NameError", "Unknown Identifier:" + ins.op_str, ins.line, ins.col);}
                 break;
             }
             case Instruction::SCOPE_BEGIN: {
