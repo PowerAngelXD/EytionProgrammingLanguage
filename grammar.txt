@@ -4,10 +4,12 @@ mulOperator-> "*"|"/"|"%""
 addExpr->mulExpr (addOperator mulExpr)*
 addOperator->"+"|"-""
 
-boolOperator->"==" | "!=" | "<=" | ">="
-boolConnector->"&&" | "||" | "!"
-boolPrimExpr->(primExpr|string) boolOperator (primExpr|string)
-boolExpr->(boolConnector boolPrimExpr)*
+cmpOp->'=='|'!='|'>'|'<'|'>='|'<='
+cmpExpr->addExpr (cmpOp addExpr)*
+boolOp->'&' | '|' | '&&' | '||'
+boolExpr->cmpExpr (boolOp cmpExpr)*
+notExpr->'!'* boolExpr
+primExpr->number|string|'('expr')'
 
 stmt->outStmt
 stat->stmt*

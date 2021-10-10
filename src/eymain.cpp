@@ -3,11 +3,12 @@
 #include "eylexer/lex.h"
 #include "eysystem/command.h"
 #include "ey/value/eyvalue.h"
+#include "eexception/eexcp.h"
 using namespace osstd;
 using namespace std;
 
 int main(){
-    system("title EytionLang Shell (202106a-v0.01)");
+    system("title EytionLang Shell (202110a-v0.11)");
     std::cout<<_FONT_BLUE<<"build date: "<<_FONT_GREEN<<__DATE__<<endl;
     cout<<_NORMAL;
     cout<<"EytionLang [Shell]"<<endl;
@@ -24,6 +25,9 @@ int main(){
         catch(std::logic_error e){
             if(e.what() == "map::at") cout<<_FONT_RED<<"\nEytionScript has some error:\n    "<<_FONT_RED<<"Try to access an identifier that does not exist"<<_NORMAL<<endl;
             else cout<<_FONT_RED<<"\nException:\n    "<<_FONT_YELLOW<<e.what()<<_NORMAL<<endl;
+        }
+        catch(eexcp::EyparseError eyerr){
+            cout<<_FONT_RED<<_BG_WHITE<<"\n"<<eyerr.what()<<_NORMAL<<endl;
         }
     }
     system("pause");

@@ -4,6 +4,6 @@ project(ey)
 set(CMAKE_CXX_STANDARD 17)
 message ("C++ Standard: ${CMAKE_CXX_STANDARD}")
 
-set( SRC_LIST ./src/eymain.cpp ./src/osstd.cpp ./src/osstd.cpp ./src/eysystem/command.cpp ./src/eyparser/parser.cpp ./src/eylexer/lex.cpp ./src/eyexec/executer.cpp ./src/eycodegen/generator.cpp ./src/ey/value/eystrparser.cpp ./src/ey/value/eytype.cpp ./src/ey/value/eyvalue.cpp ./src/ey/scope/eyscope.cpp)
+set( SRC_LIST ./src/eymain.cpp ./src/osstd.cpp ./src/osstd.cpp ./src/eysystem/command.cpp ./src/eyparser/parser.cpp ./src/eylexer/lex.cpp ./src/eyexec/executer.cpp ./src/eycodegen/generator.cpp ./src/ey/value/eystrparser.cpp ./src/ey/value/eytype.cpp ./src/ey/value/eyvalue.cpp ./src/ey/scope/eyscope.cpp ./src/eexception/eexcp.cpp)
 
 add_executable(ey ${SRC_LIST})
