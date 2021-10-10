@@ -370,31 +370,37 @@ bool Parser::IsAddOperator() {
 }
 
 AddOperatorNode* Parser::AddOperator() {
+    int line = peek().line;
+    int col = peek().column;
     if (! IsAddOperator())
-        throw "it is not an operator!";
+        throw EyparseError("SymbolError", "expect '+' or '-'", line, col);
     TokenNode* op = token();
     if (op->_token.symbol == Symbol::Add || op->_token.symbol == Symbol::Sub) {
         return new AddOperatorNode(op);
     }
     delete op;
-    throw "it is not an operator!"; //不是operator则抛出异常
+    throw EyparseError("SymbolError", "expect '+' or '-'", line, col); //不是operator则抛出异常
 }
 
 bool Parser::IsMulOperator() {
+    int line = peek().line;
+    int col = peek().column;
     if (! IsToken())
         return false;
     return input[cur_pos].symbol == Symbol::Mul || input[cur_pos].symbol == Symbol::Div || input[cur_pos].symbol == Symbol::Mod;
 }
 
 MulOperatorNode* Parser::MulOperator() {
+    int line = peek().line;
+    int col = peek().column;
     if (!IsMulOperator())
-        throw "it is not an operator!";
+        throw EyparseError("SymbolError", "expect '*', '/' or '%'", line, col);
     TokenNode* op = token();
     if (op->_token.symbol == Symbol::Mul || op->_token.symbol == Symbol::Div || op->_token.symbol == Symbol::Mod) {
         return new MulOperatorNode(op);
     }
     delete op;
-    throw "it is not an operator!";
+    throw EyparseError("SymbolError", "expect '*', '/' or '%'", line, col);
 }
 
 bool Parser::IsPrimExpr() {
@@ -404,8 +410,10 @@ bool Parser::IsPrimExpr() {
 }
 
 PrimExprNode* Parser::PrimExpr() {
+    int line = peek().line;
+    int col = peek().column;
     if (! IsPrimExpr())
-        throw "it is not a primexpr!";
+        throw EyparseError("ExprError", "not a primexpr", line ,col);
     PrimExprNode* node = new PrimExprNode;
     if (input[cur_pos].symbol == Symbol::Number) {
         node->_Number = token();
@@ -420,13 +428,13 @@ PrimExprNode* Parser::PrimExpr() {
         node->_AddExpr = AddExpr();
         if (input[cur_pos].symbol != Symbol::RightParen) {
             delete node;
-            throw "expect ')'";
+            throw EyparseError("SymbolError", "expect ')'", line ,col);;
         }
         node->_RightParen = token();
         return node;
     }
     delete node;
-    throw "error!";
+    throw EyparseError("ExprError", "not a primexpr", line ,col);
 }
 
 bool Parser::IsMulExpr() {
@@ -434,8 +442,10 @@ bool Parser::IsMulExpr() {
 }
 
 MulExprNode* Parser::MulExpr() {
+    int line = peek().line;
+    int col = peek().column;
     if(!IsMulExpr())
-        throw "it is not a mulexpr!";
+        throw EyparseError("ExprError", "not a mulexpr", line ,col);
     MulExprNode* node = new MulExprNode;
     node->_PrimExpr.push_back(PrimExpr());
     while(true) {
@@ -444,6 +454,10 @@ MulExprNode* Parser::MulExpr() {
                 break;
             node->_MulOperator.push_back(MulOperator());
             node->_PrimExpr.push_back(PrimExpr());
+        }
+        catch (EyparseError e){
+            cerr<<e.what()<<endl;
+            delete node;
         }
         catch (const char* e) {
             std::cerr << e <<std::endl;
@@ -458,8 +472,10 @@ bool Parser::IsAddExpr() {
 }
 
 AddExprNode* Parser::AddExpr() {
+    int line = peek().line;
+    int col = peek().column;
     if (!IsAddExpr())
-        throw "it is not an addexpr!";
+        throw EyparseError("ExprError", "not a addexpr", line ,col);
     AddExprNode* node = new AddExprNode;
     node->_MulExpr.push_back(MulExpr());
     while (true) {
@@ -486,11 +502,11 @@ bool Parser::IsOutStmt() {
 }
 
 OutStmtNode* Parser::OutStmt() {
+    int line = peek().line;
+    int col = peek().column;
     if (!IsOutStmt())
-        throw "it is not a out stmt!";
+        throw EyparseError("StmtError", "not out-stmt", line ,col);
     OutStmtNode* node = new OutStmtNode;
-    string line = to_string(peek().line);
-    string column = to_string(peek().column);
     if(peek().content == "out"){
         node->_OutMark = token();
     }
@@ -498,11 +514,11 @@ OutStmtNode* Parser::OutStmt() {
     if(IsAddExpr()) node->_AddExpr = AddExpr();
     else if(peek().symbol == Symbol::String) node->_String = token();
     else
-        throw (string)("is not an available value!\nline: " + line + ", col: " + column);
+        throw EyparseError("TypeError", "not avaliable", line ,col);
     if(peek().content == ";"){
         node->_StmtEndMark = token();
     }
-    else throw (string)("expect ';'\nline: " + line + ", col: " + column);
+    else throw EyparseError("SymbolError", "expect ';'", line ,col);
     return node;
 }
 
@@ -515,34 +531,34 @@ bool Parser::IsVorcStmt(){
 }
 
 VorcStmtNode* Parser::VorcStmt(){
+    int line = peek().line;
+    int col = peek().column;
     if (!IsVorcStmt())
-        throw "it is not a out stmt!";
+        throw EyparseError("StmtError", "not vorc-stmt", line ,col);
     VorcStmtNode* node = new VorcStmtNode;
-    string line = to_string(peek().line);
-    string column = to_string(peek().column);
     if(peek().content == "var")
         node->_VarMark = token();
     else
         node->_ConstMark = token();
     
     if(peek().symbol == eylex::Symbol::LT) {node->_LT = token();}
-    else {throw (string)("the defined type must be complete\nline: " + line + ", col: " + column);}
+    else {throw EyparseError("SyntaxError", "the defined type must be complete", line ,col);}
     if(peek().symbol == eylex::Symbol::KeyWord) {node->_Type = token();}
-    else {throw (string)("the defined type must be complete\nline: " + line + ", col: " + column);}
+    else {throw EyparseError("SyntaxError", "the defined type must be complete", line ,col);}
     if(peek().symbol == eylex::Symbol::GT) {node->_GT = token();}
-    else {throw (string)("the defined type must be complete\nline: " + line + ", col: " + column);}
+    else {throw EyparseError("SyntaxError", "the defined type must be complete", line ,col);}
 
     if(peek().symbol == eylex::Symbol::Identifier) {node->_IdenName = token();}
-    else {throw (string)("please put the (Vorciable/constant) behind the 'var' or 'const'(sometimes behind the 'const')\nline: " + line + ", col: " + column);}
+    else {throw EyparseError("SyntaxError", "please put the (Vorciable/constant) behind the 'var' or 'const'(sometimes behind the 'const')", line ,col);}
 
     if(peek().content == "=") {node->_Equ = token();}
 
     if(IsAddExpr()) {node->_ValueExpr = AddExpr();}
     else if(peek().symbol == eylex::Symbol::String) {node->_ValueString = token();}
-    else if((IsAddExpr() || (peek().symbol == eylex::Symbol::EQ))) {throw (string)("expect '=' behind the identifier\nline: " + line + ", col: " + column);}
+    else if((IsAddExpr() || (peek().symbol == eylex::Symbol::EQ))) {throw EyparseError("SymbolError", "expect '=' behind the identifier", line, col);}
 
     if(peek().content == ";") {node->_EndMark = token();}
-    else {throw (string)("expect ';'\nline: " + line + ", col: " + column);}
+    else {throw EyparseError("SymbolError", "expect ';'", line ,col);}
 
     return node;
 }
@@ -556,49 +572,49 @@ bool Parser::IsAssignStmt() {
 }
 
 AssignStmtNode* Parser::AssignStmt() {
+    int line = peek().line;
+    int col = peek().column;
     if (!IsAssignStmt())
-        throw "it is not a assign stmt!"; 
+        throw EyparseError("StmtError", "it is not a assign stmt!", line, col); 
     AssignStmtNode* node = new AssignStmtNode;
-    string line = to_string(peek().line);
-    string column = to_string(peek().column);
 
     node->_Iden = token();
     node->_Equ = token();
     
     if(IsAddExpr()) {node->_ValueExpr = AddExpr();}
     else if(peek().symbol == eylex::Symbol::String) {node->_ValueString = token();}
-    else {throw (string)("the value (or expression of the value) must be taken with the assignment operation\nline: " + line + ", col: " + column);}
+    else {throw EyparseError("SyntaxError", "the value (or expression of the value) must be taken with the assignment operation", line, col);}
 
     if(peek().content == ";") {node->_EndMark = token();}
-    else {throw (string)("expect ';'\nline: " + line + ", col: " + column);}
+    else {throw EyparseError("SymbolError", "expect ';'", line ,col);}
 
     return node;
 }
 
 bool Parser::IsDelStmt(){
     if (!IsToken())
-        throw "it is not a delete stmt!";
+        return false;
     if(peek().content == "delete")
         return true;
     return false;
 }
 
 DeleteStmtNode* Parser::DelStmt(){
+    int line = peek().line;
+    int col = peek().column;
     if(!IsDelStmt())
-        throw "it is not a delete stmt!";
+        throw EyparseError("StmtError", "it is not a del-stmt", line ,col);
     DeleteStmtNode* node = new DeleteStmtNode;
-    string line = to_string(peek().line);
-    string column = to_string(peek().column);
 
     node->_DeleteMark = token();//not this!
     if(peek().symbol == eylex::Symbol::Identifier)
         node->_Iden = token();
     else
-        throw (string)("expect identifier behind the 'delete'\nline: " + line + ", col: " + column);
+        throw EyparseError("SyntaxError", "expect identifier behind the 'delete'", line, col);
     if(peek().content == ";")
         node->_EndMark = token();
     else
-        throw (string)("expect ';'\nline: " + line + ", col: " + column);
+        throw EyparseError("SymbolError", "expect ';'", line ,col);
     return node;
 }
 
@@ -608,17 +624,17 @@ bool Parser::IsBlockStmt(){
 }
 
 BlockStmtNode* Parser::BlockStmt(){
+    int line = peek().line;
+    int col = peek().column;
     if (!IsBlockStmt())
-        throw "it is not a block stmt!";
+        throw EyparseError("StmtError", "it is not a block-stmt", line ,col);
     BlockStmtNode* node = new BlockStmtNode;
-    string line = to_string(peek().line);
-    string column = to_string(peek().column);
 
     node->_Left = token();
     vector<StmtNode*> stmts;
     while(peek().content != "}"){
         if(!IsStmt())
-            throw (string)("an unknown sentence\nline: " + line + ", col: " + column);
+            throw EyparseError("Syntax", "an unknown sentence", line ,col);
         stmts.push_back(Stmt());
     }
     node->_Stmt = stmts;
@@ -632,8 +648,10 @@ bool Parser::IsStmt() {
 }
 
 StmtNode* Parser::Stmt() {
+    int line = peek().line;
+    int col = peek().column;
     if (!IsStmt())
-        throw "it is not any stmt!";
+        throw EyparseError("StmtError", "it is not any stmt", line ,col);
     StmtNode* stmt = new StmtNode;
     if (IsOutStmt()) {
         stmt->_OutStmt = OutStmt();
@@ -655,7 +673,7 @@ StmtNode* Parser::Stmt() {
         stmt->_DeleteStmt = DelStmt();
         return stmt;
     }
-    throw "unknown type of stmt!";
+    throw EyparseError("StmtError", "it is not any stmt", line ,col);
     return NULL;
 }
 

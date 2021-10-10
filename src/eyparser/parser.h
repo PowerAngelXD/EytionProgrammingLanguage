@@ -1,7 +1,9 @@
 #pragma once
 
 #include "..\eylexer\lex.h"
+#include "..\eexception\eexcp.h"
 using namespace eylex;
+using namespace eexcp;
 
 namespace eyparser {
     class Parser;
@@ -18,6 +20,7 @@ namespace eyparser {
 
         friend class Parser;
     };
+
 
     // 加减法优先级运算符
     class AddOperatorNode {
@@ -102,6 +105,30 @@ namespace eyparser {
         std::string toString();
 
         friend class Parser;
+    };
+
+    // 比较运算符
+    class CmpOperatorNode{
+        TokenNode* _Op;
+    public:
+        CmpOperatorNode()=default;
+        ~CmpOperatorNode()=default;
+
+        TokenNode* Op();
+    };
+
+    // 比较表达式
+    class CmpExprNode{
+        AddExprNode* _AddExpr = nullptr;
+        TokenNode* _String = nullptr;
+
+        CmpOperatorNode* _Op;
+
+        AddExprNode* _AddExprTarget = nullptr;
+        TokenNode* _StringTarget = nullptr;
+    public:
+        CmpExprNode()=default;
+        ~CmpExprNode()=default;
     };
 
     // 输出语句的ast
