@@ -1,4 +1,4 @@
-out "hello world!\n";
+out "hello world!ÄãºÃ!\n";
 out "this is your first eytion program!\n";
 out "try it!\n";
 var <string>str = "this is your first variable\n";
