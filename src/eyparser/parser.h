@@ -115,6 +115,7 @@ namespace eyparser {
         ~CmpOperatorNode()=default;
 
         TokenNode* Op();
+        friend class Parser;
     };
 
     // 比较表达式
@@ -129,7 +130,11 @@ namespace eyparser {
     public:
         CmpExprNode()=default;
         ~CmpExprNode()=default;
+
+        friend class Parser;
     };
+
+
 
     // 输出语句的ast
     class OutStmtNode {
