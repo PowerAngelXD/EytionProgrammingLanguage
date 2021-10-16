@@ -45,7 +45,7 @@ void cmdview(string argv){
     istreambuf_iterator<char> begin(file);
     istreambuf_iterator<char> end;
     string content(begin, end);
-    cout<<_FONT_YELLOW<<"file["<<argv<<".ospt] content:\n"<<_FONT_GREEN<<content<<_NORMAL<<endl;
+    cout<<_FONT_YELLOW<<"file["<<argv<<".ey] content:\n"<<_FONT_GREEN<<content<<_NORMAL<<endl;
 }
 
 eysys::eycommand cmdlist[2] = {eysys::eycommand("run", &cmdrun, true), eysys::eycommand("view", &cmdview, true)};
