@@ -4,14 +4,19 @@
 #include "eysystem/command.h"
 #include "ey/value/eyvalue.h"
 #include "eexception/eexcp.h"
+#include "../include/CJsonObject.hpp"
+using namespace neb;
 using namespace osstd;
 using namespace std;
 
 int main(){
-    system("title EytionLang Shell (202110a-v0.11)");
+    system("title EytionLang Shell (20211017a-v0.11)");
+    //check part
+
+    //end
     std::cout<<_FONT_BLUE<<"build date: "<<_FONT_GREEN<<__DATE__<<endl;
     cout<<_NORMAL;
-    cout<<"EytionLang [Shell]"<<endl;
+    cout<<"Eytion [Shell]"<<endl;
     cout<<"You can enter 'help' to get console help"<<endl;
     string cmd;
     while(true){
