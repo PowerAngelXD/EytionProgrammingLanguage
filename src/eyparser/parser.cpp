@@ -168,24 +168,53 @@ std::string AddExprNode::toString() {
     return str;
 }
 
+//Bool Expr Part
+TokenNode* CmpOperatorNode::Op(){return _Op;}
+string CmpOperatorNode::toString(){return "CmpOp: {" + _Op->toString() + "}";}
+
+ExprNode* CmpExprNode::Expr(){return _Expr;}
+CmpOperatorNode* CmpExprNode::Op(){return _Op;}
+ExprNode* CmpExprNode::Target(){return _Target;}
+string CmpExprNode::toString(){
+    return "CmpExpr:{ " + _Expr->toString() + ", " + _Op->toString() + ", " + _Target->toString() + "}";
+}
+
+//Expr Part
+TokenNode* ExprNode::String(){
+    return _String;
+}
+AddExprNode* ExprNode::AddExpr(){
+    return _AddExpr;
+}
+string ExprNode::toString(){
+    if(_String != nullptr){
+        return "Expr(String): {" + _String->toString() + "}";
+    }
+    else if(_AddExpr != nullptr){
+        return "Expr(AddExpr): {" + _AddExpr->toString() + "}";
+    }
+    else {
+        return "{__null__}";
+    }
+}
+
 //OutStmt Part
 
 TokenNode* OutStmtNode::OutMark(){return this->_OutMark;}
-AddExprNode* OutStmtNode::AddExpr(){return this->_AddExpr;}
-TokenNode* OutStmtNode::String(){return this->_String;}
+ExprNode* OutStmtNode::Expr(){return this->_Expr;}
 
 OutStmtNode::OutStmtNode(){}
 OutStmtNode::~OutStmtNode(){
     delete _OutMark;
-    delete _AddExpr;
+    delete _Expr;
     delete _StmtEndMark;
 }
 
 std::string OutStmtNode::toString(){
-    if (this->_String != nullptr)
-        return "OutStmt:{" + this->_OutMark->toString() + "," + this->_String->toString() + "," + this->_StmtEndMark->toString() + "}";
+    if (this->_Expr->String() != nullptr)
+        return "OutStmt:{" + this->_OutMark->toString() + "," + this->_Expr->String()->toString() + "," + this->_StmtEndMark->toString() + "}";
     else
-        return "OutStmt:{" + this->_OutMark->toString() + "," + this->_AddExpr->toString() + "," + this->_StmtEndMark->toString() + "}";
+        return "OutStmt:{" + this->_OutMark->toString() + "," + this->_Expr->AddExpr()->toString() + "," + this->_StmtEndMark->toString() + "}";
 }
 
 //LetStmt Part
@@ -195,8 +224,7 @@ VorcStmtNode::~VorcStmtNode(){
     delete _VarMark;
     delete _IdenName;
     delete _Equ;
-    delete _ValueExpr;
-    delete _ValueString;
+    delete _Expr;
     delete _EndMark;
 }
 
@@ -207,20 +235,19 @@ TokenNode* VorcStmtNode::Type(){return this->_Type;}
 TokenNode* VorcStmtNode::GT(){return this->_GT;}
 TokenNode* VorcStmtNode::IdenName(){return _IdenName;}
 TokenNode* VorcStmtNode::Equ(){return _Equ;}
-AddExprNode* VorcStmtNode::ValueExpr(){return _ValueExpr;}
-TokenNode* VorcStmtNode::ValueString(){return _ValueString;}
+ExprNode* VorcStmtNode::Expr(){return _Expr;}
 std::string VorcStmtNode::toString(){
-    if (this->_ValueString != nullptr){
+    if (this->_Expr->String() != nullptr){
         if (this->_VarMark != nullptr)
-            return "VorcStmt(var):{" + this->_VarMark->toString() + ",Type:" + this->_Type->toString() + "," + this->_IdenName->toString() + "," + this->_Equ->toString() + "," + this->_ValueString->toString() + "}";
+            return "VorcStmt(var):{" + this->_VarMark->toString() + ",Type:" + this->_Type->toString() + "," + this->_IdenName->toString() + "," + this->_Equ->toString() + "," + this->_Expr->String()->toString() + "}";
         else
-            return "VorcStmt(const):{" + this->_ConstMark->toString() + ",Type:" + this->_Type->toString() + "," + this->_IdenName->toString() + "," + this->_Equ->toString() + "," + this->_ValueString->toString() + "}";
+            return "VorcStmt(const):{" + this->_ConstMark->toString() + ",Type:" + this->_Type->toString() + "," + this->_IdenName->toString() + "," + this->_Equ->toString() + "," + this->_Expr->String()->toString() + "}";
     }
     else{
         if (this->_VarMark != nullptr)
-            return "VorcStmt(var):{" + this->_VarMark->toString() + ",Type:" + this->_Type->toString() + "," + this->_IdenName->toString() + "," + this->_Equ->toString() + "," + this->_ValueExpr->toString() + "}";
+            return "VorcStmt(var):{" + this->_VarMark->toString() + ",Type:" + this->_Type->toString() + "," + this->_IdenName->toString() + "," + this->_Equ->toString() + "," + this->_Expr->AddExpr()->toString() + "}";
         else
-            return "VorcStmt(const):{" + this->_ConstMark->toString() + ",Type:" + this->_Type->toString() + "," + this->_IdenName->toString() + "," + this->_Equ->toString() + "," + this->_ValueExpr->toString() + "}";
+            return "VorcStmt(const):{" + this->_ConstMark->toString() + ",Type:" + this->_Type->toString() + "," + this->_IdenName->toString() + "," + this->_Equ->toString() + "," + this->_Expr->AddExpr()->toString() + "}";
     }
 }
 
@@ -230,22 +257,20 @@ AssignStmtNode::AssignStmtNode(){}
 AssignStmtNode::~AssignStmtNode(){
     delete _Iden;
     delete _Equ;
-    delete _ValueString;
-    delete _ValueExpr;
+    delete _Expr;
     delete _EndMark;
 }
 
 TokenNode* AssignStmtNode::Iden(){return _Iden;}
 TokenNode* AssignStmtNode::Equ(){return _Equ;}
-TokenNode* AssignStmtNode::ValueString(){return _ValueString;}
-AddExprNode* AssignStmtNode::ValueExpr(){return _ValueExpr;}
+ExprNode* AssignStmtNode::Expr(){return _Expr;}
 TokenNode* AssignStmtNode::EndMark(){return _EndMark;}
 
 std::string AssignStmtNode::toString(){
-    if (this->_ValueString != nullptr)
-        return "AssigntStmt:{" + this->_Iden->toString() + "," + this->_Equ->toString() + "," + this->_ValueString->toString() + "}";
+    if (this->_Expr->String() != nullptr)
+        return "AssigntStmt:{" + this->_Iden->toString() + "," + this->_Equ->toString() + "," + this->_Expr->String()->toString() + "}";
     else
-        return "AssigntStmt:{" + this->_Iden->toString() + "," + this->_Equ->toString() + "," + this->_ValueExpr->toString() + "}";
+        return "AssigntStmt:{" + this->_Iden->toString() + "," + this->_Equ->toString() + "," + this->_Expr->AddExpr()->toString() + "}";
 }
 
 //Delete StmtPart
@@ -493,6 +518,25 @@ AddExprNode* Parser::AddExpr() {
     return node;
 }
 
+bool Parser::IsExpr(){
+    if(!IsToken()) return false;
+    return IsAddExpr() || input[cur_pos].symbol == eylex::Symbol::String;
+}
+
+ExprNode* Parser::Expr(){
+    int line = peek().line;
+    int col = peek().column;
+    ExprNode* node = new ExprNode;
+    if(!IsExpr()) throw EyparseError("ExprError", "It is not any expr!", line ,col);
+    if(IsAddExpr()){
+        node->_AddExpr = AddExpr();
+    }
+    else if(peek().symbol == eylex::Symbol::String){
+        node->_String = token();
+    }
+    return node;
+}
+
 bool Parser::IsOutStmt() {
     if (!IsToken()) return false;
     if(peek().content == "out"){
@@ -511,8 +555,8 @@ OutStmtNode* Parser::OutStmt() {
         node->_OutMark = token();
     }
 
-    if(IsAddExpr()) node->_AddExpr = AddExpr();
-    else if(peek().symbol == Symbol::String) node->_String = token();
+    if(IsAddExpr()) node->_Expr = Expr();
+    else if(peek().symbol == Symbol::String) node->_Expr = Expr();
     else
         throw EyparseError("TypeError", "not avaliable", line ,col);
     if(peek().content == ";"){
@@ -553,8 +597,8 @@ VorcStmtNode* Parser::VorcStmt(){
 
     if(peek().content == "=") {node->_Equ = token();}
 
-    if(IsAddExpr()) {node->_ValueExpr = AddExpr();}
-    else if(peek().symbol == eylex::Symbol::String) {node->_ValueString = token();}
+    if(IsAddExpr()) {node->_Expr = Expr();}
+    else if(peek().symbol == eylex::Symbol::String) {node->_Expr = Expr();}
     else if((IsAddExpr() || (peek().symbol == eylex::Symbol::EQ))) {throw EyparseError("SymbolError", "expect '=' behind the identifier", line, col);}
 
     if(peek().content == ";") {node->_EndMark = token();}
@@ -581,8 +625,8 @@ AssignStmtNode* Parser::AssignStmt() {
     node->_Iden = token();
     node->_Equ = token();
     
-    if(IsAddExpr()) {node->_ValueExpr = AddExpr();}
-    else if(peek().symbol == eylex::Symbol::String) {node->_ValueString = token();}
+    if(IsAddExpr()) {node->_Expr = Expr();}
+    else if(peek().symbol == eylex::Symbol::String) {node->_Expr = Expr();}
     else {throw EyparseError("SyntaxError", "the value (or expression of the value) must be taken with the assignment operation", line, col);}
 
     if(peek().content == ";") {node->_EndMark = token();}

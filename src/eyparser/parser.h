@@ -8,6 +8,7 @@ using namespace eexcp;
 namespace eyparser {
     class Parser;
     class AddExprNode;
+    class ExprNode;
 
     class TokenNode {
         Token _token;
@@ -115,40 +116,53 @@ namespace eyparser {
         ~CmpOperatorNode()=default;
 
         TokenNode* Op();
+        string toString();
         friend class Parser;
     };
 
     // 比较表达式
     class CmpExprNode{
-        AddExprNode* _AddExpr = nullptr;
-        TokenNode* _String = nullptr;
-
+        ExprNode* _Expr;
         CmpOperatorNode* _Op;
-
-        AddExprNode* _AddExprTarget = nullptr;
-        TokenNode* _StringTarget = nullptr;
+        ExprNode* _Target;
     public:
         CmpExprNode()=default;
         ~CmpExprNode()=default;
 
+        ExprNode* Expr();
+        CmpOperatorNode* Op();
+        ExprNode* Target();
+
+        string toString();
+
         friend class Parser;
     };
 
+    class ExprNode{
+        TokenNode* _String = nullptr;
+        AddExprNode* _AddExpr = nullptr;
+    public:
+        ExprNode()=default;
+        ~ExprNode()=default;
 
+        TokenNode* String();
+        AddExprNode* AddExpr();
+        string toString();
+
+        friend class Parser;
+    };
 
     // 输出语句的ast
     class OutStmtNode {
         TokenNode* _OutMark;
         TokenNode* _StmtEndMark;
-        AddExprNode* _AddExpr = nullptr;
-        TokenNode* _String = nullptr;
+        ExprNode* _Expr;
     public:
         OutStmtNode();
         ~OutStmtNode();
 
         TokenNode* OutMark();
-        AddExprNode* AddExpr();
-        TokenNode* String();
+        ExprNode* Expr();
         std::string toString();
         friend class Parser;
     };
@@ -163,8 +177,7 @@ namespace eyparser {
         TokenNode* _IdenName;
         TokenNode* _Equ;
 
-        AddExprNode* _ValueExpr = nullptr;
-        TokenNode* _ValueString = nullptr;
+        ExprNode* _Expr;
 
         TokenNode* _EndMark;
 
@@ -179,8 +192,7 @@ namespace eyparser {
         TokenNode* GT();
         TokenNode* IdenName();
         TokenNode* Equ();
-        AddExprNode* ValueExpr();
-        TokenNode* ValueString();
+        ExprNode* Expr();
         std::string toString();
         friend class Parser;
     };
@@ -190,8 +202,7 @@ namespace eyparser {
         TokenNode* _Iden;
         TokenNode* _Equ;
 
-        TokenNode* _ValueString = nullptr;
-        AddExprNode* _ValueExpr = nullptr;
+        ExprNode* _Expr;
 
         TokenNode* _EndMark;
     public:
@@ -200,8 +211,7 @@ namespace eyparser {
 
         TokenNode* Iden();
         TokenNode* Equ();
-        TokenNode* ValueString();
-        AddExprNode* ValueExpr();
+        ExprNode* Expr();
         TokenNode* EndMark();
 
         std::string toString();
@@ -298,6 +308,8 @@ namespace eyparser {
         MulExprNode* MulExpr();
         bool IsAddExpr();
         AddExprNode* AddExpr();
+        bool IsExpr();
+        ExprNode* Expr();
         bool IsOutStmt();
         OutStmtNode* OutStmt();
         bool IsVorcStmt();
