@@ -2,10 +2,15 @@
 #ifndef __COMMAND_H__
 #define __COMMAND_H__
 #include "../osstd.h"
+#include "../eylexer/lex.h"
+#include "../eyparser/parser.h"
+#include "../eycodegen/generator.h"
+#include "../eyexec/executer.h"
 using namespace osstd;
 
 namespace eysys{
     typedef void (*command_event)(string argv);
+
     class eycommand{
         int toggle = 0;
     public:

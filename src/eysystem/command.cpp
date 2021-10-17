@@ -1,12 +1,9 @@
 #ifndef __COMMAND_CPP__
 #define __COMMAND_CPP__
 #include "command.h"
-#include "../eylexer/lex.h"
-#include "../eyparser/parser.h"
-#include "../eycodegen/generator.h"
-#include "../eyexec/executer.h"
 //#define DEBUG
 using namespace osstd;
+using namespace eysys;
 
 void cmdrun(string argv){
     ifstream file(argv + ".ey");
@@ -16,6 +13,7 @@ void cmdrun(string argv){
     auto stat = p.Stat();
     eycodegen::CodeGenerator gen;
     gen.visitStat(stat);
+    eyexec::Executer eysysenv;
 
     #ifdef DEBUG
     log((string)"log for tokens:");
@@ -35,10 +33,9 @@ void cmdrun(string argv){
     }
     #endif // DEBUG
 
-    eyexec::Executer exe;
-    exe.setInstructions(gen.instructions);
-    exe.getEnvironment().ConstantPool = gen.ConstantPool;
-    exe.run();
+    eysysenv.setInstructions(gen.instructions);
+    eysysenv.getEnvironment().ConstantPool = gen.ConstantPool;
+    eysysenv.run();
 }
 void cmdview(string argv){
     ifstream file(argv + ".ey");
@@ -47,40 +44,27 @@ void cmdview(string argv){
     string content(begin, end);
     cout<<_FONT_YELLOW<<"file["<<argv<<".ey] content:\n"<<_FONT_GREEN<<content<<_NORMAL<<endl;
 }
+void cmdinfo(string argv){
 
-eysys::eycommand cmdlist[2] = {eysys::eycommand("run", &cmdrun, true), eysys::eycommand("view", &cmdview, true)};
+}
+void cmdhelp(string argv){
+
+}
+
+eysys::eycommand cmdlist[4] = {eysys::eycommand("run", &cmdrun, true),
+                               eysys::eycommand("view", &cmdview, true),
+                               eysys::eycommand("info", &cmdinfo, true),
+                               eysys::eycommand("help", &cmdhelp, true)};
 
 void eysys::start_ezcmd(std::string text){
     if(text == "quit" || text == "exit" || text == "q" || text =="e") exit(0);
     string head, argv;
     head = split(text, " ").at(0);
     argv = split(text, " ").at(1);
-    bool outside = false;
     for (eysys::eycommand cmd : cmdlist){
         if(head == cmd._cond && cmd._active == true){
             cmd.run(argv);
         }
-        else {
-            outside = true;
-        }
-    }
-    if (outside){
-        ofstream wt("~temp.ey");
-        wt<<text;
-        wt.close();
-        ifstream file("~temp.ey");
-        eylex::Lexer lexer(file);
-        auto tokens = lexer.getTokenGroup();
-        eyparser::Parser p(tokens);
-        auto stat = p.Stat();
-        eyexec::Executer exe;
-        eycodegen::CodeGenerator gen;
-        gen.visitStat(stat);
-        exe.setInstructions(gen.instructions);
-        exe.getEnvironment().ConstantPool = gen.ConstantPool;
-        exe.run();
-        file.close();
-        remove("~temp.ey");
     }
 }
 
