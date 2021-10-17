@@ -10,7 +10,6 @@ using namespace osstd;
 
 namespace eysys{
     typedef void (*command_event)(string argv);
-
     class eycommand{
         int toggle = 0;
     public:
@@ -25,7 +24,14 @@ namespace eysys{
         void toggle_active();
     };
 
-    void start_ezcmd(std::string text);
+    struct settings{
+    public:
+        string DependOnConfigFile;
+        bool ExitTip;
+        bool DebugMode;
+    };
+
+    void start_ezcmd(std::string text, settings setting);
 }
 
 #endif

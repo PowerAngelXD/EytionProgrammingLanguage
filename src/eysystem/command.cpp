@@ -4,6 +4,7 @@
 //#define DEBUG
 using namespace osstd;
 using namespace eysys;
+eysys::settings eysetting;
 
 void cmdrun(string argv){
     ifstream file(argv + ".ey");
@@ -45,10 +46,26 @@ void cmdview(string argv){
     cout<<_FONT_YELLOW<<"file["<<argv<<".ey] content:\n"<<_FONT_GREEN<<content<<_NORMAL<<endl;
 }
 void cmdinfo(string argv){
-
+    cout<<"Eytion Language"<<_FONT_BLUE<<endl;
+    cout<<"------------                                 "<<endl;
+    cout<<"--                                             "<<endl;
+    cout<<"--                                             "<<endl;
+    cout<<"------------                                 "<<endl;
+    cout<<"--            \\         //             "<<endl;
+    cout<<"--             \\       //              "<<endl;
+    cout<<"------------    \\     //                 "<<endl;
+    cout<<"                 \\   //                  "<<endl;
+    cout<<"                  \\ //                 "<<endl;
+    cout<<"                   //                  "<<endl;
+    cout<<"                  //                   "<<endl;
+    cout<<"                 //                   "<<endl;
+    cout<<"                //                   "<<_NORMAL<<endl;
+    cout<<"Copyright (c)CodeAreaDevTeam, XtherDevTeam, PowerAngelXD"<<endl;
+    cout<<"License: MIT"<<endl;
+    cout<<"now version: v0.1.3-alpha-20211017"<<endl;
 }
 void cmdhelp(string argv){
-
+    
 }
 
 eysys::eycommand cmdlist[4] = {eysys::eycommand("run", &cmdrun, true),
@@ -56,8 +73,23 @@ eysys::eycommand cmdlist[4] = {eysys::eycommand("run", &cmdrun, true),
                                eysys::eycommand("info", &cmdinfo, true),
                                eysys::eycommand("help", &cmdhelp, true)};
 
-void eysys::start_ezcmd(std::string text){
-    if(text == "quit" || text == "exit" || text == "q" || text =="e") exit(0);
+void eysys::start_ezcmd(std::string text, settings setting){
+    eysetting = setting;
+    if(text == "quit" || text == "exit" || text == "q" || text =="e") {
+        if(eysetting.ExitTip == true){
+            cout<<"Do you really want to quit?(You can set it in the settings file in './settings/eyconfig.json' without this prompt)"<<endl;
+            cout<<"[Yes(y)]     [No(n)]"<<endl;
+            if (_getch() == 'y'){
+                exit(0);
+            }
+            return;
+        }
+        exit(0);
+    }
+    else if(text == "info"){
+        cmdlist[2].run(" ");
+        return;
+    }
     string head, argv;
     head = split(text, " ").at(0);
     argv = split(text, " ").at(1);
