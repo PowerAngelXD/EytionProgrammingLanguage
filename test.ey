@@ -1,14 +1,12 @@
-out "hello world!ÄãºÃ!\n";
+out "hello world!\n";
 out "this is your first eytion program!\n";
 out "try it!\n";
 var <string>str = "this is your first variable\n";
 out str;
 delete str; # and you can delete it!
-var <int>n1 = 1;
-var <int>n2 = n1+1;
-out n2;
+var <int>a = 1;
+var <int>b = a*9+3;
+var <deci>c = 3.4+2.1;
+out a + b;
 out "\n";
-n1 = n1*n2 + 3;
-out n1;
-out "\n";
-out (1+n1)/2;
+out c;
