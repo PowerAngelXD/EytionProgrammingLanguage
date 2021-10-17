@@ -53,15 +53,23 @@ namespace eyexec {
     class Executer;
 
     class Environment {
+        enum ValueType{
+            NULLTYPE = -1,
+            DECI,
+            INT,
+            STRING,
+            BOOL
+        };
+        typedef pair<ValueType, float> runit;
         std::vector<Instruction> instructions;
-        std::vector<float> runtime_stack;
+        std::vector<runit> runtime_stack;
         int stack_top;
     public:
         std::vector<std::string> ConstantPool;
         eyscope::EyScopeUnit ScopeUnit;
         void reset();     // 重置环境
-        float pop();
-        void push(float op);
+        runit pop();
+        void push(runit op);
         friend class Executer;
     };
 

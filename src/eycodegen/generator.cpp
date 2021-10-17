@@ -31,7 +31,9 @@ namespace eycodegen {
         }
         else {
             if(node->Number() != nullptr) {
-                instructions.push_back(Instruction{Instruction::PUSH, 0, 0, visitNumber(node->Number())});
+                if(node->toString().find(".") == node->toString().npos)
+                    instructions.push_back(Instruction{Instruction::PUSH, 0, 0, visitNumber(node->Number()), TY_IMM});
+                else instructions.push_back(Instruction{Instruction::PUSH, 0, 0, visitNumber(node->Number()), TY_DEC});
             }
             else if(node->Iden() != nullptr) {
                 instructions.push_back(Instruction{Instruction::POP, 0, 0, node->Iden()->token().content});
@@ -78,7 +80,7 @@ namespace eycodegen {
         }
         ConstantPool.push_back(result);
         CPoolIndex = ConstantPool.size()-1;
-        instructions.push_back(Instruction{Instruction::STRING, node->token().line, node->token().column, CPoolIndex});
+        instructions.push_back(Instruction{Instruction::STRING, node->token().line, node->token().column, CPoolIndex, TY_CON});
     }
 
     void CodeGenerator::visitStmt(StmtNode* node){
@@ -97,13 +99,15 @@ namespace eycodegen {
 
     void CodeGenerator::visitOutStmt(OutStmtNode* node) {
         char op_type = TY_IMM;
-        if(node->String() != nullptr){
-            visitString(node->String());
+        if(node->Expr()->String() != nullptr){
+            visitString(node->Expr()->String());
             op_type = TY_CON;
         }
         else {
-            visitAddExpr(node->AddExpr());
-            op_type = TY_DEC;
+            if(node->Expr()->AddExpr()->toString().find(".") == node->Expr()->AddExpr()->toString().npos)
+                op_type = TY_IMM;
+            else op_type = TY_DEC;
+            visitAddExpr(node->Expr()->AddExpr());
         }
         instructions.push_back(Instruction{Instruction::OSOUT, node->OutMark()->token().line, node->OutMark()->token().column, 0, op_type});
     }
@@ -114,24 +118,24 @@ namespace eycodegen {
         if(node->VarMark() != nullptr){
             if(node->Type()->token().content == "int") {
                 op_value_type = 0;
-                if(node->ValueExpr() != nullptr) {
-                    visitAddExpr(node->ValueExpr());
+                if(node->Expr()->AddExpr() != nullptr) {
+                    visitAddExpr(node->Expr()->AddExpr());
                 }
                 else {throw "you tried to declare an integer quantity, but the value you specified does not correspond to it";}
             }
             else if(node->Type()->token().content == "deci") {
                 op_value_type = 1;
                 op_type = TY_DEC;
-                if(node->ValueExpr() != nullptr) {
-                    visitAddExpr(node->ValueExpr());
+                if(node->Expr()->AddExpr() != nullptr) {
+                    visitAddExpr(node->Expr()->AddExpr());
                 }
                 else {throw "you tried to declare an decimal quantity, but the value you specified does not correspond to it";}
             }
             else if(node->Type()->token().content == "string") {
                 op_value_type = 2;
                 op_type = TY_CON;
-                if(node->ValueString() != nullptr) {
-                    visitString(node->ValueString());
+                if(node->Expr()->String() != nullptr) {
+                    visitString(node->Expr()->String());
                 
                 }
             }
@@ -142,24 +146,24 @@ namespace eycodegen {
         else {
             if(node->Type()->token().content == "int") {
                 op_value_type = 0;
-                if(node->ValueExpr() != nullptr) {
-                    visitAddExpr(node->ValueExpr());
+                if(node->Expr()->AddExpr() != nullptr) {
+                    visitAddExpr(node->Expr()->AddExpr());
                 }
                 else {throw "you tried to declare an integer cc, but the value you specified does not correspond to it";}
             }
             else if(node->Type()->token().content == "deci") {
                 op_value_type = 1;
                 op_type = TY_DEC;
-                if(node->ValueExpr() != nullptr) {
-                    visitAddExpr(node->ValueExpr());
+                if(node->Expr()->AddExpr() != nullptr) {
+                    visitAddExpr(node->Expr()->AddExpr());
                 }
                 else {throw "you tried to declare an decimal quantity, but the value you specified does not correspond to it";}
             }
             else if(node->Type()->token().content == "string") {
                 op_value_type = 2;
                 op_type = TY_CON;
-                if(node->ValueString() != nullptr) {
-                    visitString(node->ValueString());
+                if(node->Expr()->String() != nullptr) {
+                    visitString(node->Expr()->String());
                 
                 }
             }
@@ -172,15 +176,15 @@ namespace eycodegen {
     void CodeGenerator::visitAssignStmt(AssignStmtNode* node) {
         char op_type = TY_IMM;
         bool dot = true;
-        if(node->ValueString() != nullptr) {
+        if(node->Expr()->String() != nullptr) {
             op_type = TY_CON;
-            visitString(node->ValueString());
+            visitString(node->Expr()->String());
         }
-        else if(node->ValueExpr() != nullptr) {
-            if(node->ValueExpr()->toString().find('.') != node->ValueExpr()->toString().npos){
+        else if(node->Expr()->AddExpr() != nullptr) {
+            if(node->Expr()->AddExpr()->toString().find('.') != node->Expr()->AddExpr()->toString().npos){
                 op_type = TY_DEC;
             }
-            visitAddExpr(node->ValueExpr());
+            visitAddExpr(node->Expr()->AddExpr());
         }
         else{ throw (string)"try to assign an incorrect value to identifier: '" +  node->Iden()->token().content + "'"; }
         instructions.push_back(Instruction{Instruction::ASSIGN, node->Iden()->token().line, node->Iden()->token().column, node->Iden()->token().content, 0, op_type});

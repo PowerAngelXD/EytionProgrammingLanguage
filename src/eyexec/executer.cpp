@@ -11,14 +11,14 @@ void Environment::reset() {
     instructions.clear();
 }
 
-float Environment::pop() {
+Environment::runit Environment::pop() {
     return runtime_stack[-- stack_top];
 }
 
-void Environment::push(float op) {
+void Environment::push(Environment::runit op) {
     if (runtime_stack.size() <= stack_top) {
         for (int i = runtime_stack.size() ; i <= stack_top ; i ++)
-            runtime_stack.push_back(0);
+            runtime_stack.push_back(Environment::runit(ValueType::NULLTYPE, 0));
     }
     runtime_stack[stack_top ++] = op;
 }
@@ -39,22 +39,23 @@ void Executer::run() {
                 break;
             }
             case Instruction::PUSH: {
-                env.push(ins.op);
+                if(ins.op_type == TY_CON) env.push(Environment::runit(Environment::ValueType::STRING, ins.op));
+                else if(ins.op_type == TY_IMM) env.push(Environment::runit(Environment::ValueType::INT, ins.op));
+                else if(ins.op_type == TY_DEC) env.push(Environment::runit(Environment::ValueType::DECI, ins.op));
+                else env.push(Environment::runit(Environment::ValueType::NULLTYPE, ins.op));
                 break;
-            }
-            case Instruction::PUSHAS: {
             }
             case Instruction::POP: {
                 if(env.ScopeUnit.findAll(ins.op_str)){
                     if(env.ScopeUnit.ScopeStack.at(env.ScopeUnit.findWhere(ins.op_str)).BoardPool.at(ins.op_str).getType() == eytype::EybType::Integer){
-                        env.push(env.ScopeUnit.ScopeStack.at(env.ScopeUnit.findWhere(ins.op_str)).BoardPool.at(ins.op_str).getValueAsInt());}
+                        env.push(Environment::runit(Environment::ValueType::INT, env.ScopeUnit.ScopeStack.at(env.ScopeUnit.findWhere(ins.op_str)).BoardPool.at(ins.op_str).getValueAsInt()));}
 
                     else if (env.ScopeUnit.ScopeStack.at(env.ScopeUnit.findWhere(ins.op_str)).BoardPool.at(ins.op_str).getType() == eytype::EybType::Decimal)
-                        env.push(env.ScopeUnit.ScopeStack.at(env.ScopeUnit.findWhere(ins.op_str)).BoardPool.at(ins.op_str).getValueAsDecimal());
+                        env.push(Environment::runit(Environment::ValueType::DECI, env.ScopeUnit.ScopeStack.at(env.ScopeUnit.findWhere(ins.op_str)).BoardPool.at(ins.op_str).getValueAsDecimal()));
 
                     else if(env.ScopeUnit.ScopeStack.at(env.ScopeUnit.findWhere(ins.op_str)).BoardPool.at(ins.op_str).getType() == eytype::EybType::String) {
                         env.ConstantPool.push_back(env.ScopeUnit.ScopeStack.at(env.ScopeUnit.findWhere(ins.op_str)).BoardPool.at(ins.op_str).getValueAsString());
-
+                        env.push(Environment::runit(Environment::ValueType::STRING, env.ConstantPool.size()));
 
                         if(env.instructions.at(pos + 1).ins_type == Instruction::OSOUT){
                             cout<<env.ConstantPool.at(env.ConstantPool.size() - 1);
@@ -66,48 +67,48 @@ void Executer::run() {
                 break;
             }
             case Instruction::ADD: {
-                float op2 = env.pop();
-                float op1 = env.pop();
-                env.push(op1 + op2);
+                float op2 = env.pop().second;
+                float op1 = env.pop().second;
+                env.push(Environment::runit(Environment::ValueType::DECI, op1 + op2));
                 break;
             }
             case Instruction::SUB: {
-                float op2 = env.pop();
-                float op1 = env.pop();
-                env.push(op1 - op2);
+                float op2 = env.pop().second;
+                float op1 = env.pop().second;
+                env.push(Environment::runit(Environment::ValueType::DECI, op1 - op2));
                 break;
             }
             case Instruction::DIV: {
-                float op2 = env.pop();
-                float op1 = env.pop();
-                env.push(op1 / op2);
+                float op2 = env.pop().second;
+                float op1 = env.pop().second;
+                env.push(Environment::runit(Environment::ValueType::DECI, op1 / op2));
                 break;
             }
             case Instruction::MUL: {
-                float op2 = env.pop();
-                float op1 = env.pop();
-                env.push(op1 * op2);
+                float op2 = env.pop().second;
+                float op1 = env.pop().second;
+                env.push(Environment::runit(Environment::ValueType::DECI, op1 * op2));
                 break;
             }
             case Instruction::MOD: {
-                long op2 = env.pop();
-                long op1 = env.pop();
-                env.push(op1 % op2);
+                long op2 = env.pop().second;
+                long op1 = env.pop().second;
+                env.push(Environment::runit(Environment::ValueType::DECI, op1 % op2));
                 break;
             }
             case Instruction::STRING: {
-                env.push(ins.op);
+                env.push(Environment::runit(Environment::ValueType::STRING, ins.op));
                 break;
             }
             case Instruction::IDEN: {
-                env.push(ins.op);
+                env.push(Environment::runit(Environment::ValueType::NULLTYPE, ins.op));
                 break;
             }
             case Instruction::OSOUT: {
                 if (ins.op_type == TY_CON)
-                    std::cout << env.ConstantPool[env.pop()];
+                    std::cout << env.ConstantPool[env.pop().second];
                 else
-                    std::cout << env.pop();
+                    std::cout << env.pop().second;
                 break;
             }
             case Instruction::DEFINE_VORC: {
@@ -119,15 +120,15 @@ void Executer::run() {
                 int opt;
 
                 if (ins.op_type == TY_CON) {
-                    value_str = env.ConstantPool[env.pop()];
+                    value_str = env.ConstantPool[env.pop().second];
                     opt = 0; // string ->0
                 }
                 else if (ins.op_type == TY_IMM){ 
-                    value_int = env.pop();
+                    value_int = env.pop().second;
                     opt = 1; // int -> 1
                 }
                 else {
-                    value_deci = env.pop();
+                    value_deci = env.pop().second;
                     opt = 2; // deci -> 2
                 }
                 env.ScopeUnit.ScopeStack.at(env.ScopeUnit.now).IdenTable.push_back(ins.op_str);
@@ -147,13 +148,13 @@ void Executer::run() {
                 int value_int = 9999999;
                 float value_deci = 9999999;
                 if(ins.op_type == TY_CON){
-                    value = &env.ConstantPool[env.pop()];
+                    value = &env.ConstantPool[env.pop().second];
                 }
                 else if(ins.op_type == TY_IMM){
-                    value_int = env.pop();
+                    value_int = env.pop().second;
                 }
                 else{
-                    value_deci = env.pop();
+                    value_deci = env.pop().second;
                 }
 
                 if(env.ScopeUnit.findAll(ins.op_str)){
