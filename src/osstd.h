@@ -21,7 +21,8 @@
 #include <string_view>
 #include <regex>
 #include <sstream>
-
+#include "../include/CJsonObject.hpp"
+using namespace neb;
 using namespace std;
 
 #define _FONT_RED "\033[31m"
