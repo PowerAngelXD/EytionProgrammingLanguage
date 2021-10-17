@@ -33,4 +33,9 @@ For assistance / partners in this project(All are net names):
 > theflysong  
 > xiaokang00010
 
+---  
+  
+Referenced third party libraries:  
+> CJsonObject (by Bwar)[CJsonObject](https://github.com/Bwar/CJsonObject)
+
 ---
