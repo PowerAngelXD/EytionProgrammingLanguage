@@ -58,7 +58,7 @@ void cmdinfo(string argv){
     istreambuf_iterator<char> end;
     string content(begin, end);
     cout<<"License content:"<<endl;
-    cout<<_BG_WHITE<<content<<_NORMAL<<endl;
+    cout<<_FONT_GREEN<<content<<_NORMAL<<endl;
     cout<<"now version: v0.1.3-alpha-20211017"<<endl;
 }
 void cmdhelp(string argv){
