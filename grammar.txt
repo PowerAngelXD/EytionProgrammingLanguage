@@ -8,9 +8,10 @@ cmpOp->'=='|'!='|'>'|'<'|'>='|'<='
 cmpExpr->addExpr (cmpOp addExpr)*
 boolOp->'&' | '|' | '&&' | '||'
 boolExpr->cmpExpr (boolOp cmpExpr)*
-notExpr->'!'* boolExpr
+notExpr->'!' boolExpr
 primExpr->number|string|'('expr')'
 
+expr->addExpr | boolExpr | notExpr
 stmt->outStmt
 stat->stmt*
 
@@ -19,4 +20,3 @@ VorcStmt->("var"|"const)" "<"type">"iden "=" (value | value_expr) ";"
 AssignStmt->iden "=" (value | value_expr) ";"
 DeleteStmt->"delete" iden ";"
 BlockStmt->"{" stmts "}"
-GetTypeStmt->"gType(" iden ");"
