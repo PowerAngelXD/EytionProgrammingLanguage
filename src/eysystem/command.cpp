@@ -1,7 +1,6 @@
 #ifndef __COMMAND_CPP__
 #define __COMMAND_CPP__
 #include "command.h"
-//#define DEBUG
 using namespace osstd;
 using namespace eysys;
 eysys::settings eysetting;
@@ -16,23 +15,15 @@ void cmdrun(string argv){
     gen.visitStat(stat);
     eyexec::Executer eysysenv;
 
-    #ifdef DEBUG
-    log((string)"log for tokens:");
-    for(auto tok : tokens) {
-        log(tok.format());
+    if(eysetting.DebugMode == true){
+        log((string)"because you turned on the debug mode, now show some debug details");
+        log((string)"log for tokens:");
+        for(auto tok : tokens) {
+            log(tok.format());
+        }
+        log((string)"stat:");
+        log(stat->toString());
     }
-    log((string)"log for token's content:");
-    for(auto tok : tokens) {
-        log(tok.content);
-    }
-    log((string)"stat:");
-    log(stat->toString());
-    log((string)"log for inside command");
-    for(auto i : gen.instructions){
-        string t = "cmd: " + i.op_type;
-        log(t);
-    }
-    #endif // DEBUG
 
     eysysenv.setInstructions(gen.instructions);
     eysysenv.getEnvironment().ConstantPool = gen.ConstantPool;
@@ -46,7 +37,7 @@ void cmdview(string argv){
     cout<<_FONT_YELLOW<<"file["<<argv<<".ey] content:\n"<<_FONT_GREEN<<content<<_NORMAL<<endl;
 }
 void cmdinfo(string argv){
-    cout<<"Eytion Language"<<_FONT_BLUE<<endl;
+    cout<<"Eytion Language"<<_FONT_GREEN<<endl;
     cout<<"------------                                 "<<endl;
     cout<<"--                                             "<<endl;
     cout<<"--                                             "<<endl;
@@ -62,10 +53,20 @@ void cmdinfo(string argv){
     cout<<"                //                   "<<_NORMAL<<endl;
     cout<<"Copyright (c)CodeAreaDevTeam, XtherDevTeam, PowerAngelXD"<<endl;
     cout<<"License: MIT"<<endl;
+    ifstream file("./data/docs/License");
+    istreambuf_iterator<char> begin(file);
+    istreambuf_iterator<char> end;
+    string content(begin, end);
+    cout<<"License content:"<<endl;
+    cout<<_BG_WHITE<<content<<_NORMAL<<endl;
     cout<<"now version: v0.1.3-alpha-20211017"<<endl;
 }
 void cmdhelp(string argv){
-    
+    ifstream file("./data/docs/help.txt");
+    istreambuf_iterator<char> begin(file);
+    istreambuf_iterator<char> end;
+    string content(begin, end);
+    cout<<_FONT_GREEN<<content<<_NORMAL<<endl;
 }
 
 eysys::eycommand cmdlist[4] = {eysys::eycommand("run", &cmdrun, true),
@@ -88,6 +89,10 @@ void eysys::start_ezcmd(std::string text, settings setting){
     }
     else if(text == "info"){
         cmdlist[2].run(" ");
+        return;
+    }
+    else if(text == "help"){
+        cmdlist[3].run(" ");
         return;
     }
     string head, argv;
