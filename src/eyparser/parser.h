@@ -122,19 +122,59 @@ namespace eyparser {
 
     // 比较表达式
     class CmpExprNode{
-        ExprNode* _Expr;
-        CmpOperatorNode* _Op;
-        ExprNode* _Target;
+        AddExprNode* _Expr;
+        vector<CmpOperatorNode*> _Op;
+        vector<AddExprNode*> _Sub;
     public:
         CmpExprNode()=default;
         ~CmpExprNode()=default;
 
-        ExprNode* Expr();
-        CmpOperatorNode* Op();
-        ExprNode* Target();
+        AddExprNode* Expr();
+        CmpOperatorNode* Op(int sub);
+        AddExprNode* Sub(int sub);
+        vector<CmpOperatorNode*> Op();
+        vector<AddExprNode*> Sub();
 
         string toString();
 
+        friend class Parser;
+    };
+
+    class BoolOperatorNode{
+        TokenNode* _Op;
+    public:
+        BoolOperatorNode()=default;
+        ~BoolOperatorNode()=default;
+        TokenNode* Op();
+        string toString();
+        friend class Parser;
+    };
+
+    class BoolExprNode{
+        CmpExprNode* _Root;
+        vector<BoolOperatorNode*> _Op;
+        vector<CmpExprNode*> _Sub;
+    public:
+        BoolExprNode()=default;
+        ~BoolExprNode()=default;
+        string toString();
+        CmpExprNode* Root();
+        BoolOperatorNode* Op(int sub);
+        CmpExprNode* Sub(int sub);
+        vector<BoolOperatorNode*> Op();
+        vector<CmpExprNode*> Sub();
+        friend class Parser;
+    };
+
+    class NotBoolExprNode{
+        TokenNode* _Op;
+        BoolExprNode* _Boolexpr;
+    public:
+        NotBoolExprNode()=default;
+        ~NotBoolExprNode()=default;
+        string toString();
+        TokenNode* Op();
+        BoolExprNode* Boolexpr();
         friend class Parser;
     };
 
