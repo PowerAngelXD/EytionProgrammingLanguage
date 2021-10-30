@@ -57,6 +57,57 @@ namespace eycodegen {
         }
     }
 
+    void CodeGenerator::visitCmpOperator(CmpOperatorNode* node){
+        if (node->Op()->token().symbol == Symbol::EQ)
+            instructions.push_back(Instruction{Instruction::EQ, node->Op()->token().line, node->Op()->token().column, 0});
+        else if (node->Op()->token().symbol == Symbol::NEQ)
+            instructions.push_back(Instruction{Instruction::NEQ, node->Op()->token().line, node->Op()->token().column, 0});
+        else if (node->Op()->token().symbol == Symbol::LT)
+            instructions.push_back(Instruction{Instruction::LEST, node->Op()->token().line, node->Op()->token().column, 0});
+        else if (node->Op()->token().symbol == Symbol::GT)
+            instructions.push_back(Instruction{Instruction::MRET, node->Op()->token().line, node->Op()->token().column, 0});
+        else if (node->Op()->token().symbol == Symbol::LE)
+            instructions.push_back(Instruction{Instruction::LEREQT, node->Op()->token().line, node->Op()->token().column, 0});
+        else if (node->Op()->token().symbol == Symbol::GE)
+            instructions.push_back(Instruction{Instruction::MREQT, node->Op()->token().line, node->Op()->token().column, 0});
+    }
+
+    void CodeGenerator::visitCmpExpr(CmpExprNode* node){
+        if(node->Op() != nullptr){
+            visitAddExpr(node->Expr());
+            visitCmpOperator(node->Op());
+            visitAddExpr(node->Sub());
+        }
+        else{
+            visitAddExpr(node->Expr());
+        }
+    }
+
+    void CodeGenerator::visitBoolOperator(BoolOperatorNode* node){
+        if (node->Op()->token().symbol == Symbol::LogicAnd)
+            instructions.push_back(Instruction{Instruction::LAND, node->Op()->token().line, node->Op()->token().column, 0});
+        else if (node->Op()->token().symbol == Symbol::LogicOr)
+            instructions.push_back(Instruction{Instruction::LOR, node->Op()->token().line, node->Op()->token().column, 0});
+    }
+
+    void CodeGenerator::visitNotBoolOperator(TokenNode* node){
+        if (node->token().symbol == Symbol::Not)
+            instructions.push_back(Instruction{Instruction::NOT, node->token().line, node->token().column, 0});
+    }
+
+    void CodeGenerator::visitBoolExpr(BoolExprNode* node){
+        visitCmpExpr(node->Root());
+        for (int i = 0 ; i < node->Op().size() ; i ++) {
+            visitCmpExpr(node->Sub(i + 1));
+            visitBoolOperator(node->Op(i));
+        }
+    }
+
+    void CodeGenerator::visitNotBoolExpr(NotBoolExprNode* node){
+        visitNotBoolOperator(node->Op());
+        visitBoolExpr(node->Boolexpr());
+    }
+
     void CodeGenerator::visitString(TokenNode* node){
         string text = split(" "+node->token().content+" ", "\"").at(1);
         string result;
@@ -103,6 +154,14 @@ namespace eycodegen {
             visitString(node->Expr()->String());
             op_type = TY_CON;
         }
+        else if(node->Expr()->BoolExpr() != nullptr) {
+            op_type = TY_BOL;
+            visitBoolExpr(node->Expr()->BoolExpr());
+        }
+        else if(node->Expr()->NotBoolExpr() != nullptr) {
+            op_type = TY_BOL;
+            visitNotBoolExpr(node->Expr()->NotBoolExpr());
+        }
         else {
             if(node->Expr()->AddExpr()->toString().find(".") == node->Expr()->AddExpr()->toString().npos)
                 op_type = TY_IMM;
@@ -131,6 +190,7 @@ namespace eycodegen {
                 }
                 else {throw "you tried to declare an decimal quantity, but the value you specified does not correspond to it";}
             }
+            
             else if(node->Type()->token().content == "string") {
                 op_value_type = 2;
                 op_type = TY_CON;
@@ -138,6 +198,17 @@ namespace eycodegen {
                     visitString(node->Expr()->String());
                 
                 }
+            }
+            else if(node->Type()->token().content == "bool") {
+                op_value_type = 3;
+                op_type = TY_BOL;
+                if(node->Expr()->BoolExpr() != nullptr) {
+                    visitBoolExpr(node->Expr()->BoolExpr());
+                }
+                else if(node->Expr()->NotBoolExpr() != nullptr) {
+                    visitNotBoolExpr(node->Expr()->NotBoolExpr());
+                }
+                else {throw "you tried to declare an bool quantity, but the value you specified does not correspond to it";}
             }
             else {throw "you tried to declare an string quantity, but the value you specified does not correspond to it";}
             instructions.push_back(Instruction{Instruction::DEFINE_VORC, node->VarMark()->token().line, node->VarMark()->token().column, 
@@ -167,6 +238,17 @@ namespace eycodegen {
                 
                 }
             }
+            else if(node->Type()->token().content == "bool") {
+                op_value_type = 3;
+                op_type = TY_BOL;
+                if(node->Expr()->BoolExpr() != nullptr) {
+                    visitBoolExpr(node->Expr()->BoolExpr());
+                }
+                else if(node->Expr()->NotBoolExpr() != nullptr) {
+                    visitNotBoolExpr(node->Expr()->NotBoolExpr());
+                }
+                else {throw "you tried to declare an bool quantity, but the value you specified does not correspond to it";}
+            }
             else {throw "you tried to declare an string quantity, but the value you specified does not correspond to it";}
             instructions.push_back(Instruction{Instruction::DEFINE_VORC, node->ConstMark()->token().line, node->ConstMark()->token().column, 
             node->IdenName()->token().content, op_value_type, op_type, false});
@@ -185,6 +267,14 @@ namespace eycodegen {
                 op_type = TY_DEC;
             }
             visitAddExpr(node->Expr()->AddExpr());
+        }
+        else if(node->Expr()->BoolExpr() != nullptr) {
+            op_type = TY_BOL;
+            visitBoolExpr(node->Expr()->BoolExpr());
+        }
+        else if(node->Expr()->NotBoolExpr() != nullptr) {
+            op_type = TY_BOL;
+            visitNotBoolExpr(node->Expr()->NotBoolExpr());
         }
         else{ throw (string)"try to assign an incorrect value to identifier: '" +  node->Iden()->token().content + "'"; }
         instructions.push_back(Instruction{Instruction::ASSIGN, node->Iden()->token().line, node->Iden()->token().column, node->Iden()->token().content, 0, op_type});

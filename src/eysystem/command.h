@@ -6,13 +6,14 @@
 #include "../eyparser/parser.h"
 #include "../eycodegen/generator.h"
 #include "../eyexec/executer.h"
+#include "econfig.h"
 using namespace osstd;
 
 namespace eysys{
     typedef void (*command_event)(string argv);
     class eycommand{
-        int toggle = 0;
     public:
+        int toggle;
         string _cond;
         command_event _event;
         bool _active;
@@ -24,14 +25,7 @@ namespace eysys{
         void toggle_active();
     };
 
-    struct settings{
-    public:
-        string DependOnConfigFile;
-        bool ExitTip;
-        bool DebugMode;
-    };
-
-    void start_ezcmd(std::string text, settings setting);
+    void run(std::string text);
 }
 
 #endif

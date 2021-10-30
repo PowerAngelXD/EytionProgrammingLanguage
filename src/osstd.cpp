@@ -52,3 +52,9 @@ T osstd::strToNumber(string str){
     ss>>n;
     return n;
 }
+
+string osstd::bool_to_string(bool b){
+    ostringstream osm;
+    osm << b;
+    return string(osm.str());
+}

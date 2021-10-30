@@ -1,12 +1,6 @@
-out "hello world!\n";
-out "this is your first eytion program!\n";
-out "try it!\n";
-var <string>str = "this is your first variable\n";
-out str;
-delete str; # and you can delete it!
-var <int>a = 1;
-var <int>b = a*9+3;
-var <deci>c = 3.4+2.1;
-out a + b;
-out "\n";
-out c;
+var<int>a =  1+2;
+var<int>b = 2;
+out 2*(a+b);
+out "\nhello world!";
+
+out 1==2;
