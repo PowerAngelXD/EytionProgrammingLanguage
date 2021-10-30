@@ -1,4 +1,4 @@
-# EytionLang -- an programming
+# EytionLang -- an programming language
 ***tip:All contents of this document obtained by translation. Please forgive me if there are any inappropriate parts***  
 
 select a language to read:  
@@ -14,7 +14,7 @@ Eytionlang is a lightweight interpretation language. Its syntax is as follows:
 > addExpr->mulExpr (addOperator mulExpr)*  
 > addOperator->"+"|"-""  
 >   
-> cmpOp->'=='|'!='|'>'|'<'|'>='|'<='
+> cmpOp->'=='|'!='|'>'|'<'|'>='|'<='  
 > cmpExpr->addExpr (cmpOp addExpr)*  
 > boolOp->'&' | '|' | '&&' | '||'  
 > boolExpr->cmpExpr (boolOp cmpExpr) 
