@@ -17,7 +17,7 @@ Eytionlang is a lightweight interpretation language. Its syntax is as follows:
 > cmpOp->'=='|'!='|'>'|'<'|'>='|'<='  
 > cmpExpr->addExpr (cmpOp addExpr)*  
 > boolOp->'&' | '|' | '&&' | '||'  
-> boolExpr->cmpExpr (boolOp cmpExpr)*  
+> boolExpr->cmpExpr (boolOp cmpExpr) 
 > notExpr->'!' boolExpr  
 > primExpr->number|string|'('expr')'  
 >   
