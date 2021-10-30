@@ -21,6 +21,12 @@ namespace eycodegen {
         void visitPrimExpr(PrimExprNode* node);
         void visitAddExpr(AddExprNode* node);
         void visitMulExpr(MulExprNode* node);
+        void visitCmpOperator(CmpOperatorNode* node);
+        void visitCmpExpr(CmpExprNode* node);
+        void visitBoolOperator(BoolOperatorNode* node);
+        void visitNotBoolOperator(TokenNode* node);
+        void visitBoolExpr(BoolExprNode* node);
+        void visitNotBoolExpr(NotBoolExprNode* node);
         void visitString(TokenNode* node);
         void visitOutStmt(OutStmtNode* node);
         void visitVorcStmt(VorcStmtNode* node);

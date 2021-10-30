@@ -24,6 +24,13 @@ namespace eyexec {
             MUL,
             DIV,
             MOD,
+            //cmp
+            MRET, LEST, // > and <
+            EQ, NEQ, // == and !=
+            MREQT, LEREQT, // >= and <=
+            //bool
+            LAND, LOR, // && and ||
+            NOT, // !
             STRING,
             IDEN,
             OSOUT,
@@ -43,6 +50,7 @@ namespace eyexec {
         #define TY_IMM 0 //立即数
         #define TY_DEC 1 //小数
         #define TY_CON 2 //常量池编号
+        #define TY_BOL 3 // bool
         Instruction()=default;
         Instruction(Ins ins_type, int l = 0, int c = 0, float op = 0, char op_type = TY_DEC);
         Instruction(Ins ins_type, int l = 0, int c = 0, string op1 = " ", float op = 0, char op_type = TY_DEC, bool op_bool = false);

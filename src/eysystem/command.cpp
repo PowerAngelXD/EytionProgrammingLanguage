@@ -3,7 +3,8 @@
 #include "command.h"
 using namespace osstd;
 using namespace eysys;
-eysys::settings eysetting;
+using namespace econfig;
+EyConfig efig;
 
 void cmdrun(string argv){
     ifstream file(argv + ".ey");
@@ -14,15 +15,12 @@ void cmdrun(string argv){
     eycodegen::CodeGenerator gen;
     gen.visitStat(stat);
     eyexec::Executer eysysenv;
-
-    if(eysetting.DebugMode == true){
+    if(efig.IsDebug == true && efig.DebugMode.lex_TokenGroupMsg){
         log((string)"because you turned on the debug mode, now show some debug details");
         log((string)"log for tokens:");
         for(auto tok : tokens) {
             log(tok.format());
         }
-        log((string)"stat:");
-        log(stat->toString());
     }
 
     eysysenv.setInstructions(gen.instructions);
@@ -59,7 +57,7 @@ void cmdinfo(string argv){
     string content(begin, end);
     cout<<"License content:"<<endl;
     cout<<_FONT_GREEN<<content<<_NORMAL<<endl;
-    cout<<"now version: v0.1.3-alpha-20211017"<<endl;
+    cout<<"now version: v0.1.33-alpha-20211030"<<endl;
 }
 void cmdhelp(string argv){
     ifstream file("./data/docs/help.txt");
@@ -74,33 +72,65 @@ eysys::eycommand cmdlist[4] = {eysys::eycommand("run", &cmdrun, true),
                                eysys::eycommand("info", &cmdinfo, true),
                                eysys::eycommand("help", &cmdhelp, true)};
 
-void eysys::start_ezcmd(std::string text, settings setting){
-    eysetting = setting;
-    if(text == "quit" || text == "exit" || text == "q" || text =="e") {
-        if(eysetting.ExitTip == true){
-            cout<<"Do you really want to quit?(You can set it in the settings file in './settings/eyconfig.json' without this prompt)"<<endl;
-            cout<<"[Yes(y)]     [No(n)]"<<endl;
-            if (_getch() == 'y'){
-                exit(0);
+void eysys::run(std::string text){
+    cout<<_FONT_GREEN<<"------------                                 "<<endl;
+    cout<<"--                                             "<<endl;
+    cout<<"--                                             "<<endl;
+    cout<<"------------                                 "<<endl;
+    cout<<"--            \\         //             "<<endl;
+    cout<<"--             \\       //              "<<endl;
+    cout<<"------------    \\     //                 "<<endl;
+    cout<<"                 \\   //                  "<<endl;
+    cout<<"                  \\ //                 "<<endl;
+    cout<<"                   //                  "<<endl;
+    cout<<"                  //                   "<<endl;
+    cout<<"                 //                   "<<endl;
+    cout<<"                //                   "<<_NORMAL<<endl;
+    cout<<"checking setting file..."<<endl;
+    ConfigReader read("./settings/eyconfig.json");
+    efig = read.Get();
+    cout<<"done"<<endl;
+    Sleep(200);
+    system("cls");
+    std::cout<<_FONT_BLUE<<"build date: "<<_FONT_GREEN<<__DATE__<<endl;
+    cout<<_NORMAL;
+    cout<<"Eytion [Shell]"<<endl;
+    cout<<"You can enter 'help' to get console help"<<endl;
+    while(true){
+        try{
+            cout<<"ey > ";
+            getline(cin, text);
+            if(text == "quit" || text == "exit" || text == "q" || text =="e") {
+                if(efig.ExitTip == true){
+                    cout<<"Do you really want to quit?(You can set it in the settings file in './settings/eyconfig.json' without this prompt)"<<endl;
+                    cout<<"[Yes(y)]     [No(n)]"<<endl;
+                    if (_getch() == 'y'){
+                        exit(0);
+                    }
+                }
+                else exit(0);
             }
-            return;
+            else if(text == "info"){
+                cmdlist[2].run(" ");
+            }
+            else if(text == "help"){
+                cmdlist[3].run(" ");
+            }
+            string head, argv;
+            head = split(text, " ").at(0);
+            argv = split(text, " ").at(1);
+            for (eysys::eycommand cmd : cmdlist){
+                if(head == cmd._cond && cmd._active == true){
+                    cmd.run(argv);
+                }
+            }
+    
         }
-        exit(0);
-    }
-    else if(text == "info"){
-        cmdlist[2].run(" ");
-        return;
-    }
-    else if(text == "help"){
-        cmdlist[3].run(" ");
-        return;
-    }
-    string head, argv;
-    head = split(text, " ").at(0);
-    argv = split(text, " ").at(1);
-    for (eysys::eycommand cmd : cmdlist){
-        if(head == cmd._cond && cmd._active == true){
-            cmd.run(argv);
+        catch(char const* e){cout<<_FONT_YELLOW<<"\nEytionScript has some error:\n    "<<_FONT_RED<<e<<_NORMAL<<endl;}
+        catch(std::string e){cout<<_FONT_YELLOW<<"\nEytionScript has some error:\n    "<<_FONT_RED<<e<<_NORMAL<<endl;}
+        catch(std::logic_error e){}
+        catch(eexcp::EyparseError eyerr){
+            cout<<_FONT_RED<<_BG_WHITE<<"\n"<<eyerr.what()<<_NORMAL<<endl;
         }
     }
 }

@@ -172,12 +172,40 @@ std::string AddExprNode::toString() {
 TokenNode* CmpOperatorNode::Op(){return _Op;}
 string CmpOperatorNode::toString(){return "CmpOp: {" + _Op->toString() + "}";}
 
-ExprNode* CmpExprNode::Expr(){return _Expr;}
+AddExprNode* CmpExprNode::Expr(){return _Expr;}
 CmpOperatorNode* CmpExprNode::Op(){return _Op;}
-ExprNode* CmpExprNode::Target(){return _Target;}
+AddExprNode* CmpExprNode::Sub(){return _Tar;}
 string CmpExprNode::toString(){
-    return "CmpExpr:{ " + _Expr->toString() + ", " + _Op->toString() + ", " + _Target->toString() + "}";
+    if(_Op != nullptr)
+        return "CmpExpr: {" + _Expr->toString() + ", " + _Op->toString() + ", " + _Tar->toString() + "}";
+    return "CmpExpr: {" + _Expr->toString() + "}";    
 }
+
+TokenNode* BoolOperatorNode::Op(){return _Op;}
+string BoolOperatorNode::toString(){return "BoolOp: {" + _Op->toString() + "}";}
+
+string BoolExprNode::toString(){
+    std::string str = "BoolExpr: {";
+    str += _Root->toString();
+    for (int i = 0 ; i < _Op.size() ; i ++) {
+        auto op = _Op[i]->toString();
+        auto op_num = _Sub[i + 1]->toString();
+        str += "," + op + "," + op_num;
+    }
+    str += "}";
+    return str;
+}
+CmpExprNode* BoolExprNode::Root(){return _Root;}
+BoolOperatorNode* BoolExprNode::Op(int sub){return _Op[sub];}
+CmpExprNode* BoolExprNode::Sub(int sub){return _Sub[sub];}
+vector<BoolOperatorNode*> BoolExprNode::Op(){return _Op;}
+vector<CmpExprNode*> BoolExprNode::Sub(){return _Sub;}
+
+string NotBoolExprNode::toString(){
+    return "NotBoolExpr: {" + _Boolexpr->toString() + "}";
+}
+TokenNode* NotBoolExprNode::Op(){return _Op;}
+BoolExprNode* NotBoolExprNode::Boolexpr(){return _Boolexpr;}
 
 //Expr Part
 TokenNode* ExprNode::String(){
@@ -186,12 +214,24 @@ TokenNode* ExprNode::String(){
 AddExprNode* ExprNode::AddExpr(){
     return _AddExpr;
 }
+BoolExprNode* ExprNode::BoolExpr(){
+    return _BoolExpr;
+}
+NotBoolExprNode* ExprNode::NotBoolExpr(){
+    return _NotBoolExpr;
+}
 string ExprNode::toString(){
     if(_String != nullptr){
         return "Expr(String): {" + _String->toString() + "}";
     }
     else if(_AddExpr != nullptr){
         return "Expr(AddExpr): {" + _AddExpr->toString() + "}";
+    }
+    else if(_BoolExpr != nullptr){
+        return "Expr(BoolExpr): {" + _BoolExpr->toString() + "}";
+    }
+    else if(_NotBoolExpr != nullptr){
+        return "Expr(NotBoolExpr): {" + _NotBoolExpr->toString() + "}";
     }
     else {
         return "{__null__}";
@@ -211,10 +251,7 @@ OutStmtNode::~OutStmtNode(){
 }
 
 std::string OutStmtNode::toString(){
-    if (this->_Expr->String() != nullptr)
-        return "OutStmt:{" + this->_OutMark->toString() + "," + this->_Expr->String()->toString() + "," + this->_StmtEndMark->toString() + "}";
-    else
-        return "OutStmt:{" + this->_OutMark->toString() + "," + this->_Expr->AddExpr()->toString() + "," + this->_StmtEndMark->toString() + "}";
+    return "OutStmt:{" + this->_OutMark->toString() + "," + this->_Expr->toString() + "," + this->_StmtEndMark->toString() + "}";
 }
 
 //LetStmt Part
@@ -237,18 +274,10 @@ TokenNode* VorcStmtNode::IdenName(){return _IdenName;}
 TokenNode* VorcStmtNode::Equ(){return _Equ;}
 ExprNode* VorcStmtNode::Expr(){return _Expr;}
 std::string VorcStmtNode::toString(){
-    if (this->_Expr->String() != nullptr){
-        if (this->_VarMark != nullptr)
-            return "VorcStmt(var):{" + this->_VarMark->toString() + ",Type:" + this->_Type->toString() + "," + this->_IdenName->toString() + "," + this->_Equ->toString() + "," + this->_Expr->String()->toString() + "}";
-        else
-            return "VorcStmt(const):{" + this->_ConstMark->toString() + ",Type:" + this->_Type->toString() + "," + this->_IdenName->toString() + "," + this->_Equ->toString() + "," + this->_Expr->String()->toString() + "}";
-    }
-    else{
-        if (this->_VarMark != nullptr)
-            return "VorcStmt(var):{" + this->_VarMark->toString() + ",Type:" + this->_Type->toString() + "," + this->_IdenName->toString() + "," + this->_Equ->toString() + "," + this->_Expr->AddExpr()->toString() + "}";
-        else
-            return "VorcStmt(const):{" + this->_ConstMark->toString() + ",Type:" + this->_Type->toString() + "," + this->_IdenName->toString() + "," + this->_Equ->toString() + "," + this->_Expr->AddExpr()->toString() + "}";
-    }
+    if (this->_VarMark != nullptr)
+        return "VorcStmt(var):{" + this->_VarMark->toString() + ",Type:" + this->_Type->toString() + "," + this->_IdenName->toString() + "," + this->_Equ->toString() + "," + this->_Expr->toString() + "}";
+    else
+        return "VorcStmt(const):{" + this->_ConstMark->toString() + ",Type:" + this->_Type->toString() + "," + this->_IdenName->toString() + "," + this->_Equ->toString() + "," + this->_Expr->toString() + "}";
 }
 
 //AssignStmt Part
@@ -267,10 +296,7 @@ ExprNode* AssignStmtNode::Expr(){return _Expr;}
 TokenNode* AssignStmtNode::EndMark(){return _EndMark;}
 
 std::string AssignStmtNode::toString(){
-    if (this->_Expr->String() != nullptr)
-        return "AssigntStmt:{" + this->_Iden->toString() + "," + this->_Equ->toString() + "," + this->_Expr->String()->toString() + "}";
-    else
-        return "AssigntStmt:{" + this->_Iden->toString() + "," + this->_Equ->toString() + "," + this->_Expr->AddExpr()->toString() + "}";
+    return "AssigntStmt:{" + this->_Iden->toString() + "," + this->_Equ->toString() + "," + this->_Expr->toString() + "}";
 }
 
 //Delete StmtPart
@@ -518,9 +544,122 @@ AddExprNode* Parser::AddExpr() {
     return node;
 }
 
+bool Parser::IsCmpOp(){
+    if(!IsToken())return false;
+    if(input[cur_pos].symbol == eylex::Symbol::EQ || input[cur_pos].symbol == eylex::Symbol::NEQ ||
+       input[cur_pos].symbol == eylex::Symbol::GT || input[cur_pos].symbol == eylex::Symbol::LT ||
+       input[cur_pos].symbol == eylex::Symbol::GE || input[cur_pos].symbol == eylex::Symbol::LE) {
+           return true;
+       }
+    else return false;
+}
+
+CmpOperatorNode* Parser::CmpOp(){
+    int line = peek().line;
+    int col = peek().column;
+    if(!IsCmpOp())
+        throw EyparseError("SymbolError", "Not a right Compare Symbol!", line, col);
+    CmpOperatorNode* node = new CmpOperatorNode;
+    node->_Op = token();
+    return node;
+}
+
+bool Parser::IsBoolOp(){
+    if(!IsToken())return false;
+    if(input[cur_pos].symbol == eylex::Symbol::LogicOr || input[cur_pos].symbol == eylex::Symbol::LogicAnd) {
+           return true;
+       }
+    else return false;
+}
+
+BoolOperatorNode* Parser::BoolOp(){
+    int line = peek().line;
+    int col = peek().column;
+    if(!IsBoolOp())
+        throw EyparseError("SymbolError", "Not a right Bool Symbol!", line, col);
+    BoolOperatorNode* node = new BoolOperatorNode;
+    node->_Op = token();
+    return node;
+}
+
+bool Parser::IsCmpExpr(){
+    if(!IsToken()) return false;
+    int temp_index = cur_pos;
+    if(IsAddExpr()) {
+        AddExprNode* temp = AddExpr();
+        if(IsCmpOp()) {cur_pos = temp_index; return true;}
+        else {cur_pos = temp_index; return false;}
+    }
+    else {cur_pos = temp_index; return false;}
+}
+
+CmpExprNode* Parser::CmpExpr(){
+    int line = peek().line;
+    int col = peek().column;
+    if (! IsCmpExpr())
+        throw EyparseError("ExprError", "not a Cmpexpr", line ,col);
+    CmpExprNode* node = new CmpExprNode;
+    node->_Expr = AddExpr();
+    if(IsCmpOp())
+        node->_Op = CmpOp();
+    
+    if(IsAddExpr())
+        node->_Tar = AddExpr();
+
+    if(node->_Op != nullptr && node->_Tar == nullptr)
+        throw EyparseError("SyntaxError", "expect identifier behind the symbol: '" + node->_Op->_Op->token().content + "'", line, col);
+    return node;
+}
+
+bool Parser::IsBoolExpr(){
+    return IsCmpExpr();
+}
+
+BoolExprNode* Parser::BoolExpr(){
+    int line = peek().line;
+    int col = peek().column;
+    if(!IsBoolExpr())
+        throw EyparseError("ExprError", "Not a right Boolexpr!", line, col);
+    BoolExprNode* node = new BoolExprNode;
+    node->_Root = CmpExpr();//problem here
+    while(true) {
+        try {
+            if (! IsBoolOp())
+                break;
+            node->_Op.push_back(BoolOp());
+            node->_Sub.push_back(CmpExpr());
+        }
+        catch (EyparseError e){
+            cerr<<e.what()<<endl;
+            delete node;
+        }
+        catch (const char* e) {
+            std::cerr << e <<std::endl;
+            delete node;
+        }
+    }
+    return node;
+}
+
+bool Parser::IsNotBoolExpr(){
+    if(!IsToken()) return false;
+    return input[cur_pos].symbol == eylex::Symbol::Not;
+}
+
+NotBoolExprNode* Parser::NotBoolExpr(){
+    int line = peek().line;
+    int col = peek().column;
+    if(!IsNotBoolExpr())
+        throw EyparseError("ExprError", "Not a right Boolexpr!", line, col);
+    NotBoolExprNode* node = new NotBoolExprNode;
+    node->_Op = token();
+    node->_Boolexpr = BoolExpr();
+    return node;
+}
+
 bool Parser::IsExpr(){
     if(!IsToken()) return false;
-    return IsAddExpr() || input[cur_pos].symbol == eylex::Symbol::String;
+    return IsAddExpr() || input[cur_pos].symbol == eylex::Symbol::String || IsBoolExpr() || IsNotBoolExpr();
 }
 
 ExprNode* Parser::Expr(){
@@ -528,8 +667,12 @@ ExprNode* Parser::Expr(){
     int col = peek().column;
     ExprNode* node = new ExprNode;
     if(!IsExpr()) throw EyparseError("ExprError", "It is not any expr!", line ,col);
-    if(IsAddExpr()){
+    if(IsBoolExpr()) {node->_BoolExpr = BoolExpr();}
+    else if(IsAddExpr()){
         node->_AddExpr = AddExpr();
+    }
+    else if(IsNotBoolExpr()){
+        node->_NotBoolExpr = NotBoolExpr();
     }
     else if(peek().symbol == eylex::Symbol::String){
         node->_String = token();
@@ -554,8 +697,8 @@ OutStmtNode* Parser::OutStmt() {
     if(peek().content == "out"){
         node->_OutMark = token();
     }
-
-    if(IsAddExpr()) node->_Expr = Expr();
+    if(IsBoolExpr()) {node->_Expr = Expr();}
+    else if(IsAddExpr()) node->_Expr = Expr();
     else if(peek().symbol == Symbol::String) node->_Expr = Expr();
     else
         throw EyparseError("TypeError", "not avaliable", line ,col);
@@ -597,12 +740,13 @@ VorcStmtNode* Parser::VorcStmt(){
 
     if(peek().content == "=") {node->_Equ = token();}
 
-    if(IsAddExpr()) {node->_Expr = Expr();}
+    if(IsBoolExpr()) {cout<<"yes"<<endl; node->_Expr = Expr();}
+    else if(IsAddExpr()) {node->_Expr = Expr();}
     else if(peek().symbol == eylex::Symbol::String) {node->_Expr = Expr();}
     else if((IsAddExpr() || (peek().symbol == eylex::Symbol::EQ))) {throw EyparseError("SymbolError", "expect '=' behind the identifier", line, col);}
 
     if(peek().content == ";") {node->_EndMark = token();}
-    else {throw EyparseError("SymbolError", "expect ';'", line ,col);}
+    //else {throw EyparseError("SymbolError", "expect ';'", line ,col);}
 
     return node;
 }

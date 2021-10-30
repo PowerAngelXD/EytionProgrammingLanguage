@@ -4,6 +4,7 @@ using namespace osstd;
 
 namespace econfig{
     class EyConfig{
+    public:
         struct debugMode{
             bool lex_TokenGroupMsg;
             bool lex_TokenContent;
@@ -12,11 +13,10 @@ namespace econfig{
             bool cgen_OutputGeneratoringCode;
         };
         debugMode DebugMode;
+        bool IsDebug;
         bool ExitTip;
-        string DependOnConfigFile;
-    public:
         EyConfig()=default;
-
+        string toString();
         friend class ConfigReader;
         friend class ConfigWriter;
     };
@@ -25,11 +25,12 @@ namespace econfig{
         EyConfig Config;
         CJsonObject Json;
         string Path;
+        void dump();
     public:
         ConfigReader(string path);
         EyConfig Get(); // 返回Config
-        bool IsExist();
-        bool Read();
+        bool IsExist(string key);
+        bool Read(string path);
     };
 
     class ConfigWriter{

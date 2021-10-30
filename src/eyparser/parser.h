@@ -123,17 +123,15 @@ namespace eyparser {
     // 比较表达式
     class CmpExprNode{
         AddExprNode* _Expr;
-        vector<CmpOperatorNode*> _Op;
-        vector<AddExprNode*> _Sub;
+        CmpOperatorNode* _Op = nullptr;
+        AddExprNode* _Tar = nullptr;
     public:
         CmpExprNode()=default;
         ~CmpExprNode()=default;
 
         AddExprNode* Expr();
-        CmpOperatorNode* Op(int sub);
-        AddExprNode* Sub(int sub);
-        vector<CmpOperatorNode*> Op();
-        vector<AddExprNode*> Sub();
+        CmpOperatorNode* Op();
+        AddExprNode* Sub();
 
         string toString();
 
@@ -181,12 +179,16 @@ namespace eyparser {
     class ExprNode{
         TokenNode* _String = nullptr;
         AddExprNode* _AddExpr = nullptr;
+        BoolExprNode* _BoolExpr = nullptr;
+        NotBoolExprNode* _NotBoolExpr = nullptr;
     public:
         ExprNode()=default;
         ~ExprNode()=default;
 
         TokenNode* String();
         AddExprNode* AddExpr();
+        BoolExprNode* BoolExpr();
+        NotBoolExprNode* NotBoolExpr();
         string toString();
 
         friend class Parser;
@@ -348,6 +350,16 @@ namespace eyparser {
         MulExprNode* MulExpr();
         bool IsAddExpr();
         AddExprNode* AddExpr();
+        bool IsCmpOp();
+        CmpOperatorNode* CmpOp();
+        bool IsBoolOp();
+        BoolOperatorNode* BoolOp();
+        bool IsCmpExpr();
+        CmpExprNode* CmpExpr();
+        bool IsBoolExpr();
+        BoolExprNode* BoolExpr();
+        bool IsNotBoolExpr();
+        NotBoolExprNode* NotBoolExpr();
         bool IsExpr();
         ExprNode* Expr();
         bool IsOutStmt();
