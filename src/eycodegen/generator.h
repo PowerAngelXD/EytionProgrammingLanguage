@@ -32,6 +32,7 @@ namespace eycodegen {
         void visitVorcStmt(VorcStmtNode* node);
         void visitAssignStmt(AssignStmtNode* node);
         void visitDelStmt(DeleteStmtNode* node);
+        void visitInputStmt(InputStmtNode* node);
         void visitBlockStmt(BlockStmtNode* node);
         void visitStmt(StmtNode* node);
         void visitStat(StatNode* node);
