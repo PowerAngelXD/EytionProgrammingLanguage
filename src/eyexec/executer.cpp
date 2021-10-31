@@ -90,6 +90,18 @@ void Executer::run() {
                 env.push(Environment::runit(Environment::ValueType::DECI, op1 * op2));
                 break;
             }
+            case Instruction::EQ: {
+                auto op1 = env.pop().second;
+                auto op2 = env.pop().second;
+                env.push(Environment::runit(Environment::ValueType::DECI, op1 == op2));
+                break;
+            }
+            case Instruction::NEQ: {
+                auto op1 = env.pop().second;
+                auto op2 = env.pop().second;
+                env.push(Environment::runit(Environment::ValueType::DECI, op1 != op2));
+                break;
+            }
             case Instruction::MOD: {
                 long op2 = env.pop().second;
                 long op1 = env.pop().second;
