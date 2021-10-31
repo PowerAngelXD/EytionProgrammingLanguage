@@ -98,7 +98,7 @@ void eysys::run(std::string text){
     cout<<"You can enter 'help' to get console help"<<endl;
     while(true){
         try{
-            cout<<"ey > ";
+            cout<<"\ney > ";
             getline(cin, text);
             if(text == "quit" || text == "exit" || text == "q" || text =="e") {
                 if(efig.ExitTip == true){
