@@ -15,12 +15,17 @@ void cmdrun(string argv){
     eycodegen::CodeGenerator gen;
     gen.visitStat(stat);
     eyexec::Executer eysysenv;
-    if(efig.IsDebug == true && efig.DebugMode.lex_TokenGroupMsg){
+    
+    if(efig.IsDebug == true && efig.DebugMode.lex_TokenGroupMsg == true){
         log((string)"because you turned on the debug mode, now show some debug details");
         log((string)"log for tokens:");
         for(auto tok : tokens) {
             log(tok.format());
         }
+    }
+    if (efig.IsDebug == true && efig.DebugMode.ast_StatMsg == true){
+        log((string)"log for stat:");
+        log(stat->toString());
     }
 
     eysysenv.setInstructions(gen.instructions);
