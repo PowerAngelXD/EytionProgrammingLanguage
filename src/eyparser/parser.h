@@ -277,6 +277,24 @@ namespace eyparser {
         friend class Parser;
     };
 
+    class InputStmtNode{
+        TokenNode* _InputMark;
+        AddExprNode* _Content;
+        TokenNode* _Give;
+        TokenNode* _Iden;
+        TokenNode* _EndMark;
+    public:
+        InputStmtNode()=default;
+        TokenNode* InputMark();
+        AddExprNode* Content();
+        TokenNode* Give();
+        TokenNode* Iden();
+        TokenNode* EndMark();
+
+        string toString();
+        friend class Parser;
+    };
+
     class BlockStmtNode;
 
     class StmtNode {
@@ -285,6 +303,7 @@ namespace eyparser {
         AssignStmtNode* _AssignStmt = nullptr;
         BlockStmtNode* _BlockStmt = nullptr;
         DeleteStmtNode* _DeleteStmt = nullptr;
+        InputStmtNode* _InputStmt = nullptr;
     public:
         StmtNode()=default;
         OutStmtNode* OutStmt();
@@ -292,6 +311,7 @@ namespace eyparser {
         AssignStmtNode* AssignStmt();
         BlockStmtNode* BlockStmt();
         DeleteStmtNode* DeleteStmt();
+        InputStmtNode* InputStmt();
         std::string toString();
 
         friend class Parser;
@@ -370,6 +390,8 @@ namespace eyparser {
         AssignStmtNode* AssignStmt();
         bool IsDelStmt();
         DeleteStmtNode* DelStmt();
+        bool IsInputStmt();
+        InputStmtNode* InputStmt();
         bool IsBlockStmt();
         BlockStmtNode* BlockStmt();
         bool IsStmt();

@@ -313,6 +313,18 @@ TokenNode* DeleteStmtNode::EndMark(){return this->_EndMark;}
 string DeleteStmtNode::toString(){
     return "DeleteStmt:{" + this->DeleteMark()->toString() + "," + this->Iden()->toString()  + "," + this->EndMark()->toString() +  "}";
 }
+
+//InputStmt Part
+TokenNode* InputStmtNode::InputMark(){return _InputMark;}
+AddExprNode* InputStmtNode::Content(){return _Content;}
+TokenNode* InputStmtNode::Give(){return _Give;}
+TokenNode* InputStmtNode::Iden(){return _Iden;}
+TokenNode* InputStmtNode::EndMark(){return _EndMark;}
+
+string InputStmtNode::toString(){
+    return "InputStmt: {" + _InputMark->toString() + ", " + _Content->toString() + ", " + _Give->toString() + ", " + _Iden->toString() + ", " + _EndMark->toString() + "}";
+}
+
 //Stmt Part
 
 OutStmtNode* StmtNode::OutStmt() {return _OutStmt;}
@@ -320,6 +332,7 @@ VorcStmtNode* StmtNode::VorcStmt() {return _VorcStmt;}
 AssignStmtNode* StmtNode::AssignStmt() {return _AssignStmt;}
 BlockStmtNode* StmtNode::BlockStmt(){return _BlockStmt;}
 DeleteStmtNode* StmtNode::DeleteStmt(){return _DeleteStmt;}
+InputStmtNode* StmtNode::InputStmt(){return _InputStmt;}
 
 std::string StmtNode::toString() {
     std::string str = "stmt:";
@@ -337,6 +350,9 @@ std::string StmtNode::toString() {
     }
     else if(_DeleteStmt) {
         str += "{" + _DeleteStmt->toString() + "}";
+    }
+    else if(_InputStmt) {
+        str += "{" + _InputStmt->toString() + "}";
     }
     return str;
 }
@@ -696,9 +712,7 @@ OutStmtNode* Parser::OutStmt() {
     if (!IsOutStmt())
         throw EyparseError("StmtError", "not out-stmt", line ,col);
     OutStmtNode* node = new OutStmtNode;
-    if(peek().content == "out"){
-        node->_OutMark = token();
-    }
+    node->_OutMark = token();
     if(IsBoolExpr()) {node->_Expr = Expr();}
     else if(IsAddExpr()) node->_Expr = Expr();
     else if(peek().symbol == Symbol::String) node->_Expr = Expr();
@@ -707,6 +721,35 @@ OutStmtNode* Parser::OutStmt() {
     if(peek().content == ";"){
         node->_StmtEndMark = token();
     }
+    else throw EyparseError("SymbolError", "expect ';'", line ,col);
+    return node;
+}
+
+bool Parser::IsInputStmt(){
+    if (!IsToken()) return false;
+    if(peek().content == "input"){
+        return true;
+    }
+    return false;
+}
+
+InputStmtNode* Parser::InputStmt(){
+    int line = peek().line;
+    int col = peek().column;
+    if (!IsInputStmt())
+        throw EyparseError("StmtError", "not input-stmt", line ,col);
+    InputStmtNode* node = new InputStmtNode;
+    node->_InputMark = token();
+    if(IsAddExpr()) node->_Content = AddExpr();
+    else throw EyparseError("TypeError", "must give a value that type is 'String'",line ,col);
+
+    if(peek().content == "=>") node->_Give = token();
+    else throw EyparseError("SyntaxError", "expect '=>'", line, col);
+
+    if(peek().symbol == eylex::Symbol::Identifier) node->_Iden = token();
+    else throw EyparseError("SyntaxError", "must give an identifier", line, col);
+
+    if(peek().content == ";") node->_EndMark = token();
     else throw EyparseError("SymbolError", "expect ';'", line ,col);
     return node;
 }
@@ -834,7 +877,7 @@ BlockStmtNode* Parser::BlockStmt(){
 
 bool Parser::IsStmt() {
     if (!IsToken()) return false;
-    return IsOutStmt() || IsVorcStmt() || IsAssignStmt() || IsBlockStmt() || IsDelStmt();
+    return IsOutStmt() || IsVorcStmt() || IsAssignStmt() || IsBlockStmt() || IsDelStmt() || IsInputStmt();
 }
 
 StmtNode* Parser::Stmt() {
@@ -845,6 +888,10 @@ StmtNode* Parser::Stmt() {
     StmtNode* stmt = new StmtNode;
     if (IsOutStmt()) {
         stmt->_OutStmt = OutStmt();
+        return stmt;
+    }
+    else if (IsInputStmt()) {
+        stmt->_InputStmt = InputStmt();
         return stmt;
     }
     else if (IsVorcStmt()) {
