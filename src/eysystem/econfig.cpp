@@ -33,7 +33,9 @@ ConfigReader::ConfigReader(string path){
 void ConfigReader::dump(){
     CJsonObject j = this->Json;
     EyConfig ec;
-    if(j.KeyExist("Debug")){
+    bool b;
+    j.Get("Debug", b);
+    if(b == true){
         ec.IsDebug = true;
         CJsonObject sub;
         j.Get("DebugMode", sub);
