@@ -1,7 +1,10 @@
-var<int>a =  1+2;
-var<int>b = 2;
-out 2*(a+b);
+out 1+2;
 out "\nhello world!\n";
+out "d"=="d";
+out "\n";
 out 1==1;
 out "\n";
-out 1!=1;
+var <bool>b = 2!=1;
+out b;
+var <string> str = "\ney";
+out str;
