@@ -121,14 +121,80 @@ void Executer::run() {
                 auto op1 = env.pop();
                 auto op2 = env.pop();
                 if(op1.first == Environment::ValueType::DECI && op2.first == Environment::ValueType::DECI)
-                    env.push(Environment::runit(Environment::ValueType::BOOL, op1.second == op2.second));
+                    env.push(Environment::runit(Environment::ValueType::BOOL, op1.second != op2.second));
                 else if(op1.first == Environment::INT && op2.first == Environment::INT)
-                    env.push(Environment::runit(Environment::ValueType::BOOL, op1.second == op2.second));
+                    env.push(Environment::runit(Environment::ValueType::BOOL, op1.second != op2.second));
                 else if(op1.first == Environment::STRING && op2.first == Environment::STRING)
-                    env.push(Environment::runit(Environment::ValueType::BOOL, env.ConstantPool[op1.second] == env.ConstantPool[op2.second]));
+                    env.push(Environment::runit(Environment::ValueType::BOOL, env.ConstantPool[op1.second] != env.ConstantPool[op2.second]));
                 else
                     throw EyparseError("TypeError", "Cannot compare two diffierent type value", 0, 0);
                 break;
+            }
+            case Instruction::MRET: {
+                auto op1 = env.pop();
+                auto op2 = env.pop();
+                if(op1.first == Environment::ValueType::DECI && op2.first == Environment::ValueType::DECI)
+                    env.push(Environment::runit(Environment::ValueType::BOOL, op2.second > op1.second));
+                else if(op1.first == Environment::INT && op2.first == Environment::INT)
+                    env.push(Environment::runit(Environment::ValueType::BOOL, op2.second > op1.second));
+                else if(op1.first == Environment::STRING && op2.first == Environment::STRING)
+                    env.push(Environment::runit(Environment::ValueType::BOOL, env.ConstantPool[op2.second].size() > env.ConstantPool[op1.second].size()));
+                else
+                    throw EyparseError("TypeError", "Cannot compare two diffierent type value", 0, 0);
+                break;
+            }
+            case Instruction::LEST: {
+                auto op1 = env.pop();
+                auto op2 = env.pop();
+                if(op1.first == Environment::ValueType::DECI && op2.first == Environment::ValueType::DECI)
+                    env.push(Environment::runit(Environment::ValueType::BOOL, op2.second < op1.second));
+                else if(op1.first == Environment::INT && op2.first == Environment::INT)
+                    env.push(Environment::runit(Environment::ValueType::BOOL, op2.second < op1.second));
+                else if(op1.first == Environment::STRING && op2.first == Environment::STRING)
+                    env.push(Environment::runit(Environment::ValueType::BOOL, env.ConstantPool[op2.second].size() < env.ConstantPool[op1.second].size()));
+                else
+                    throw EyparseError("TypeError", "Cannot compare two diffierent type value", 0, 0);
+                break;
+            }
+            case Instruction::MREQT: {
+                auto op1 = env.pop();
+                auto op2 = env.pop();
+                if(op1.first == Environment::ValueType::DECI && op2.first == Environment::ValueType::DECI)
+                    env.push(Environment::runit(Environment::ValueType::BOOL, op1.second >= op2.second));
+                else if(op1.first == Environment::INT && op2.first == Environment::INT)
+                    env.push(Environment::runit(Environment::ValueType::BOOL, op1.second >= op2.second));
+                else if(op1.first == Environment::STRING && op2.first == Environment::STRING)
+                    env.push(Environment::runit(Environment::ValueType::BOOL, env.ConstantPool[op1.second].size() >= env.ConstantPool[op2.second].size()));
+                else
+                    throw EyparseError("TypeError", "Cannot compare two diffierent type value", 0, 0);
+                break;
+            }
+            case Instruction::LEREQT: {
+                auto op1 = env.pop();
+                auto op2 = env.pop();
+                if(op1.first == Environment::ValueType::DECI && op2.first == Environment::ValueType::DECI)
+                    env.push(Environment::runit(Environment::ValueType::BOOL, op1.second <= op2.second));
+                else if(op1.first == Environment::INT && op2.first == Environment::INT)
+                    env.push(Environment::runit(Environment::ValueType::BOOL, op1.second <= op2.second));
+                else if(op1.first == Environment::STRING && op2.first == Environment::STRING)
+                    env.push(Environment::runit(Environment::ValueType::BOOL, env.ConstantPool[op1.second].size() <= env.ConstantPool[op2.second].size()));
+                else
+                    throw EyparseError("TypeError", "Cannot compare two diffierent type value", 0, 0);
+                break;
+            }
+            case Instruction::LAND: {
+                auto op1 = env.pop();
+                auto op2 = env.pop();
+                env.push(Environment::runit(Environment::ValueType::BOOL, bool(op1.second) && bool(op2.second)));
+            }
+            case Instruction::LOR: {
+                auto op1 = env.pop();
+                auto op2 = env.pop();
+                env.push(Environment::runit(Environment::ValueType::BOOL, bool(op1.second) || bool(op2.second)));
+            }
+            case Instruction::NOT: {
+                auto op = env.pop();
+                env.push(Environment::runit(Environment::ValueType::BOOL, !bool(op.second)));
             }
             case Instruction::MOD: {
                 long op2 = env.pop().second;
