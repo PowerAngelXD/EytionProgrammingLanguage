@@ -65,7 +65,7 @@ void Executer::run() {
                     else if (env.ScopeUnit.ScopeStack.at(env.ScopeUnit.findWhere(ins.op_str)).BoardPool.at(ins.op_str).getType() == eytype::EybType::Bool)
                         env.push(Environment::runit(Environment::ValueType::BOOL, env.ScopeUnit.ScopeStack.at(env.ScopeUnit.findWhere(ins.op_str)).BoardPool.at(ins.op_str).getValueAsBool()));
                 }
-                else{throw EyparseError("NameError", "Unknown Identifier:" + ins.op_str, ins.line, ins.col);}
+                else{throw EyparseError("[Runtime]NameError", "Unknown Identifier:" + ins.op_str, ins.line, ins.col);}
                 break;
             }
             case Instruction::ADD: {
@@ -114,7 +114,7 @@ void Executer::run() {
                 else if(op1.first == Environment::STRING && op2.first == Environment::STRING)
                     env.push(Environment::runit(Environment::ValueType::BOOL, env.ConstantPool[op1.second] == env.ConstantPool[op2.second]));
                 else
-                    throw EyparseError("TypeError", "Cannot compare two diffierent type value", 0, 0);
+                    throw EyparseError("[Runtime]TypeError", "Cannot compare two diffierent type value", 0, 0);
                 break;
             }
             case Instruction::NEQ: {
@@ -127,7 +127,7 @@ void Executer::run() {
                 else if(op1.first == Environment::STRING && op2.first == Environment::STRING)
                     env.push(Environment::runit(Environment::ValueType::BOOL, env.ConstantPool[op1.second] != env.ConstantPool[op2.second]));
                 else
-                    throw EyparseError("TypeError", "Cannot compare two diffierent type value", 0, 0);
+                    throw EyparseError("[Runtime]TypeError", "Cannot compare two diffierent type value", 0, 0);
                 break;
             }
             case Instruction::MRET: {
@@ -140,7 +140,7 @@ void Executer::run() {
                 else if(op1.first == Environment::STRING && op2.first == Environment::STRING)
                     env.push(Environment::runit(Environment::ValueType::BOOL, env.ConstantPool[op2.second].size() > env.ConstantPool[op1.second].size()));
                 else
-                    throw EyparseError("TypeError", "Cannot compare two diffierent type value", 0, 0);
+                    throw EyparseError("[Runtime]TypeError", "Cannot compare two diffierent type value", 0, 0);
                 break;
             }
             case Instruction::LEST: {
@@ -153,7 +153,7 @@ void Executer::run() {
                 else if(op1.first == Environment::STRING && op2.first == Environment::STRING)
                     env.push(Environment::runit(Environment::ValueType::BOOL, env.ConstantPool[op2.second].size() < env.ConstantPool[op1.second].size()));
                 else
-                    throw EyparseError("TypeError", "Cannot compare two diffierent type value", 0, 0);
+                    throw EyparseError("[Runtime]TypeError", "Cannot compare two diffierent type value", 0, 0);
                 break;
             }
             case Instruction::MREQT: {
@@ -166,7 +166,7 @@ void Executer::run() {
                 else if(op1.first == Environment::STRING && op2.first == Environment::STRING)
                     env.push(Environment::runit(Environment::ValueType::BOOL, env.ConstantPool[op1.second].size() >= env.ConstantPool[op2.second].size()));
                 else
-                    throw EyparseError("TypeError", "Cannot compare two diffierent type value", 0, 0);
+                    throw EyparseError("[Runtime]TypeError", "Cannot compare two diffierent type value", 0, 0);
                 break;
             }
             case Instruction::LEREQT: {
@@ -179,7 +179,7 @@ void Executer::run() {
                 else if(op1.first == Environment::STRING && op2.first == Environment::STRING)
                     env.push(Environment::runit(Environment::ValueType::BOOL, env.ConstantPool[op1.second].size() <= env.ConstantPool[op2.second].size()));
                 else
-                    throw EyparseError("TypeError", "Cannot compare two diffierent type value", 0, 0);
+                    throw EyparseError("[Runtime]TypeError", "Cannot compare two diffierent type value", 0, 0);
                 break;
             }
             case Instruction::LAND: {
@@ -238,9 +238,9 @@ void Executer::run() {
                         getline(cin, input);
                         env.ScopeUnit.ScopeStack.at(env.ScopeUnit.findWhere(ins.op_str)).BoardPool.at(ins.op_str).setValue(input);
                     }
-                    else throw EyparseError("NameError", "Unknown Identifier:" + ins.op_str, ins.line, ins.col);
+                    else throw EyparseError("[Runtime]NameError", "Unknown Identifier:" + ins.op_str, ins.line, ins.col);
                 }
-                else throw EyparseError("TypeError", "The type of value is not a string and cannot be used as an 'input' argument", 0, 0);
+                else throw EyparseError("[Runtime]TypeError", "The type of value is not a string and cannot be used as an 'input' argument", 0, 0);
             }
             case Instruction::DEFINE_VORC: {
                 std::string value_str;
@@ -309,7 +309,7 @@ void Executer::run() {
                     else if(value_deci != 9999999) env.ScopeUnit.ScopeStack.at(env.ScopeUnit.findWhere(ins.op_str)).BoardPool.at(ins.op_str).setValue(value_deci);
                     else env.ScopeUnit.ScopeStack.at(env.ScopeUnit.findWhere(ins.op_str)).BoardPool.at(ins.op_str).setValue(value_bool);
                 }
-                else {throw EyparseError("NameError", "Unknown Identifier:" + ins.op_str, ins.line, ins.col);}
+                else {throw EyparseError("[Runtime]NameError", "Unknown Identifier:" + ins.op_str, ins.line, ins.col);}
                 break;
             }
             case Instruction::DEL: {
@@ -321,7 +321,7 @@ void Executer::run() {
                             it++;
                     }
                 }
-                else {throw EyparseError("NameError", "Unknown Identifier:" + ins.op_str, ins.line, ins.col);}
+                else {throw EyparseError("[Runtime]NameError", "Unknown Identifier:" + ins.op_str, ins.line, ins.col);}
                 break;
             }
             case Instruction::SCOPE_BEGIN: {
