@@ -75,8 +75,8 @@ namespace eycodegen {
     void CodeGenerator::visitCmpExpr(CmpExprNode* node){
         if(node->Op() != nullptr){
             visitAddExpr(node->Expr());
-            visitCmpOperator(node->Op());
             visitAddExpr(node->Sub());
+            visitCmpOperator(node->Op());
         }
         else{
             visitAddExpr(node->Expr());
