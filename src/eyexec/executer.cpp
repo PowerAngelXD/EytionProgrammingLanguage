@@ -229,6 +229,19 @@ void Executer::run() {
                 else std::cout << env.ConstantPool[temp.second];
                 break;
             }
+            case Instruction::OSINPUT: {
+                auto temp = env.pop();
+                if(temp.first == Environment::ValueType::STRING){
+                    if(env.ScopeUnit.findAll(ins.op_str)){
+                        std::cout << env.ConstantPool[temp.second];
+                        string input;
+                        getline(cin, input);
+                        env.ScopeUnit.ScopeStack.at(env.ScopeUnit.findWhere(ins.op_str)).BoardPool.at(ins.op_str).setValue(input);
+                    }
+                    else throw EyparseError("NameError", "Unknown Identifier:" + ins.op_str, ins.line, ins.col);
+                }
+                else throw EyparseError("TypeError", "The type of value is not a string and cannot be used as an 'input' argument", 0, 0);
+            }
             case Instruction::DEFINE_VORC: {
                 std::string value_str;
                 int value_int;
