@@ -19,6 +19,7 @@ namespace eylex{
         LeftBrace, // {
         RightBrace, // }
         Assign, // =
+        Point, // =>
         Not, // !
         And, // &
         Or, // |

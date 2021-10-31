@@ -127,7 +127,16 @@ Token Lexer::Sign() { //符号
     char ch = get();
     std::string str = "";
     str += ch;
-    if (ch == '=' || ch == '!') { //以=, !开头，后可接=
+    if (ch == '=') {
+        ch = get();
+        if (ch == '=')
+            str += ch;
+        else if (ch == '>')
+            str += ch;
+        else
+            put(ch);
+    }
+    if (ch == '!') { //以=, !开头，后可接=
         ch = get();
         if (ch == '=')
             str += ch;
@@ -170,6 +179,7 @@ Token Lexer::Sign() { //符号
     else if (str == "&") return {str, Symbol::And, line, column};
     else if (str == "|") return {str, Symbol::Or, line, column};
     else if (str == "==") return {str, Symbol::EQ, line, column};
+    else if (str == "=>") return {str, Symbol::Point, line, column};
     else if (str == ">=") return {str, Symbol::GE, line, column};
     else if (str == "<=") return {str, Symbol::LE, line, column};
     else if (str == "!=") return {str, Symbol::NEQ, line, column};
@@ -181,7 +191,7 @@ Token Lexer::Sign() { //符号
 }
 
 namespace _InnerUtil {
-    std::string keywordTable[] = {"out", "var", "delete", "int", "deci", "string", "bool"};
+    std::string keywordTable[] = {"out", "input", "var", "delete", "int", "deci", "string", "bool"};
     // 字典树
     struct TrieNode {
         bool isEnd = false;
