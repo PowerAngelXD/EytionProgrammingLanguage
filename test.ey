@@ -1,6 +1,7 @@
 var<int>a =  1+2;
 var<int>b = 2;
 out 2*(a+b);
-out "\nhello world!";
-
-out 1==2;
+out "\nhello world!\n";
+out 1==1;
+out "\n";
+out 1!=1;
