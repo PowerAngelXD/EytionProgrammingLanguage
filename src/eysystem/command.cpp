@@ -99,7 +99,7 @@ void eysys::run(std::string text){
     system("cls");
     std::cout<<_FONT_BLUE<<"build date: "<<_FONT_GREEN<<__DATE__<<endl;
     cout<<_NORMAL;
-    cout<<"Eytion [Shell]"<<endl;
+    cout<<"Eytion [Shell | "<<_FONT_RED<<"Informal version"<<_NORMAL<<"]"<<endl;
     cout<<"You can enter 'help' to get console help"<<endl;
     while(true){
         try{
