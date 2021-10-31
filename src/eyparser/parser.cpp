@@ -68,6 +68,10 @@ TokenNode* PrimExprNode::Iden() {
     return _Iden;
 }
 
+TokenNode* PrimExprNode::String() {
+    return _String;
+}
+
 TokenNode* PrimExprNode::LeftParen() {
     return _LeftParen;
 }
@@ -86,6 +90,9 @@ std::string PrimExprNode::toString() {
     }
     else if (_Iden != nullptr) {
         return (std::string)"PrimExpr:{" + _Iden->toString() + "}";
+    }
+    else if (_String != nullptr) {
+        return (std::string)"PrimExpr:{" + _String->toString() + "}";
     }
     else {
         return (std::string)"PrimExpr:{" + _AddExpr->toString() + "}";
@@ -208,9 +215,6 @@ TokenNode* NotBoolExprNode::Op(){return _Op;}
 BoolExprNode* NotBoolExprNode::Boolexpr(){return _Boolexpr;}
 
 //Expr Part
-TokenNode* ExprNode::String(){
-    return _String;
-}
 AddExprNode* ExprNode::AddExpr(){
     return _AddExpr;
 }
@@ -221,10 +225,7 @@ NotBoolExprNode* ExprNode::NotBoolExpr(){
     return _NotBoolExpr;
 }
 string ExprNode::toString(){
-    if(_String != nullptr){
-        return "Expr(String): {" + _String->toString() + "}";
-    }
-    else if(_AddExpr != nullptr){
+    if(_AddExpr != nullptr){
         return "Expr(AddExpr): {" + _AddExpr->toString() + "}";
     }
     else if(_BoolExpr != nullptr){
@@ -457,7 +458,7 @@ MulOperatorNode* Parser::MulOperator() {
 bool Parser::IsPrimExpr() {
     if (! IsToken())
         return false;
-    return input[cur_pos].symbol == Symbol::Number || input[cur_pos].symbol == Symbol::LeftParen || input[cur_pos].symbol == Symbol::Identifier;
+    return input[cur_pos].symbol == Symbol::Number || input[cur_pos].symbol == Symbol::LeftParen || input[cur_pos].symbol == Symbol::Identifier || input[cur_pos].symbol == Symbol::String;
 }
 
 PrimExprNode* Parser::PrimExpr() {
@@ -472,6 +473,10 @@ PrimExprNode* Parser::PrimExpr() {
     }
     else if (input[cur_pos].symbol == Symbol::Identifier) {
         node->_Iden = token();
+        return node;
+    }
+    else if (input[cur_pos].symbol == Symbol::String) {
+        node->_String = token();
         return node;
     }
     else if (input[cur_pos].symbol == Symbol::LeftParen) {
@@ -674,9 +679,6 @@ ExprNode* Parser::Expr(){
     else if(IsNotBoolExpr()){
         node->_NotBoolExpr = NotBoolExpr();
     }
-    else if(peek().symbol == eylex::Symbol::String){
-        node->_String = token();
-    }
     return node;
 }
 
@@ -740,9 +742,8 @@ VorcStmtNode* Parser::VorcStmt(){
 
     if(peek().content == "=") {node->_Equ = token();}
 
-    if(IsBoolExpr()) {cout<<"yes"<<endl; node->_Expr = Expr();}
+    if(IsBoolExpr()) {node->_Expr = Expr();}
     else if(IsAddExpr()) {node->_Expr = Expr();}
-    else if(peek().symbol == eylex::Symbol::String) {node->_Expr = Expr();}
     else if((IsAddExpr() || (peek().symbol == eylex::Symbol::EQ))) {throw EyparseError("SymbolError", "expect '=' behind the identifier", line, col);}
 
     if(peek().content == ";") {node->_EndMark = token();}
@@ -770,7 +771,8 @@ AssignStmtNode* Parser::AssignStmt() {
     node->_Equ = token();
     
     if(IsAddExpr()) {node->_Expr = Expr();}
-    else if(peek().symbol == eylex::Symbol::String) {node->_Expr = Expr();}
+    else if(IsBoolExpr()) {node->_Expr = Expr();}
+    else if(IsNotBoolExpr()) {node->_Expr = Expr();}
     else {throw EyparseError("SyntaxError", "the value (or expression of the value) must be taken with the assignment operation", line, col);}
 
     if(peek().content == ";") {node->_EndMark = token();}

@@ -55,6 +55,7 @@ namespace eyparser {
     class PrimExprNode {
         TokenNode* _Number = nullptr;
         TokenNode* _Iden = nullptr;
+        TokenNode* _String = nullptr;
         TokenNode* _LeftParen;
         AddExprNode* _AddExpr;
         TokenNode* _RightParen;
@@ -65,6 +66,7 @@ namespace eyparser {
 
         TokenNode* Number();
         TokenNode* Iden();
+        TokenNode* String();
         TokenNode* LeftParen();
         TokenNode* RightParen();
         AddExprNode* AddExpr();
@@ -177,7 +179,6 @@ namespace eyparser {
     };
 
     class ExprNode{
-        TokenNode* _String = nullptr;
         AddExprNode* _AddExpr = nullptr;
         BoolExprNode* _BoolExpr = nullptr;
         NotBoolExprNode* _NotBoolExpr = nullptr;
@@ -185,7 +186,6 @@ namespace eyparser {
         ExprNode()=default;
         ~ExprNode()=default;
 
-        TokenNode* String();
         AddExprNode* AddExpr();
         BoolExprNode* BoolExpr();
         NotBoolExprNode* NotBoolExpr();
