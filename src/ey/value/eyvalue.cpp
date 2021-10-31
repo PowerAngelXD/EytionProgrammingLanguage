@@ -14,6 +14,10 @@ EyValue::EyValue(std::string value, bool isconst) : type(eytype::String), iscons
     string_value = new std::string(value);
 }
 
+EyValue::EyValue(bool value, bool isconst) : type(eytype::Bool), isconst(isconst) {
+    bool_value = new bool(value);
+}
+
 //EyValue::~EyValue() {
  //   switch (type) {
 //        case eytype::Integer:

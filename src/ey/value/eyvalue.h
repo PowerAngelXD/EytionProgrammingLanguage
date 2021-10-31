@@ -20,6 +20,7 @@ namespace eyv{
         EyValue(int value, bool isconst);
         EyValue(float value, bool isconst);
         EyValue(std::string value, bool isconst);
+        EyValue(bool value, bool isconst);
         //~EyValue();
 
         int getValueAsInt();
