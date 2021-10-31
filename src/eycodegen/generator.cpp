@@ -1,6 +1,5 @@
 #include "generator.h"
 #include "../eyexec/executer.h"
-#include "../ey/value/eystrparser.h"
 
 namespace eycodegen {
     CodeGenerator::CodeGenerator() : CPoolIndex(0) {}
