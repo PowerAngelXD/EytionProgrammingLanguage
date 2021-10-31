@@ -1,10 +1,6 @@
-out 1+2;
-out "\nhello world!\n";
-out "d"=="d";
+var <string>str = "hello world!";
+out str;
 out "\n";
-out 1==1;
-out "\n";
-var <bool>b = 2!=1;
-out b;
-var <string> str = "\ney";
+out str == "hello";
+input("please input:")=>str;
 out str;
