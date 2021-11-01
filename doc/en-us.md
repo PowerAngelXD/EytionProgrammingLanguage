@@ -1,4 +1,4 @@
-# Eytion Chinese development document
+# Eytion English development document
 ---
 ## 1，directory structure
 The directory structure of eytion is not particularly complex. Take the current version as an example, its entire directory structure is like this
