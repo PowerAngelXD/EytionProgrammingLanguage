@@ -1,6 +1,6 @@
 var <string>str = "hello world!";
 out str;
 out "\n";
-out str == "hello";
+out "hello world!"=="hello world!";
 input("please input:")=>str;
-out str;
+out str == "son of bitch";
