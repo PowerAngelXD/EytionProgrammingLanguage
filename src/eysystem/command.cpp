@@ -95,7 +95,7 @@ void eysys::run(std::string text){
     ConfigReader read("./settings/eyconfig.json");
     efig = read.Get();
     cout<<"done"<<endl;
-    Sleep(200);
+    Sleep(800);
     system("cls");
     std::cout<<_FONT_BLUE<<"build date: "<<_FONT_GREEN<<__DATE__<<endl;
     cout<<_NORMAL;
