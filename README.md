@@ -1,8 +1,5 @@
 # EytionLang -- an programming language
-[![https://img.shields.io/badge/Eytion-v0.1.34Alpha-red](https://img.shields.io/badge/Eytion-v0.1.34Alpha-red)](https://img.shields.io/badge/Eytion-v0.1.34Alpha-red)
-[![https://img.shields.io/badge/Copyright\(c\)-CodeAreaDevelopTeam-blue](https://img.shields.io/badge/Copyright\(c\)-CodeAreaDevelopTeam-blue)](https://img.shields.io/badge/Copyright\(c\)-CodeAreaDevelopTeam-blue)
-[![https://img.shields.io/badge/Copyright\(c\)-XtherDevTeam-blue](https://img.shields.io/badge/Copyright\(c\)-XtherDevTeam-blue)](https://img.shields.io/badge/Copyright\(c\)-XtherDevTeam-blue)  
-[![https://img.shields.io/badge/License-MIT-green](https://img.shields.io/badge/License-MIT-green)](https://img.shields.io/badge/License-MIT-green)  
+![doc/img/Eytion-v0.1.34Alpha-red.svg](./doc/img/Eytion-v0.1.34Alpha-red.svg)
 ***提示，所有文档都是通过翻译软件翻译而成，如有不妥当之处欢迎反馈QAQ***  
 ***当前版本并不是稳定版本，如果您想要使用eytion，请下载release中的最新版本，开源代码仅供学习交流使用，不推荐日常生活使用***  
 
