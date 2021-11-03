@@ -3,40 +3,39 @@
 ## 1，目录结构
 Eytion的目录结构不是特别复杂，以目前版本为例，它的整个目录结构是这样的
 ```
-src-
-   |
-   -eexception
-     |-eexcp.h
-     |-eexcp.cpp
-   -ey
-     |-scope
-      |-eyscope.h
-     | -eyscope.cpp
-     |-value
-      |-eytype.cpp
-      |-eytype.h
-      |-eyvalue.cpp
-      |-eyvalue.h
-   -eycodegen
-     |-generator.h
-     |-generator.cpp
-   -eyexec
-     |-executer.h
-     |-executer.cpp
-   -eylexer
-     |-lex.h
-     |-lex.cpp
-   -eyparser
-     |-parser.h
-     |-parser.cpp
-   -eysystem
-     |-command.h
-     |-command.cpp
-     |-econfig.h
-     |-econfig.cpp
-   -eymain.cpp
-   -osstd.cpp
-   -osstd.h
+src
+│  eymain.cpp
+│  osstd.cpp
+│  osstd.h
+├─eexception
+│      eexcp.cpp
+│      eexcp.h
+├─ey
+│  ├─scope
+│  │      eyscope.cpp
+│  │      eyscope.h
+│  └─value
+│          eytype.cpp
+│          eytype.h
+│          eyvalue.cpp
+│          eyvalue.h
+├─eycodegen
+│      generator.cpp
+│      generator.h
+├─eyexec
+│      executer.cpp
+│      executer.h
+├─eylexer
+│      lex.cpp
+│      lex.h
+├─eyparser
+│      parser.cpp
+│      parser.h
+└─eysystem
+        command.cpp
+        command.h
+        econfig.cpp
+        econfig.h
 ```
 接下来，将目录src下的所有第一级子文件夹和内部文件的作用略述一下  
 |文件夹名称|重要子文件|文件夹和重要子文件的作用|

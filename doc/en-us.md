@@ -3,40 +3,39 @@
 ## 1，directory structure
 The directory structure of eytion is not particularly complex. Take the current version as an example, its entire directory structure is like this
 ```
-src-
-   |
-   -eexception
-     |-eexcp.h
-     |-eexcp.cpp
-   -ey
-     |-scope
-      |-eyscope.h
-     | -eyscope.cpp
-     |-value
-      |-eytype.cpp
-      |-eytype.h
-      |-eyvalue.cpp
-      |-eyvalue.h
-   -eycodegen
-     |-generator.h
-     |-generator.cpp
-   -eyexec
-     |-executer.h
-     |-executer.cpp
-   -eylexer
-     |-lex.h
-     |-lex.cpp
-   -eyparser
-     |-parser.h
-     |-parser.cpp
-   -eysystem
-     |-command.h
-     |-command.cpp
-     |-econfig.h
-     |-econfig.cpp
-   -eymain.cpp
-   -osstd.cpp
-   -osstd.h
+src
+│  eymain.cpp
+│  osstd.cpp
+│  osstd.h
+├─eexception
+│      eexcp.cpp
+│      eexcp.h
+├─ey
+│  ├─scope
+│  │      eyscope.cpp
+│  │      eyscope.h
+│  └─value
+│          eytype.cpp
+│          eytype.h
+│          eyvalue.cpp
+│          eyvalue.h
+├─eycodegen
+│      generator.cpp
+│      generator.h
+├─eyexec
+│      executer.cpp
+│      executer.h
+├─eylexer
+│      lex.cpp
+│      lex.h
+├─eyparser
+│      parser.cpp
+│      parser.h
+└─eysystem
+        command.cpp
+        command.h
+        econfig.cpp
+        econfig.h
 ```
 Next, briefly describe the functions of all the first level subfolders and internal files under the SRC directory
 |Folder name|Important sub files|Role of folders and important sub files|
