@@ -158,25 +158,37 @@ void Executer::run() {
             case Instruction::ADD: {
                 float op2 = env.pop().second;
                 float op1 = env.pop().second;
-                env.push(Environment::runit(Environment::ValueType::DECI, op1 + op2));
+                if(isInt(op1 + op2))
+                    env.push(Environment::runit(Environment::ValueType::INT, op1 + op2));
+                else
+                    env.push(Environment::runit(Environment::ValueType::DECI, op1 + op2));
                 break;
             }
             case Instruction::SUB: {
                 float op2 = env.pop().second;
                 float op1 = env.pop().second;
-                env.push(Environment::runit(Environment::ValueType::DECI, op1 - op2));
+                if(isInt(op1 - op2))
+                    env.push(Environment::runit(Environment::ValueType::INT, op1 - op2));
+                else
+                    env.push(Environment::runit(Environment::ValueType::DECI, op1 - op2));
                 break;
             }
             case Instruction::DIV: {
                 float op2 = env.pop().second;
                 float op1 = env.pop().second;
-                env.push(Environment::runit(Environment::ValueType::DECI, op1 / op2));
+                if(isInt(op1 / op2))
+                    env.push(Environment::runit(Environment::ValueType::INT, op1 / op2));
+                else
+                    env.push(Environment::runit(Environment::ValueType::DECI, op1 / op2));
                 break;
             }
             case Instruction::MUL: {
                 float op2 = env.pop().second;
                 float op1 = env.pop().second;
-                env.push(Environment::runit(Environment::ValueType::DECI, op1 * op2));
+                if(isInt(op1 * op2))
+                    env.push(Environment::runit(Environment::ValueType::INT, op1 * op2));
+                else
+                    env.push(Environment::runit(Environment::ValueType::DECI, op1 * op2));
                 break;
             }
             case Instruction::EQ: {
