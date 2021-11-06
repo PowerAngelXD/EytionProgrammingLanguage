@@ -84,6 +84,7 @@ namespace osstd{
     std::vector<std::string> split(const std::string &str, const std::string &pattern);
     template<class T>
     T strToNumber(string str);
+    bool isInt(float num);
     string bool_to_string(bool b);
     //输出调试信息
     void log(std::string text);

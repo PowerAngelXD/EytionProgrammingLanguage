@@ -53,6 +53,12 @@ T osstd::strToNumber(string str){
     return n;
 }
 
+bool osstd::isInt(float num){
+    if(num - (int)num == 0)
+        return true;
+    else return false;
+}
+
 string osstd::bool_to_string(bool b){
     ostringstream osm;
     osm << b;
