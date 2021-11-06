@@ -17,7 +17,6 @@ namespace eyexec {
         enum Ins {
             NOP = 0,
             PUSH,
-            PUSHAS,
             POP,
             ADD,
             SUB,
@@ -54,6 +53,7 @@ namespace eyexec {
         Instruction()=default;
         Instruction(Ins ins_type, int l = 0, int c = 0, float op = 0, char op_type = TY_DEC);
         Instruction(Ins ins_type, int l = 0, int c = 0, string op1 = " ", float op = 0, char op_type = TY_DEC, bool op_bool = false);
+        string toString();
     };
 
     std::string to_string(Instruction::Ins ins); 

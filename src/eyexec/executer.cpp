@@ -4,6 +4,93 @@ using namespace eyexec;
 
 Instruction::Instruction(Ins ins_type, int l, int c, float op, char op_type) : ins_type(ins_type), line(l), col(c), op(op), op_type(op_type) {}
 Instruction::Instruction(Ins ins_type, int l, int c, string op1, float op, char op_type, bool op_bool) : ins_type(ins_type), line(l), col(c), op_str(op1), op(op), op_type(op_type), op_bool(op_bool) {}
+string Instruction::toString(){
+    string type;
+    switch (this->ins_type)
+    {
+    case Ins::ADD:
+        type = "add";
+        break;
+    case Ins::NOP:
+        type = "__none__";
+        break;
+    case Ins::PUSH:
+        type = "push";
+        break;
+    case Ins::POP:
+        type = "pop";
+        break;
+    case Ins::SUB:
+        type = "sub";
+        break;
+    case Ins::MUL:
+        type = "mul";
+        break;
+    case Ins::DIV:
+        type = "div";
+        break;
+    case Ins::MOD:
+        type = "mod";
+        break;
+    case Ins::MRET:
+        type = "mret(>)";
+        break;
+    case Ins::LEST:
+        type = "lest(<)";
+        break;
+    case Ins::EQ:
+        type = "eq(==)";
+        break;
+    case Ins::NEQ:
+        type = "neq(!=)";
+        break;
+    case Ins::MREQT:
+        type = "mreqt(>=)";
+        break;
+    case Ins::LEREQT:
+        type = "lereqt(<=)";
+        break;
+    case Ins::LAND:
+        type = "And(&&)";
+        break;
+    case Ins::LOR:
+        type = "Or(||)";
+        break;
+    case Ins::NOT:
+        type = "not(!)";
+        break;
+    case Ins::STRING:
+        type = "__string__";
+        break;
+    case Ins::IDEN:
+        type = "__identifier__";
+        break;
+    case Ins::OSOUT:
+        type = "out";
+        break;
+    case Ins::OSINPUT:
+        type = "input";
+        break;
+    case Ins::ASSIGN:
+        type = "assign";
+        break;
+    case Ins::DEL:
+        type = "delete";
+        break;
+    case Ins::SCOPE_BEGIN:
+        type = "scope_begin";
+        break;
+    case Ins::SCOPE_END:
+        type = "scope_end";
+        break;
+    case Ins::DEFINE_VORC:
+        type = "add";
+        break;
+    default:
+        break;
+    }
+    return "ins: {type: " + type + "}";
+}
 
 void Environment::reset() {
     runtime_stack.clear();
@@ -49,7 +136,7 @@ void Executer::run() {
                 if(env.ScopeUnit.findAll(ins.op_str)){
                     if(env.ScopeUnit.ScopeStack.at(env.ScopeUnit.findWhere(ins.op_str)).BoardPool.at(ins.op_str).getType() == eytype::EybType::String) {
                         env.ConstantPool.push_back(env.ScopeUnit.ScopeStack.at(env.ScopeUnit.findWhere(ins.op_str)).BoardPool.at(ins.op_str).getValueAsString());
-                        env.push(Environment::runit(Environment::ValueType::STRING, env.ConstantPool.size()));
+                        env.push(Environment::runit(Environment::ValueType::STRING, env.ConstantPool.size()-1));
 
                         if(env.instructions.at(pos + 1).ins_type == Instruction::OSOUT){
                             cout<<env.ScopeUnit.ScopeStack.at(env.ScopeUnit.findWhere(ins.op_str)).BoardPool.at(ins.op_str).getValueAsString();
@@ -92,18 +179,6 @@ void Executer::run() {
                 env.push(Environment::runit(Environment::ValueType::DECI, op1 * op2));
                 break;
             }
-            // case Instruction::EQ: {
-            //     auto op1 = env.pop().second;
-            //     auto op2 = env.pop().second;
-            //     env.push(Environment::runit(Environment::ValueType::BOOL, op1 == op2));
-            //     break;
-            // }
-            // case Instruction::NEQ: {
-            //     auto op1 = env.pop().second;
-            //     auto op2 = env.pop().second;
-            //     env.push(Environment::runit(Environment::ValueType::BOOL, op1 != op2));
-            //     break;
-            // }
             case Instruction::EQ: {
                 auto op1 = env.pop();
                 auto op2 = env.pop();
@@ -111,8 +186,8 @@ void Executer::run() {
                     env.push(Environment::runit(Environment::ValueType::BOOL, op1.second == op2.second));
                 else if(op1.first == Environment::INT && op2.first == Environment::INT)
                     env.push(Environment::runit(Environment::ValueType::BOOL, op1.second == op2.second));
-                else if(op1.first == Environment::STRING && op2.first == Environment::STRING)
-                    env.push(Environment::runit(Environment::ValueType::BOOL, env.ConstantPool[op1.second] == env.ConstantPool[op2.second]));
+                else if(op1.first == Environment::STRING && op2.first == Environment::STRING){
+                    env.push(Environment::runit(Environment::ValueType::BOOL, env.ConstantPool[op1.second] == env.ConstantPool[op2.second]));}
                 else
                     throw EyparseError("[Runtime]TypeError", "Cannot compare two diffierent type value", 0, 0);
                 break;
