@@ -35,6 +35,7 @@ Eytion是一个轻量级的解释语言，目前它支持以下语法:
 > AssignStmt->iden "=" (value | value_expr) ";"  
 > DeleteStmt->"delete" iden ";"  
 > BlockStmt->"{" stmts "}"  
+> InputStmt->"input" "(" content ")" "=>" identifier ";"  
 > 
 更多的语法等待更新  
   
@@ -51,6 +52,7 @@ Eytion是一个轻量级的解释语言，目前它支持以下语法:
 |:---:|:---:|:---:|:---:|
 |***out***|输出内容|***var***|声明变量|
 |***delete***|删除标识符|***const***|声明常量|
+|***input***|输入内容||
 |***int***|整型|***string***|字符串|
 |***deci***|小数|***bool***|布尔|
 ---
