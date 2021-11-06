@@ -1,6 +1,10 @@
 var <string>str = "hello world!";
+var <int>num = 2;
 out str;
-out "\n";
-out "hello world!"=="hello world!";
+out "\nprogram: ";
+out num == 2;
+out "hello world!"==str;
 input("please input:")=>str;
 out str == "son of bitch";
+out str != "shabi";
+out str > "hi";
