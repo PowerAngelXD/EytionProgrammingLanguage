@@ -1,8 +1,8 @@
 var <string>str = "hello world!";
-var <int>num = 2;
+var <int>num = 2 / 1;
 out str;
 out "\nprogram: ";
-out num == 2;
+out num == 2/1;
 out "hello world!"==str;
 input("please input:")=>str;
 out str == "son of bitch";
