@@ -325,6 +325,16 @@ string InputStmtNode::toString(){
     return "InputStmt: {" + _InputMark->toString() + ", " + _Content->toString() + ", " + _Give->toString() + ", " + _Iden->toString() + ", " + _EndMark->toString() + "}";
 }
 
+//RepeatStmt Part
+TokenNode* RepeatStmtNode::RepeatMark(){return _RepeatMark;}
+AddExprNode* RepeatStmtNode::Times(){return _Times;}
+TokenNode* RepeatStmtNode::To(){return _To;}
+BlockStmtNode* RepeatStmtNode::Block(){return _Block;}
+TokenNode* RepeatStmtNode::EndMark(){return _EndMark;}
+string RepeatStmtNode::toString(){
+    return "RepeatStmt: {" + _RepeatMark->toString() + ", " + _Times->toString() + ", " + _To->toString() + ", " + _Block->toString() + "}";
+}
+
 //Stmt Part
 
 OutStmtNode* StmtNode::OutStmt() {return _OutStmt;}
@@ -333,6 +343,7 @@ AssignStmtNode* StmtNode::AssignStmt() {return _AssignStmt;}
 BlockStmtNode* StmtNode::BlockStmt(){return _BlockStmt;}
 DeleteStmtNode* StmtNode::DeleteStmt(){return _DeleteStmt;}
 InputStmtNode* StmtNode::InputStmt(){return _InputStmt;}
+RepeatStmtNode* StmtNode::RepeatStmt(){return _RepeatStmt;}
 
 std::string StmtNode::toString() {
     std::string str = "stmt:";
@@ -353,6 +364,9 @@ std::string StmtNode::toString() {
     }
     else if(_InputStmt) {
         str += "{" + _InputStmt->toString() + "}";
+    }
+    else if(_RepeatStmt) {
+        str += "{" + _RepeatStmt->toString() + "}";
     }
     return str;
 }
@@ -754,6 +768,37 @@ InputStmtNode* Parser::InputStmt(){
     return node;
 }
 
+bool Parser::IsRepeatStmt(){
+    if (!IsToken()) return false;
+    if(peek().content == "repeat"){
+        return true;
+    }
+    return false;
+}
+
+RepeatStmtNode* Parser::RepeatStmt(){
+    int line = peek().line;
+    int col = peek().column;
+    if (!IsRepeatStmt())
+        throw EyparseError("StmtError", "not repeat-stmt", line ,col);
+    RepeatStmtNode* node = new RepeatStmtNode;
+    node->_RepeatMark = token();
+
+    if(IsAddExpr()) node->_Times = AddExpr();
+    else throw EyparseError("TypeError", "must give a value that type is 'Number'", line, col);
+
+    if(peek().content == ":") node->_To = token();
+    else throw EyparseError("SyntaxError", "expect ':'", line, col);
+
+    if(IsBlockStmt()) node->_Block = BlockStmt();
+    else throw EyparseError("SyntaxError", "expect block", line, col);
+
+    // if(peek().content == ";") node->_EndMark = token();
+    // else throw EyparseError("SymbolError", "expect ';'", line ,col);
+
+    return node;
+}
+
 bool Parser::IsVorcStmt(){
     if (!IsToken()) return false;
     if(peek().content == "var" || peek().content == "const"){
@@ -877,7 +922,7 @@ BlockStmtNode* Parser::BlockStmt(){
 
 bool Parser::IsStmt() {
     if (!IsToken()) return false;
-    return IsOutStmt() || IsVorcStmt() || IsAssignStmt() || IsBlockStmt() || IsDelStmt() || IsInputStmt();
+    return IsOutStmt() || IsVorcStmt() || IsAssignStmt() || IsBlockStmt() || IsDelStmt() || IsInputStmt() || IsRepeatStmt();
 }
 
 StmtNode* Parser::Stmt() {
@@ -908,6 +953,10 @@ StmtNode* Parser::Stmt() {
     }
     else if (IsDelStmt()) {
         stmt->_DeleteStmt = DelStmt();
+        return stmt;
+    }
+    else if (IsRepeatStmt()) {
+        stmt->_RepeatStmt = RepeatStmt();
         return stmt;
     }
     throw EyparseError("StmtError", "it is not any stmt", line ,col);
