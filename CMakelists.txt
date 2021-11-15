@@ -4,6 +4,16 @@ project(ey)
 set(CMAKE_CXX_STANDARD 17)
 message ("C++ Standard: ${CMAKE_CXX_STANDARD}")
 
-set( SRC_LIST ./src/eymain.cpp ./src/osstd.cpp ./src/osstd.cpp ./src/eysystem/command.cpp ./src/eyparser/parser.cpp ./src/eylexer/lex.cpp ./src/eyexec/executer.cpp ./src/eycodegen/generator.cpp ./src/ey/value/eytype.cpp ./src/ey/value/eyvalue.cpp ./src/ey/scope/eyscope.cpp ./src/eexception/eexcp.cpp ./include/CJsonObject.cpp ./include/cJSON.c ./src/eysystem/econfig.cpp)
-
-add_executable(ey ${SRC_LIST})
+file(GLOB SRC_FILES
+    "./src/*.cpp"
+    "./src/eexception/*.cpp"
+    "./src/ey/scope/*.cpp"
+    "./src/ey/value/*.cpp"
+    "./src/eycodegen/*.cpp"
+    "./src/eyexec/*.cpp"
+    "./src/eylexer/*.cpp"
+    "./src/eyparser/*.cpp"
+    "./src/eysystem/*.cpp"
+    "./include/*.cpp"
+    "./include/*.c")
+add_executable(${CMAKE_PROJECT_NAME} ${SRC_FILES})
