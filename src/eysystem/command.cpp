@@ -15,7 +15,8 @@ void cmdrun(string argv){
     eycodegen::CodeGenerator gen;
     gen.visitStat(stat);
     eyexec::Executer eysysenv;
-    
+    log((string)"log for stat:");
+    log(stat->toString());
     if(efig.IsDebug == true && efig.DebugMode.lex_TokenGroupMsg == true){
         log((string)"because you turned on the debug mode, now show some debug details");
         log((string)"log for tokens:");
@@ -71,11 +72,15 @@ void cmdhelp(string argv){
     string content(begin, end);
     cout<<_FONT_GREEN<<content<<_NORMAL<<endl;
 }
+void cmdtest(string argv){
+    cmdrun("tests/" + argv);
+}
 
-eysys::eycommand cmdlist[4] = {eysys::eycommand("run", &cmdrun, true),
+eysys::eycommand cmdlist[5] = {eysys::eycommand("run", &cmdrun, true),
                                eysys::eycommand("view", &cmdview, true),
                                eysys::eycommand("info", &cmdinfo, true),
-                               eysys::eycommand("help", &cmdhelp, true)};
+                               eysys::eycommand("help", &cmdhelp, true),
+                               eysys::eycommand("test", &cmdtest, true)};
 
 void eysys::run(std::string text){
     cout<<_FONT_GREEN<<"------------                                 "<<endl;
