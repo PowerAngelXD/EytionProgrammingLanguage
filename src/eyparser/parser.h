@@ -301,14 +301,28 @@ namespace eyparser {
         AddExprNode* _Times;
         TokenNode* _To;
         BlockStmtNode* _Block;
-        TokenNode* _EndMark;
     public:
         RepeatStmtNode()=default;
         TokenNode* RepeatMark();
         AddExprNode* Times();
         TokenNode* To();
         BlockStmtNode* Block();
-        TokenNode* EndMark();
+        string toString();
+
+        friend class Parser;
+    };
+
+    class IfStmtNode{
+        TokenNode* _IfMark;
+        ExprNode* _Cond;
+        TokenNode* _To;
+        BlockStmtNode* _Block;
+    public:
+        IfStmtNode()=default;
+        TokenNode* IfMark();
+        ExprNode* Cond();
+        TokenNode* To();
+        BlockStmtNode* Block();
         string toString();
 
         friend class Parser;
@@ -322,6 +336,7 @@ namespace eyparser {
         DeleteStmtNode* _DeleteStmt = nullptr;
         InputStmtNode* _InputStmt = nullptr;
         RepeatStmtNode* _RepeatStmt = nullptr;
+        IfStmtNode* _IfStmt = nullptr;
     public:
         StmtNode()=default;
         OutStmtNode* OutStmt();
@@ -331,6 +346,7 @@ namespace eyparser {
         DeleteStmtNode* DeleteStmt();
         InputStmtNode* InputStmt();
         RepeatStmtNode* RepeatStmt();
+        IfStmtNode* IfStmt();
         std::string toString();
 
         friend class Parser;
@@ -413,6 +429,8 @@ namespace eyparser {
         InputStmtNode* InputStmt();
         bool IsRepeatStmt();
         RepeatStmtNode* RepeatStmt();
+        bool IsIfStmt();
+        IfStmtNode* IfStmt();
         bool IsBlockStmt();
         BlockStmtNode* BlockStmt();
         bool IsStmt();

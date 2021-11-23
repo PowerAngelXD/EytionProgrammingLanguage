@@ -330,10 +330,16 @@ TokenNode* RepeatStmtNode::RepeatMark(){return _RepeatMark;}
 AddExprNode* RepeatStmtNode::Times(){return _Times;}
 TokenNode* RepeatStmtNode::To(){return _To;}
 BlockStmtNode* RepeatStmtNode::Block(){return _Block;}
-TokenNode* RepeatStmtNode::EndMark(){return _EndMark;}
 string RepeatStmtNode::toString(){
-    return "RepeatStmt: {" + _RepeatMark->toString() + ", " + _Times->toString() + ", " + _To->toString() + ", " + _Block->toString() + "}";
+    return "RepeatStmt: {" + _RepeatMark->toString() + ", Times[" + _Times->toString() + "], " + _To->toString() + ", " + _Block->toString() + "}";
 }
+
+//IfStmt Part
+TokenNode* IfStmtNode::IfMark(){return _IfMark;}
+ExprNode* IfStmtNode::Cond(){return _Cond;}
+TokenNode* IfStmtNode::To(){return _To;}
+BlockStmtNode* IfStmtNode::Block(){return _Block;}
+string IfStmtNode::toString(){return "IfStmt: {" + _IfMark->toString() + ", Cond[" + _Cond->toString() + "], " + _To->toString() + ", " + _Block->toString() + "}";}
 
 //Stmt Part
 
@@ -344,6 +350,7 @@ BlockStmtNode* StmtNode::BlockStmt(){return _BlockStmt;}
 DeleteStmtNode* StmtNode::DeleteStmt(){return _DeleteStmt;}
 InputStmtNode* StmtNode::InputStmt(){return _InputStmt;}
 RepeatStmtNode* StmtNode::RepeatStmt(){return _RepeatStmt;}
+IfStmtNode* StmtNode::IfStmt(){return _IfStmt;}
 
 std::string StmtNode::toString() {
     std::string str = "stmt:";
@@ -367,6 +374,9 @@ std::string StmtNode::toString() {
     }
     else if(_RepeatStmt) {
         str += "{" + _RepeatStmt->toString() + "}";
+    }
+    else if(_IfStmt) {
+        str += "{" + _IfStmt->toString() + "}";
     }
     return str;
 }
@@ -799,6 +809,32 @@ RepeatStmtNode* Parser::RepeatStmt(){
     return node;
 }
 
+bool Parser::IsIfStmt(){
+    if (!IsToken()) return false;
+    if(peek().content == "if"){
+        return true;
+    }
+    return false;
+}
+
+IfStmtNode* Parser::IfStmt(){
+    int line = peek().line;
+    int col = peek().column;
+    if (!IsIfStmt())
+        throw EyparseError("StmtError", "not if-stmt", line ,col);
+    IfStmtNode* node = new IfStmtNode;
+    node->_IfMark = token();
+
+    if(IsBoolExpr() || IsNotBoolExpr()) node->_Cond = Expr();
+    else throw EyparseError("TypeError", "must give a value that type is 'Bool'", line, col);
+
+    if(peek().content == ":") node->_To = token();
+    else throw EyparseError("SyntaxError", "expect ':'", line, col);
+
+    if(IsBlockStmt()) node->_Block = BlockStmt();
+    else throw EyparseError("SyntaxError", "expect block", line, col);
+}
+
 bool Parser::IsVorcStmt(){
     if (!IsToken()) return false;
     if(peek().content == "var" || peek().content == "const"){
@@ -922,7 +958,7 @@ BlockStmtNode* Parser::BlockStmt(){
 
 bool Parser::IsStmt() {
     if (!IsToken()) return false;
-    return IsOutStmt() || IsVorcStmt() || IsAssignStmt() || IsBlockStmt() || IsDelStmt() || IsInputStmt() || IsRepeatStmt();
+    return IsOutStmt() || IsVorcStmt() || IsAssignStmt() || IsBlockStmt() || IsDelStmt() || IsInputStmt() || IsRepeatStmt() || IsIfStmt();
 }
 
 StmtNode* Parser::Stmt() {
@@ -957,6 +993,10 @@ StmtNode* Parser::Stmt() {
     }
     else if (IsRepeatStmt()) {
         stmt->_RepeatStmt = RepeatStmt();
+        return stmt;
+    }
+    else if (IsIfStmt()) {
+        stmt->_IfStmt = IfStmt();
         return stmt;
     }
     throw EyparseError("StmtError", "it is not any stmt", line ,col);
