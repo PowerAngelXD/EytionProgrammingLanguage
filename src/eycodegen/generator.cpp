@@ -143,6 +143,7 @@ namespace eycodegen {
         else if(node->DeleteStmt() != nullptr) visitDelStmt(node->DeleteStmt());
         else if(node->BlockStmt() != nullptr) visitBlockStmt(node->BlockStmt());
         else if(node->InputStmt() != nullptr) visitInputStmt(node->InputStmt());
+        else if(node->RepeatStmt() != nullptr) visitRepeatStmt(node->RepeatStmt());
     } 
 
     void CodeGenerator::visitStat(StatNode* node){
@@ -280,7 +281,7 @@ namespace eycodegen {
     }
 
     void CodeGenerator::visitDelStmt(DeleteStmtNode* node) {
-        instructions.push_back(Instruction{Instruction::DEL,node->DeleteMark()->token().line, node->DeleteMark()->token().column, node->Iden()->token().content});
+        instructions.push_back(Instruction{Instruction::DEL, node->DeleteMark()->token().line, node->DeleteMark()->token().column, node->Iden()->token().content});
     }
 
     void CodeGenerator::visitInputStmt(InputStmtNode* node){
@@ -290,6 +291,17 @@ namespace eycodegen {
         }
         else{
             throw (string)"must put a 'String' value here";
+        }
+    }
+
+    void CodeGenerator::visitRepeatStmt(RepeatStmtNode* node){
+        if(node->Times()->toString().find("string") == node->Times()->toString().npos){
+            visitAddExpr(node->Times());
+            instructions.push_back(Instruction{Instruction::OSREPEAT, node->RepeatMark()->token().line, node->RepeatMark()->token().column, 0, 0});
+            visitBlockStmt(node->Block());
+        }
+        else{
+            throw (string)"must put a 'Number' value here";
         }
     }
 
