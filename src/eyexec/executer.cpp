@@ -3,7 +3,7 @@
 using namespace eyexec;
 
 Instruction::Instruction(Ins ins_type, int l, int c, float op, char op_type) : ins_type(ins_type), line(l), col(c), op(op), op_type(op_type) {}
-Instruction::Instruction(Ins ins_type, int l, int c, string op1, float op, char op_type, bool op_bool) : ins_type(ins_type), line(l), col(c), op_str(op1), op(op), op_type(op_type), op_bool(op_bool) {}
+Instruction::Instruction(Ins ins_type, int l, int c, string op1, float op, char op_type, bool op_bool, Pool pp) : ins_type(ins_type), line(l), col(c), op_str(op1), op(op), op_type(op_type), op_bool(op_bool), p(pp) {}
 string Instruction::toString(){
     string type;
     switch (this->ins_type)
@@ -86,10 +86,63 @@ string Instruction::toString(){
     case Ins::DEFINE_VORC:
         type = "add";
         break;
+    case Ins::OSREPEAT:
+        type = "repeat";
+        break;
+    case Ins::GOTO:
+        type = "goto";
+        break;
+    case Ins::GOTO_WITHCOND:
+        type = "goto_with_condition";
+        break;
     default:
         break;
     }
     return "ins: {type: " + type + "}";
+}
+
+std::vector<Instruction> Environment::clone(int start, int end){
+    std::vector<Instruction> cloned;
+    for(int i = start; i < end; i++){
+        cloned.push_back(this->instructions.at(i));
+    }
+    return cloned;
+}
+
+string Environment::toString(){
+    string s;
+    for(int i = 0; i < this->instructions.size(); i++){
+        s += instructions.at(i).toString() + ", ";
+    }
+    return s;
+}
+
+Environment::SysPool Environment::where(Pool p){
+    switch (p) {
+    case Pool::__A__:
+        return Environment::SysPool::_A_;
+        break;
+    case Pool::__B__:
+        return Environment::SysPool::_B_;
+        break;
+    case Pool::__C__:
+        return Environment::SysPool::_C_;
+        break;
+    case Pool::__D__:
+        return Environment::SysPool::_D_;
+        break;
+    case Pool::__E__:
+        return Environment::SysPool::_E_;
+        break;
+    case Pool::__F__:
+        return Environment::SysPool::_F_;
+        break;
+    case Pool::__G__:
+        return Environment::SysPool::_G_;
+        break;
+    default:
+        break;
+    }
 }
 
 void Environment::reset() {
@@ -323,11 +376,15 @@ void Executer::run() {
                         std::cout << env.ConstantPool[temp.second];
                         string input;
                         getline(cin, input);
-                        env.ScopeUnit.ScopeStack.at(env.ScopeUnit.findWhere(ins.op_str)).BoardPool.at(ins.op_str).setValue(input);
+                        if(env.ScopeUnit.ScopeStack.at(env.ScopeUnit.findWhere(ins.op_str)).BoardPool.at(ins.op_str).getType() == eytype::EybType::String)
+                            env.ScopeUnit.ScopeStack.at(env.ScopeUnit.findWhere(ins.op_str)).BoardPool.at(ins.op_str).setValue(input);
+                        else
+                            throw EyparseError("[Runtime]TypeError", "must be a 'string' type identifier", ins.line, ins.col);
                     }
                     else throw EyparseError("[Runtime]NameError", "Unknown Identifier:" + ins.op_str, ins.line, ins.col);
                 }
                 else throw EyparseError("[Runtime]TypeError", "The type of value is not a string and cannot be used as an 'input' argument", 0, 0);
+                break;
             }
             case Instruction::DEFINE_VORC: {
                 std::string value_str;
@@ -410,6 +467,47 @@ void Executer::run() {
                 }
                 else {throw EyparseError("[Runtime]NameError", "Unknown Identifier:" + ins.op_str, ins.line, ins.col);}
                 break;
+            }
+            case Instruction::OSREPEAT: {
+                cout<<env.toString()<<endl;
+                int ttimes = env.pop().second;
+                int times = 0, _endpos = 0, sign = 0;
+                int _beginpos = pos;
+                bool ed = false;
+                while(true) {
+                    if (env.instructions.at(pos).ins_type == Instruction::SCOPE_BEGIN) {sign++; ed = true;}
+                    else if (env.instructions.at(pos).ins_type == Instruction::SCOPE_END) {sign--;}
+                    if (sign == 0 && ed == true) break;
+                    pos++;
+                }
+                _beginpos ++; pos++;
+                std::vector<Instruction> c = env.clone(_beginpos, pos);
+                //log(_beginpos);
+                //log(pos);
+                eyexec::Executer e;
+                while (true) {
+                    e.env.reset();
+                    if(times == ttimes) break;
+                    log(times);
+                    e.run();
+                    times++;
+                }
+                break;
+            }
+            case Instruction::GOTO_WITHCOND: {
+                log((string)"[exec]goto with");
+                if (env.pop().second == true) {
+                    int sign = 0;
+                    while(true) {
+                        if (env.instructions.at(pos).ins_type == Instruction::SCOPE_BEGIN) sign++;
+                        else if (env.instructions.at(pos).ins_type == Instruction::SCOPE_END) sign--;
+                        if (sign == 0) break;
+                        pos++;
+                    }
+                    break;
+                }
+                else break;
+                
             }
             case Instruction::SCOPE_BEGIN: {
                 env.ScopeUnit.add();
