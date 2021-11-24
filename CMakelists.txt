@@ -12,7 +12,8 @@ file(GLOB SRC_FILES
     "./src/eycodegen/*.cpp"
     "./src/eyexec/*.cpp"
     "./src/eylexer/*.cpp"
-    "./src/eyparser/*.cpp"
+    "./src/eyparser/parser.cpp"
+    "./src/eyparser/ast.cpp"
     "./src/eysystem/*.cpp"
     "./include/*.cpp"
     "./include/*.c")
