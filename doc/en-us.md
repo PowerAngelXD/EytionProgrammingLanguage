@@ -31,6 +31,8 @@ src
 ├─eyparser
 │      parser.cpp
 │      parser.h
+│      ast.cpp
+│      ast.h
 └─eysystem
         command.cpp
         command.h
