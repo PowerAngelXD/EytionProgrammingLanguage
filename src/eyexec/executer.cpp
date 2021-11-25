@@ -495,19 +495,22 @@ void Executer::run() {
                 break;
             }
             case Instruction::GOTO_WITHCOND: {
-                log((string)"[exec]goto with");
-                if (env.pop().second == true) {
-                    int sign = 0;
-                    while(true) {
-                        if (env.instructions.at(pos).ins_type == Instruction::SCOPE_BEGIN) sign++;
-                        else if (env.instructions.at(pos).ins_type == Instruction::SCOPE_END) sign--;
-                        if (sign == 0) break;
-                        pos++;
+                if(ins.op_str == "IF_STMT") {
+                    if(env.pop().second == 1) {
+
                     }
-                    break;
+                    else {
+                        int sign = 0;
+                        bool ed = false;
+                        while(true) {
+                            if (env.instructions.at(pos).ins_type == Instruction::SCOPE_BEGIN) {sign++; ed = true;}
+                            else if (env.instructions.at(pos).ins_type == Instruction::SCOPE_END) {sign--;}
+                            if (sign == 0 && ed == true) break;
+                            pos++;
+                        }
+                    }
                 }
-                else break;
-                
+                break;
             }
             case Instruction::SCOPE_BEGIN: {
                 env.ScopeUnit.add();
