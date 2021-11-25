@@ -83,25 +83,8 @@ eysys::eycommand cmdlist[5] = {eysys::eycommand("run", &cmdrun, true),
                                eysys::eycommand("test", &cmdtest, true)};
 
 void eysys::run(std::string text){
-    cout<<_FONT_GREEN<<"------------                                 "<<endl;
-    cout<<"--                                             "<<endl;
-    cout<<"--                                             "<<endl;
-    cout<<"------------                                 "<<endl;
-    cout<<"--            \\         //             "<<endl;
-    cout<<"--             \\       //              "<<endl;
-    cout<<"------------    \\     //                 "<<endl;
-    cout<<"                 \\   //                  "<<endl;
-    cout<<"                  \\ //                 "<<endl;
-    cout<<"                   //                  "<<endl;
-    cout<<"                  //                   "<<endl;
-    cout<<"                 //                   "<<endl;
-    cout<<"                //                   "<<_NORMAL<<endl;
-    cout<<"checking setting file..."<<endl;
     ConfigReader read("./settings/eyconfig.json");
     efig = read.Get();
-    cout<<"done"<<endl;
-    Sleep(800);
-    system("cls");
     std::cout<<_FONT_BLUE<<"build date: "<<_FONT_GREEN<<__DATE__<<endl;
     cout<<_NORMAL;
     cout<<"Eytion [Shell | "<<_FONT_RED<<"Informal version"<<_NORMAL<<"]"<<endl;
