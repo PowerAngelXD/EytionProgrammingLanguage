@@ -34,6 +34,7 @@ namespace eycodegen {
         void visitDelStmt(DeleteStmtNode* node);
         void visitInputStmt(InputStmtNode* node);
         void visitRepeatStmt(RepeatStmtNode* node);
+        void visitIfStmt(IfStmtNode* node);
         void visitBlockStmt(BlockStmtNode* node);
         void visitStmt(StmtNode* node);
         void visitStat(StatNode* node);

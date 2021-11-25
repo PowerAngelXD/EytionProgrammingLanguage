@@ -144,6 +144,7 @@ namespace eycodegen {
         else if(node->BlockStmt() != nullptr) visitBlockStmt(node->BlockStmt());
         else if(node->InputStmt() != nullptr) visitInputStmt(node->InputStmt());
         else if(node->RepeatStmt() != nullptr) visitRepeatStmt(node->RepeatStmt());
+        else if(node->IfStmt() != nullptr) visitIfStmt(node->IfStmt());
     } 
 
     void CodeGenerator::visitStat(StatNode* node){
@@ -303,6 +304,17 @@ namespace eycodegen {
         else{
             throw (string)"must put a 'Number' value here";
         }
+    }
+
+    void CodeGenerator::visitIfStmt(IfStmtNode* node){
+        if(node->Cond()->toString().find("NotBoolExpr") != node->Cond()->toString().npos){
+            visitNotBoolExpr(node->Cond()->NotBoolExpr());
+        }
+        else if(node->Cond()->toString().find("BoolExpr") != node->Cond()->toString().npos){
+            visitBoolExpr(node->Cond()->BoolExpr());
+        }
+        instructions.push_back(Instruction{Instruction::GOTO_WITHCOND, node->IfMark()->token().line, node->IfMark()->token().column, "IF_STMT", 0, 0, true});
+        visitBlockStmt(node->Block());
     }
 
     void CodeGenerator::visitBlockStmt(BlockStmtNode* node) {
