@@ -100,10 +100,8 @@ namespace eycodegen {
     void CodeGenerator::visitBoolExpr(BoolExprNode* node){
         visitCmpExpr(node->Root());
         for (int i = 0 ; i < node->Op().size(); i++) {
-            log((string)"gen once");
             visitCmpExpr(node->Sub(i));
             visitBoolOperator(node->Op(i + 1));
-            log((string)"gen twice");
         }
     }
 
@@ -310,11 +308,9 @@ namespace eycodegen {
 
     void CodeGenerator::visitIfStmt(IfStmtNode* node){
         if(node->Cond()->toString().find("NotBoolExpr") != node->Cond()->toString().npos){
-            log((string)"notbool");
             visitNotBoolExpr(node->Cond()->NotBoolExpr());
         }
         else if(node->Cond()->toString().find("BoolExpr") != node->Cond()->toString().npos){
-            log((string)"bool");
             visitBoolExpr(node->Cond()->BoolExpr());
         }
         instructions.push_back(Instruction{Instruction::GOTO_WITHCOND, node->IfMark()->token().line, node->IfMark()->token().column, "IF_STMT", 0, 0, true});
