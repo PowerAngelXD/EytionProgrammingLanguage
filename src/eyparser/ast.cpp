@@ -181,7 +181,7 @@ AddExprNode* CmpExprNode::Expr(){return _Expr;}
 CmpOperatorNode* CmpExprNode::Op(){return _Op;}
 AddExprNode* CmpExprNode::Sub(){return _Tar;}
 string CmpExprNode::toString(){
-    if(_Op != nullptr)
+    if(_Op != nullptr) // TODO： bughere
         return "CmpExpr: {" + _Expr->toString() + ", " + _Op->toString() + ", " + _Tar->toString() + "}";
     return "CmpExpr: {" + _Expr->toString() + "}";    
 }
@@ -197,6 +197,7 @@ string BoolExprNode::toString(){
         auto op_num = _Sub[i + 1]->toString();
         str += "," + op + "," + op_num;
     }
+    log((string)"addeddone");
     str += "}";
     return str;
 }

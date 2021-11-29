@@ -119,9 +119,9 @@ namespace eyast {
     // 比较表达式
     class CmpExprNode{
     public:
-        AddExprNode* _Expr;
-        CmpOperatorNode* _Op = nullptr;
-        AddExprNode* _Tar = nullptr;
+        AddExprNode* _Expr = nullptr;
+        CmpOperatorNode* _Op = 0x0;
+        AddExprNode* _Tar = 0x0;
 
         CmpExprNode()=default;
         ~CmpExprNode()=default;
