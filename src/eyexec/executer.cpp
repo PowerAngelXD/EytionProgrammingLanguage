@@ -98,7 +98,7 @@ string Instruction::toString(){
     default:
         break;
     }
-    return "ins: {type: " + type + "}";
+    return "{ins: [type: " + type + "][op_str: " + op_str + "][op(float): " + std::to_string(op) + "][op_bool: " + std::to_string((int)op_bool) + "]}\n";
 }
 
 std::vector<Instruction> Environment::clone(int start, int end){
@@ -300,11 +300,11 @@ void Executer::run() {
                 auto op1 = env.pop();
                 auto op2 = env.pop();
                 if(op1.first == Environment::ValueType::DECI && op2.first == Environment::ValueType::DECI)
-                    env.push(Environment::runit(Environment::ValueType::BOOL, op1.second >= op2.second));
+                    env.push(Environment::runit(Environment::ValueType::BOOL, (op1.second > op2.second) || (op1.second == op2.second)));
                 else if(op1.first == Environment::INT && op2.first == Environment::INT)
-                    env.push(Environment::runit(Environment::ValueType::BOOL, op1.second >= op2.second));
+                    env.push(Environment::runit(Environment::ValueType::BOOL, (op1.second > op2.second) || (op1.second == op2.second)));
                 else if(op1.first == Environment::STRING && op2.first == Environment::STRING)
-                    env.push(Environment::runit(Environment::ValueType::BOOL, env.ConstantPool[op1.second].size() >= env.ConstantPool[op2.second].size()));
+                    env.push(Environment::runit(Environment::ValueType::BOOL, (env.ConstantPool[op1.second].size() > env.ConstantPool[op2.second].size()) || (env.ConstantPool[op1.second].size() > env.ConstantPool[op2.second].size())));
                 else
                     throw EyparseError("[Runtime]TypeError", "Cannot compare two diffierent type value", 0, 0);
                 break;
@@ -313,28 +313,35 @@ void Executer::run() {
                 auto op1 = env.pop();
                 auto op2 = env.pop();
                 if(op1.first == Environment::ValueType::DECI && op2.first == Environment::ValueType::DECI)
-                    env.push(Environment::runit(Environment::ValueType::BOOL, op1.second <= op2.second));
+                    env.push(Environment::runit(Environment::ValueType::BOOL, (op1.second < op2.second) || (op1.second == op2.second)));
                 else if(op1.first == Environment::INT && op2.first == Environment::INT)
-                    env.push(Environment::runit(Environment::ValueType::BOOL, op1.second <= op2.second));
+                    env.push(Environment::runit(Environment::ValueType::BOOL, (op1.second < op2.second) || (op1.second == op2.second)));
                 else if(op1.first == Environment::STRING && op2.first == Environment::STRING)
-                    env.push(Environment::runit(Environment::ValueType::BOOL, env.ConstantPool[op1.second].size() <= env.ConstantPool[op2.second].size()));
+                    env.push(Environment::runit(Environment::ValueType::BOOL, (env.ConstantPool[op1.second].size() < env.ConstantPool[op2.second].size()) || (env.ConstantPool[op1.second].size() > env.ConstantPool[op2.second].size())));
                 else
                     throw EyparseError("[Runtime]TypeError", "Cannot compare two diffierent type value", 0, 0);
                 break;
             }
             case Instruction::LAND: {
-                auto op1 = env.pop();
-                auto op2 = env.pop();
-                env.push(Environment::runit(Environment::ValueType::BOOL, bool(op1.second) && bool(op2.second)));
+                auto op1 = env.pop().second;
+                auto op2 = env.pop().second;
+                if (op1 == 1){
+                    if (op2 == 1) env.push(Environment::runit(Environment::ValueType::BOOL, 1));
+                }
+                env.push(Environment::runit(Environment::ValueType::BOOL, 0));
+                break;
             }
             case Instruction::LOR: {
-                auto op1 = env.pop();
-                auto op2 = env.pop();
-                env.push(Environment::runit(Environment::ValueType::BOOL, bool(op1.second) || bool(op2.second)));
+                auto op1 = env.pop().second;
+                auto op2 = env.pop().second;
+                break;
             }
             case Instruction::NOT: {
                 auto op = env.pop();
-                env.push(Environment::runit(Environment::ValueType::BOOL, !bool(op.second)));
+                if(op.second == 1)
+                    env.push(Environment::runit(Environment::ValueType::BOOL, 0));
+                else {env.push(Environment::runit(Environment::ValueType::BOOL, 1));}
+                break;
             }
             case Instruction::MOD: {
                 long op2 = env.pop().second;
@@ -497,7 +504,6 @@ void Executer::run() {
             case Instruction::GOTO_WITHCOND: {
                 if(ins.op_str == "IF_STMT") {
                     if(env.pop().second == 1) {
-
                     }
                     else {
                         int sign = 0;

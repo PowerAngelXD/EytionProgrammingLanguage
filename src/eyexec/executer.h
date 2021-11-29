@@ -47,11 +47,11 @@ namespace eyexec {
             SCOPE_END,
             DEFINE_VORC
         };
-        Ins ins_type;
-        float op;
-        string op_str;
-        bool op_bool;
-        char op_type;
+        Ins ins_type = NOP;
+        float op = 0.0;
+        string op_str = "__null__";
+        bool op_bool = false;
+        char op_type = 9;
         int line, col;
         Pool p;
         #define TY_IMM 0 //立即数
