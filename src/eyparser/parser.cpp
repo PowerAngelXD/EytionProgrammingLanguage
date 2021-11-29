@@ -197,8 +197,8 @@ CmpOperatorNode* Parser::CmpOp(){
 bool Parser::IsBoolOp(){
     if(!IsToken())return false;
     if(input[cur_pos].symbol == eylex::Symbol::LogicOr || input[cur_pos].symbol == eylex::Symbol::LogicAnd) {
-           return true;
-       }
+        return true;
+    }
     else return false;
 }
 
@@ -251,10 +251,10 @@ BoolExprNode* Parser::BoolExpr(){
     if(!IsBoolExpr())
         throw EyparseError("ExprError", "Not a right Boolexpr!", line, col);
     BoolExprNode* node = new BoolExprNode;
-    node->_Root = CmpExpr();//problem here
+    node->_Root = CmpExpr();
     while(true) {
         try {
-            if (! IsBoolOp())
+            if (!IsBoolOp())
                 break;
             node->_Op.push_back(BoolOp());
             node->_Sub.push_back(CmpExpr());
