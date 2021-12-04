@@ -100,6 +100,10 @@ PrimExprNode* Parser::PrimExpr() {
         node->_Iden = token();
         return node;
     }
+    else if (input[cur_pos].content == "true" || input[cur_pos].content == "false") {
+        node->_ConstBool = token();
+        return node;
+    }
     else if (input[cur_pos].symbol == Symbol::String) {
         node->_String = token();
         return node;
@@ -363,33 +367,29 @@ InputStmtNode* Parser::InputStmt(){
     return node;
 }
 
-bool Parser::IsRepeatStmt(){
+bool Parser::IsWhileStmt(){
     if (!IsToken()) return false;
-    if(peek().content == "repeat"){
+    if(peek().content == "while"){
         return true;
     }
     return false;
 }
 
-RepeatStmtNode* Parser::RepeatStmt(){
+WhileStmtNode* Parser::WhileStmt(){
     int line = peek().line;
     int col = peek().column;
-    if (!IsRepeatStmt())
-        throw EyparseError("StmtError", "not repeat-stmt", line ,col);
-    RepeatStmtNode* node = new RepeatStmtNode;
-    node->_RepeatMark = token();
-
-    if(IsAddExpr()) node->_Times = AddExpr();
-    else throw EyparseError("TypeError", "must give a value that type is 'Number'", line, col);
+    if (!IsWhileStmt())
+        throw EyparseError("StmtError", "not while-stmt", line ,col);
+    WhileStmtNode* node = new WhileStmtNode;
+    node->_WhileMark = token();
+    if (IsBoolExpr() || IsNotBoolExpr()) node->_Cond = Expr();
+    else throw EyparseError("SyntaxError", "must give a value or expression here", line, col);
 
     if(peek().content == ":") node->_To = token();
     else throw EyparseError("SyntaxError", "expect ':'", line, col);
 
     if(IsBlockStmt()) node->_Block = BlockStmt();
     else throw EyparseError("SyntaxError", "expect block", line, col);
-
-    // if(peek().content == ";") node->_EndMark = token();
-    // else throw EyparseError("SymbolError", "expect ';'", line ,col);
 
     return node;
 }
@@ -418,6 +418,7 @@ IfStmtNode* Parser::IfStmt(){
 
     if(IsBlockStmt()) node->_Block = BlockStmt();
     else throw EyparseError("SyntaxError", "expect block", line, col);
+    return node;
 }
 
 bool Parser::IsVorcStmt(){
@@ -543,7 +544,7 @@ BlockStmtNode* Parser::BlockStmt(){
 
 bool Parser::IsStmt() {
     if (!IsToken()) return false;
-    return IsOutStmt() || IsVorcStmt() || IsAssignStmt() || IsBlockStmt() || IsDelStmt() || IsInputStmt() || IsRepeatStmt() || IsIfStmt();
+    return IsOutStmt() || IsVorcStmt() || IsAssignStmt() || IsBlockStmt() || IsDelStmt() || IsInputStmt() || IsWhileStmt() || IsIfStmt();
 }
 
 StmtNode* Parser::Stmt() {
@@ -576,8 +577,8 @@ StmtNode* Parser::Stmt() {
         stmt->_DeleteStmt = DelStmt();
         return stmt;
     }
-    else if (IsRepeatStmt()) {
-        stmt->_RepeatStmt = RepeatStmt();
+    else if (IsWhileStmt()) {
+        stmt->_WhileStmt = WhileStmt();
         return stmt;
     }
     else if (IsIfStmt()) {

@@ -53,8 +53,8 @@ namespace eyparser{
         DeleteStmtNode* DelStmt();
         bool IsInputStmt();
         InputStmtNode* InputStmt();
-        bool IsRepeatStmt();
-        RepeatStmtNode* RepeatStmt();
+        bool IsWhileStmt();
+        WhileStmtNode* WhileStmt();
         bool IsIfStmt();
         IfStmtNode* IfStmt();
         bool IsBlockStmt();
