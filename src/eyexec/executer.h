@@ -38,7 +38,7 @@ namespace eyexec {
             IDEN,
             OSOUT,
             OSINPUT,
-            OSREPEAT, 
+            OSWHILE, 
             DEL,
             ASSIGN,
             GOTO, 

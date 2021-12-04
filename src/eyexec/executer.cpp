@@ -86,8 +86,8 @@ string Instruction::toString(){
     case Ins::DEFINE_VORC:
         type = "add";
         break;
-    case Ins::OSREPEAT:
-        type = "repeat";
+    case Ins::OSWHILE:
+        type = "while";
         break;
     case Ins::GOTO:
         type = "goto";
@@ -182,6 +182,7 @@ void Executer::run() {
                 if(ins.op_type == TY_CON) env.push(Environment::runit(Environment::ValueType::STRING, ins.op)); //cout<<"\n"<<ins.op<<"-string\n";}
                 else if(ins.op_type == TY_IMM) env.push(Environment::runit(Environment::ValueType::INT, ins.op));
                 else if(ins.op_type == TY_DEC) env.push(Environment::runit(Environment::ValueType::DECI, ins.op));
+                else if(ins.op_type == TY_BOL) env.push(Environment::runit(Environment::ValueType::BOOL, ins.op));
                 else env.push(Environment::runit(Environment::ValueType::NULLTYPE, ins.op));
                 break;
             }
@@ -475,32 +476,7 @@ void Executer::run() {
                 else {throw EyparseError("[Runtime]NameError", "Unknown Identifier:" + ins.op_str, ins.line, ins.col);}
                 break;
             }
-            case Instruction::OSREPEAT: {
-                cout<<env.toString()<<endl;
-                int ttimes = env.pop().second;
-                int times = 0, _endpos = 0, sign = 0;
-                int _beginpos = pos;
-                bool ed = false;
-                while(true) {
-                    if (env.instructions.at(pos).ins_type == Instruction::SCOPE_BEGIN) {sign++; ed = true;}
-                    else if (env.instructions.at(pos).ins_type == Instruction::SCOPE_END) {sign--;}
-                    if (sign == 0 && ed == true) break;
-                    pos++;
-                }
-                _beginpos ++; pos++;
-                std::vector<Instruction> c = env.clone(_beginpos, pos);
-                //log(_beginpos);
-                //log(pos);
-                eyexec::Executer e;
-                while (true) {
-                    e.env.reset();
-                    if(times == ttimes) break;
-                    log(times);
-                    e.run();
-                    times++;
-                }
-                break;
-            }
+            case Instruction::OSWHILE: break;
             case Instruction::GOTO_WITHCOND: {
                 if(ins.op_str == "IF_STMT") {
                     if(env.pop().second == 1) {
@@ -514,6 +490,34 @@ void Executer::run() {
                             if (sign == 0 && ed == true) break;
                             pos++;
                         }
+                    }
+                }
+                else if(ins.op_str == "WHILE_STMT_ISPASS") {
+                    if(env.pop().second == 1) {
+                        int sign = 0;
+                        bool ed = false;
+                        while(true) {
+                            if (env.instructions.at(pos).ins_type == Instruction::SCOPE_BEGIN) {sign++; ed = true;}
+                            else if (env.instructions.at(pos).ins_type == Instruction::SCOPE_END) {sign--;}
+                            if (sign == 0 && ed == true) break;
+                            pos++;
+                        }
+                        pos++;
+                    }
+                    else;
+                }
+                else if(ins.op_str == "WHILE_STMT_BACK") {
+                    int sign = 0;
+                    bool ed = false;
+                    while(true) {
+                        if (env.instructions.at(pos).ins_type == Instruction::SCOPE_BEGIN) {sign--;}
+                        else if (env.instructions.at(pos).ins_type == Instruction::SCOPE_END) {sign++; ed = true;}
+                        if (sign == 0 && ed == true) break;
+                        pos--;
+                    }
+                    while(true) {
+                        if (env.instructions.at(pos).ins_type != Instruction::OSWHILE) pos--;
+                        else break;
                     }
                 }
                 break;
