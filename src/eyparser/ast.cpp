@@ -70,6 +70,10 @@ TokenNode* PrimExprNode::String() {
     return _String;
 }
 
+TokenNode* PrimExprNode::ConstBool() {
+    return _ConstBool;
+}
+
 TokenNode* PrimExprNode::LeftParen() {
     return _LeftParen;
 }
@@ -91,6 +95,9 @@ std::string PrimExprNode::toString() {
     }
     else if (_String != nullptr) {
         return (std::string)"PrimExpr:{" + _String->toString() + "}";
+    }
+    else if (_ConstBool != nullptr) {
+        return (std::string)"PrimExpr:{" + _ConstBool->toString() + "}";
     }
     else {
         return (std::string)"PrimExpr:{" + _AddExpr->toString() + "}";
@@ -181,7 +188,7 @@ AddExprNode* CmpExprNode::Expr(){return _Expr;}
 CmpOperatorNode* CmpExprNode::Op(){return _Op;}
 AddExprNode* CmpExprNode::Sub(){return _Tar;}
 string CmpExprNode::toString(){
-    if(_Op != nullptr) // TODO： bughere
+    if(_Op != nullptr)
         return "CmpExpr: {" + _Expr->toString() + ", " + _Op->toString() + ", " + _Tar->toString() + "}";
     return "CmpExpr: {" + _Expr->toString() + "}";    
 }
@@ -197,7 +204,6 @@ string BoolExprNode::toString(){
         auto op_num = _Sub[i + 1]->toString();
         str += "," + op + "," + op_num;
     }
-    log((string)"addeddone");
     str += "}";
     return str;
 }
@@ -325,12 +331,12 @@ string InputStmtNode::toString(){
 }
 
 //RepeatStmt Part
-TokenNode* RepeatStmtNode::RepeatMark(){return _RepeatMark;}
-AddExprNode* RepeatStmtNode::Times(){return _Times;}
-TokenNode* RepeatStmtNode::To(){return _To;}
-BlockStmtNode* RepeatStmtNode::Block(){return _Block;}
-string RepeatStmtNode::toString(){
-    return "RepeatStmt: {" + _RepeatMark->toString() + ", Times[" + _Times->toString() + "], " + _To->toString() + ", " + _Block->toString() + "}";
+TokenNode* WhileStmtNode::WhileMark(){return _WhileMark;}
+ExprNode* WhileStmtNode::Cond(){return _Cond;}
+TokenNode* WhileStmtNode::To(){return _To;}
+BlockStmtNode* WhileStmtNode::Block(){return _Block;}
+string WhileStmtNode::toString(){
+    return "WhileStmt: {" + _WhileMark->toString() + ", Cond[" + _Cond->toString() + "], " + _To->toString() + ", " + _Block->toString() + "}";
 }
 
 //IfStmt Part
@@ -348,7 +354,7 @@ AssignStmtNode* StmtNode::AssignStmt() {return _AssignStmt;}
 BlockStmtNode* StmtNode::BlockStmt(){return _BlockStmt;}
 DeleteStmtNode* StmtNode::DeleteStmt(){return _DeleteStmt;}
 InputStmtNode* StmtNode::InputStmt(){return _InputStmt;}
-RepeatStmtNode* StmtNode::RepeatStmt(){return _RepeatStmt;}
+WhileStmtNode* StmtNode::WhileStmt(){return _WhileStmt;}
 IfStmtNode* StmtNode::IfStmt(){return _IfStmt;}
 
 std::string StmtNode::toString() {
@@ -371,8 +377,8 @@ std::string StmtNode::toString() {
     else if(_InputStmt) {
         str += "{" + _InputStmt->toString() + "}";
     }
-    else if(_RepeatStmt) {
-        str += "{" + _RepeatStmt->toString() + "}";
+    else if(_WhileStmt) {
+        str += "{" + _WhileStmt->toString() + "}";
     }
     else if(_IfStmt) {
         str += "{" + _IfStmt->toString() + "}";

@@ -54,6 +54,7 @@ namespace eyast {
         TokenNode* _Number = nullptr;
         TokenNode* _Iden = nullptr;
         TokenNode* _String = nullptr;
+        TokenNode* _ConstBool = nullptr;
         TokenNode* _LeftParen;
         AddExprNode* _AddExpr;
         TokenNode* _RightParen;
@@ -64,6 +65,7 @@ namespace eyast {
         TokenNode* Number();
         TokenNode* Iden();
         TokenNode* String();
+        TokenNode* ConstBool();
         TokenNode* LeftParen();
         TokenNode* RightParen();
         AddExprNode* AddExpr();
@@ -298,21 +300,19 @@ namespace eyast {
         
     };
 
-    class RepeatStmtNode{
+    class WhileStmtNode{
     public:
-        TokenNode* _RepeatMark;
-        AddExprNode* _Times;
+        TokenNode* _WhileMark;
+        ExprNode* _Cond;
         TokenNode* _To;
         BlockStmtNode* _Block;
 
-        RepeatStmtNode()=default;
-        TokenNode* RepeatMark();
-        AddExprNode* Times();
+        WhileStmtNode()=default;
+        TokenNode* WhileMark();
+        ExprNode* Cond();
         TokenNode* To();
         BlockStmtNode* Block();
         string toString();
-
-        
     };
 
     class IfStmtNode{
@@ -340,7 +340,7 @@ namespace eyast {
         BlockStmtNode* _BlockStmt = nullptr;
         DeleteStmtNode* _DeleteStmt = nullptr;
         InputStmtNode* _InputStmt = nullptr;
-        RepeatStmtNode* _RepeatStmt = nullptr;
+        WhileStmtNode* _WhileStmt = nullptr;
         IfStmtNode* _IfStmt = nullptr;
 
         StmtNode()=default;
@@ -350,7 +350,7 @@ namespace eyast {
         BlockStmtNode* BlockStmt();
         DeleteStmtNode* DeleteStmt();
         InputStmtNode* InputStmt();
-        RepeatStmtNode* RepeatStmt();
+        WhileStmtNode* WhileStmt();
         IfStmtNode* IfStmt();
         std::string toString();
 
