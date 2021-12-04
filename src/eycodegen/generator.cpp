@@ -40,6 +40,9 @@ namespace eycodegen {
             else if(node->String() != nullptr) {
                 visitString(node->String());
             }
+            else if(node->ConstBool() != nullptr) {
+                visitCBool(node->ConstBool());
+            }
         }
     }
 
@@ -136,6 +139,13 @@ namespace eycodegen {
         instructions.push_back(Instruction{Instruction::PUSH, node->token().line, node->token().column, CPoolIndex, TY_CON});
     }
 
+    void CodeGenerator::visitCBool(TokenNode* node) {
+        int torf;
+        if(node->token().content == "true") torf = 1;
+        else torf = 0;
+        instructions.push_back(Instruction{Instruction::PUSH, node->token().line, node->token().column, torf, TY_BOL});
+    }
+
     void CodeGenerator::visitStmt(StmtNode* node){
         if(node->OutStmt() != nullptr) visitOutStmt(node->OutStmt());
         else if(node->VorcStmt() != nullptr) visitVorcStmt(node->VorcStmt());
@@ -143,7 +153,7 @@ namespace eycodegen {
         else if(node->DeleteStmt() != nullptr) visitDelStmt(node->DeleteStmt());
         else if(node->BlockStmt() != nullptr) visitBlockStmt(node->BlockStmt());
         else if(node->InputStmt() != nullptr) visitInputStmt(node->InputStmt());
-        else if(node->RepeatStmt() != nullptr) visitRepeatStmt(node->RepeatStmt());
+        else if(node->WhileStmt() != nullptr) visitWhileStmt(node->WhileStmt());
         else if(node->IfStmt() != nullptr) visitIfStmt(node->IfStmt());
     } 
 
@@ -295,15 +305,22 @@ namespace eycodegen {
         }
     }
 
-    void CodeGenerator::visitRepeatStmt(RepeatStmtNode* node){
-        if(node->Times()->toString().find("string") == node->Times()->toString().npos){
-            visitAddExpr(node->Times());
-            instructions.push_back(Instruction{Instruction::OSREPEAT, node->RepeatMark()->token().line, node->RepeatMark()->token().column, 0, 0});
-            visitBlockStmt(node->Block());
+    void CodeGenerator::visitWhileStmt(WhileStmtNode* node){
+        log((string)"begin");
+        instructions.push_back(Instruction{Instruction::OSWHILE, 0, 0, 0, 0});
+        log((string)"ready");
+        if(node->Cond()->toString().find("NotBoolExpr") != node->Cond()->toString().npos){
+            log((string)"yes");
+            visitNotBoolExpr(node->Cond()->NotBoolExpr());
         }
-        else{
-            throw (string)"must put a 'Number' value here";
+        else if(node->Cond()->toString().find("BoolExpr") != node->Cond()->toString().npos){
+            log((string)"yes");
+            visitBoolExpr(node->Cond()->BoolExpr());
         }
+
+        instructions.push_back(Instruction{Instruction::GOTO_WITHCOND, node->WhileMark()->token().line, node->WhileMark()->token().column, "WHILE_STMT_ISPASS", 0, 0, true});
+        visitBlockStmt(node->Block());
+        instructions.push_back(Instruction{Instruction::GOTO_WITHCOND, node->WhileMark()->token().line, node->WhileMark()->token().column, "WHILE_STMT_BACK", 0, 0, true});
     }
 
     void CodeGenerator::visitIfStmt(IfStmtNode* node){

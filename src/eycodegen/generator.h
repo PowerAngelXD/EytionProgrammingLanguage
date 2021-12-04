@@ -28,12 +28,13 @@ namespace eycodegen {
         void visitBoolExpr(BoolExprNode* node);
         void visitNotBoolExpr(NotBoolExprNode* node);
         void visitString(TokenNode* node);
+        void visitCBool(TokenNode* node);
         void visitOutStmt(OutStmtNode* node);
         void visitVorcStmt(VorcStmtNode* node);
         void visitAssignStmt(AssignStmtNode* node);
         void visitDelStmt(DeleteStmtNode* node);
         void visitInputStmt(InputStmtNode* node);
-        void visitRepeatStmt(RepeatStmtNode* node);
+        void visitWhileStmt(WhileStmtNode* node);
         void visitIfStmt(IfStmtNode* node);
         void visitBlockStmt(BlockStmtNode* node);
         void visitStmt(StmtNode* node);
