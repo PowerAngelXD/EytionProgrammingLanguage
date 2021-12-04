@@ -191,7 +191,7 @@ Token Lexer::Sign() { //符号
 }
 
 namespace _InnerUtil {
-    std::string keywordTable[] = {"out", "input", "var", "delete", "int", "deci", "string", "bool"};
+    std::string keywordTable[] = {"false", "true", "out", "input", "if", "while", "var", "delete", "int", "deci", "string", "bool"};
     // 字典树
     struct TrieNode {
         bool isEnd = false;
