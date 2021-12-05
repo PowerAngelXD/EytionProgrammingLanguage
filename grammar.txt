@@ -20,4 +20,6 @@ VorcStmt->("var"|"const)" "<"type">"iden "=" (value | value_expr) ";"
 AssignStmt->iden "=" (value | value_expr) ";"
 DeleteStmt->"delete" iden ";"
 InputStmt->"input" "(" content ")" "=>" identifier ";"
+WhileStmt->"while" boolExpr | notBoolExpr ":" block
+IfStmt->"if" boolExpr | notBoolExpr ":" block
 BlockStmt->"{" stmts "}"
