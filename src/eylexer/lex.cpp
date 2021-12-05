@@ -72,7 +72,7 @@ string Token::format(){
 Token Lexer::Num() {
     char ch = get();
     std::string str = "";
-    while ((((!input.eof()) && isdigit(ch)) || ch == '.')) {
+    while (((!input.eof()) && isdigit(ch)) || ch == '.') {
         str += ch;
         ch = get();
     }
@@ -191,7 +191,7 @@ Token Lexer::Sign() { //符号
 }
 
 namespace _InnerUtil {
-    std::string keywordTable[] = {"false", "true", "out", "input", "if", "while", "var", "delete", "int", "deci", "string", "bool"};
+    std::string keywordTable[] = {"false", "true", "null", "out", "input", "if", "while", "var", "delete", "int", "deci", "string", "bool"};
     // 字典树
     struct TrieNode {
         bool isEnd = false;
@@ -254,15 +254,15 @@ Token Lexer::Start() {
         return {"eof", Symbol::Eof, line, column};
     }
     char ch = get();
-    if (ch == '0') { //以0开头，可能是8进制或16进制数
+    if (ch >= '0' && ch <= '9') { //以0-9开头，必定为10进制数
+        put(ch);
+        return Num();
+    }
+    else if (ch == '0') { //以0开头，可能是8进制或16进制数
         Token t = OctHex();
         std::string content = "";
         content += ch;
         return {content + t.content, t.symbol, line, column};
-    }
-    else if (ch >= '1' && ch <= '9') { //以1-9开头，必定为10进制数
-        put(ch);
-        return Num();
     }
     else if (ch == '\"'){
         //put(ch);
