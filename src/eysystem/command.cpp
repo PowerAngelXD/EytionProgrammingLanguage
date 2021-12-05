@@ -16,19 +16,19 @@ void cmdrun(string argv){
     gen.visitStat(stat);
     eyexec::Executer eysysenv;
 
-    // log((string)"log for stat:");
-    // log(stat->toString());
-    // if(efig.IsDebug == true && efig.DebugMode.lex_TokenGroupMsg == true){
-    //     log((string)"because you turned on the debug mode, now show some debug details");
-    //     log((string)"log for tokens:");
-    //     for(auto tok : tokens) {
-    //         log(tok.format());
-    //     }
-    // }
-    // if (efig.IsDebug == true && efig.DebugMode.ast_StatMsg == true){
-    //     log((string)"log for stat:");
-    //     log(stat->toString());
-    // }
+    log((string)"log for stat:");
+    log(stat->toString());
+    if(efig.IsDebug == true && efig.DebugMode.lex_TokenGroupMsg == true){
+        log((string)"because you turned on the debug mode, now show some debug details");
+        log((string)"log for tokens:");
+        for(auto tok : tokens) {
+            log(tok.format());
+        }
+    }
+    if (efig.IsDebug == true && efig.DebugMode.ast_StatMsg == true){
+        log((string)"log for stat:");
+        log(stat->toString());
+    }
 
     eysysenv.setInstructions(gen.instructions);
     eysysenv.getEnvironment().ConstantPool = gen.ConstantPool;
@@ -43,6 +43,7 @@ void cmdview(string argv){
     cout<<_FONT_YELLOW<<"file["<<argv<<".ey] content:\n"<<_FONT_GREEN<<content<<_NORMAL<<endl;
 }
 void cmdinfo(string argv){
+    string path = getenv("EY");
     cout<<"Eytion Language"<<_FONT_GREEN<<endl;
     cout<<"------------                                 "<<endl;
     cout<<"--                                             "<<endl;
@@ -59,16 +60,17 @@ void cmdinfo(string argv){
     cout<<"                //                   "<<_NORMAL<<endl;
     cout<<"Copyright (c)CodeAreaDevTeam, XtherDevTeam, PowerAngelXD"<<endl;
     cout<<"License: MIT"<<endl;
-    ifstream file("./data/docs/License");
+    ifstream file(path + "/data/docs/License");
     istreambuf_iterator<char> begin(file);
     istreambuf_iterator<char> end;
     string content(begin, end);
     cout<<"License content:"<<endl;
     cout<<_FONT_GREEN<<content<<_NORMAL<<endl;
-    cout<<"now version: v0.1.33-alpha-20211030"<<endl;
+    cout<<"now version: v0.1.34-alpha-20211030"<<endl;
 }
 void cmdhelp(string argv){
-    ifstream file("./data/docs/help.txt");
+    string path = getenv("EY");
+    ifstream file(path + "/data/docs/help.txt");
     istreambuf_iterator<char> begin(file);
     istreambuf_iterator<char> end;
     string content(begin, end);
@@ -125,7 +127,7 @@ void eysys::run(std::string text){
         catch(std::string e){cout<<_FONT_YELLOW<<"\nEytionScript has some error:\n    "<<_FONT_RED<<e<<_NORMAL<<endl;}
         catch(std::logic_error e){}
         catch(eexcp::EyparseError eyerr){
-            cout<<_FONT_RED<<_BG_WHITE<<"\n"<<eyerr.what()<<_NORMAL<<endl;
+            cout<<_FONT_YELLOW<<"\nEytionScript has some error:\n    "<<_FONT_RED<<eyerr.what()<<_NORMAL<<endl;
         }
     }
 }
