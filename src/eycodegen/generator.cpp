@@ -222,7 +222,7 @@ namespace eycodegen {
                 }
                 else {throw "you tried to declare an bool quantity, but the value you specified does not correspond to it";}
             }
-            else {throw "you tried to declare an string quantity, but the value you specified does not correspond to it";}
+            else {throw "it is not a right type";}
             instructions.push_back(Instruction{Instruction::DEFINE_VORC, node->VarMark()->token().line, node->VarMark()->token().column, 
             node->IdenName()->token().content, op_value_type, op_type, true});
         }
@@ -261,7 +261,7 @@ namespace eycodegen {
                 }
                 else {throw "you tried to declare an bool quantity, but the value you specified does not correspond to it";}
             }
-            else {throw "you tried to declare an string quantity, but the value you specified does not correspond to it";}
+            else {throw "it is not a right type";}
             instructions.push_back(Instruction{Instruction::DEFINE_VORC, node->ConstMark()->token().line, node->ConstMark()->token().column, 
             node->IdenName()->token().content, op_value_type, op_type, false});
         }
@@ -306,15 +306,11 @@ namespace eycodegen {
     }
 
     void CodeGenerator::visitWhileStmt(WhileStmtNode* node){
-        log((string)"begin");
         instructions.push_back(Instruction{Instruction::OSWHILE, 0, 0, 0, 0});
-        log((string)"ready");
         if(node->Cond()->toString().find("NotBoolExpr") != node->Cond()->toString().npos){
-            log((string)"yes");
             visitNotBoolExpr(node->Cond()->NotBoolExpr());
         }
         else if(node->Cond()->toString().find("BoolExpr") != node->Cond()->toString().npos){
-            log((string)"yes");
             visitBoolExpr(node->Cond()->BoolExpr());
         }
 
