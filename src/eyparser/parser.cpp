@@ -454,10 +454,10 @@ VorcStmtNode* Parser::VorcStmt(){
 
     if(IsBoolExpr()) {node->_Expr = Expr();}
     else if(IsAddExpr()) {node->_Expr = Expr();}
-    else if((IsAddExpr() || (peek().symbol == eylex::Symbol::EQ))) {throw EyparseError("SymbolError", "expect '=' behind the identifier", line, col);}
+    else if((IsExpr() || (peek().symbol == eylex::Symbol::EQ))) throw EyparseError("SymbolError", "expect '=' behind the identifier", line, col);
 
     if(peek().content == ";") {node->_EndMark = token();}
-    //else {throw EyparseError("SymbolError", "expect ';'", line ,col);}
+    else {throw EyparseError("SymbolError", "expect ';'", line ,col);}
 
     return node;
 }
