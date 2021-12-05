@@ -6,7 +6,8 @@ using namespace osstd;
 
 namespace eytype{
     enum EybType{
-        Integer = 0,
+        NullType = -1,
+        Integer,
         Decimal,
         String,
         Bool
