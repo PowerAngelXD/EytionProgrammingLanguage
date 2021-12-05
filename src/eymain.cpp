@@ -24,7 +24,7 @@ int main(int argc, char *argv[]){
             system("pause");
         }
         else if(strcmp(argv[1], "-v") == 0){
-            cout<<"now eytion version: alpha-0.1.34"<<endl;
+            cout<<"now eytion version: alpha-0.1.45"<<endl;
         }
         else{
             cout<<"command error   not a right argument for eytion"<<endl;

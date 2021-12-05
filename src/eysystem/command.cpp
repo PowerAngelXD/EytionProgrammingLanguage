@@ -66,7 +66,7 @@ void cmdinfo(string argv){
     string content(begin, end);
     cout<<"License content:"<<endl;
     cout<<_FONT_GREEN<<content<<_NORMAL<<endl;
-    cout<<"now version: v0.1.34-alpha-20211030"<<endl;
+    cout<<"now version: v0.1.45-alpha-20211205"<<endl;
 }
 void cmdhelp(string argv){
     string path = getenv("EY");
@@ -91,7 +91,7 @@ void eysys::run(std::string text){
     efig = read.Get();
     std::cout<<_FONT_BLUE<<"build date: "<<_FONT_GREEN<<__DATE__<<endl;
     cout<<_NORMAL;
-    cout<<"Eytion [Shell | "<<_FONT_RED<<"Informal version"<<_NORMAL<<"]"<<endl;
+    cout<<"Eytion [Shell]"<<endl;
     cout<<"You can enter 'help' to get console help"<<endl;
     while(true){
         try{
