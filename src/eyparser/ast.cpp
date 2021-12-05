@@ -280,10 +280,18 @@ TokenNode* VorcStmtNode::IdenName(){return _IdenName;}
 TokenNode* VorcStmtNode::Equ(){return _Equ;}
 ExprNode* VorcStmtNode::Expr(){return _Expr;}
 std::string VorcStmtNode::toString(){
-    if (this->_VarMark != nullptr)
-        return "VorcStmt(var):{" + this->_VarMark->toString() + ",Type:" + this->_Type->toString() + "," + this->_IdenName->toString() + "," + this->_Equ->toString() + "," + this->_Expr->toString() + "}";
-    else
-        return "VorcStmt(const):{" + this->_ConstMark->toString() + ",Type:" + this->_Type->toString() + "," + this->_IdenName->toString() + "," + this->_Equ->toString() + "," + this->_Expr->toString() + "}";
+    if(this->_Expr == nullptr) {
+        if (this->_VarMark != nullptr)
+            return "VorcStmt(var):{" + this->_VarMark->toString() + ",Type:" + this->_Type->toString() + "," + this->_IdenName->toString() + "}";
+        else
+            return "VorcStmt(const):{" + this->_ConstMark->toString() + ",Type:" + this->_Type->toString() + "," + this->_IdenName->toString() + "}";
+    }
+    else {
+        if (this->_VarMark != nullptr)
+            return "VorcStmt(var):{" + this->_VarMark->toString() + ",Type:" + this->_Type->toString() + "," + this->_IdenName->toString() + "," + this->_Equ->toString() + "," + this->_Expr->toString() + "}";
+        else
+            return "VorcStmt(const):{" + this->_ConstMark->toString() + ",Type:" + this->_Type->toString() + "," + this->_IdenName->toString() + "," + this->_Equ->toString() + "," + this->_Expr->toString() + "}";
+    }
 }
 
 //AssignStmt Part

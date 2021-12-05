@@ -222,7 +222,7 @@ namespace eyast {
         TokenNode* _IdenName;
         TokenNode* _Equ;
 
-        ExprNode* _Expr;
+        ExprNode* _Expr = nullptr;
 
         TokenNode* _EndMark;
 
