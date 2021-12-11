@@ -7,7 +7,7 @@ using namespace econfig;
 EyConfig efig;
 
 void cmdrun(string argv){
-    ifstream file(argv + ".ey");
+    ifstream file(argv);
     eylex::Lexer lexer(file);
     auto tokens = lexer.getTokenGroup();
     eyparser::Parser p(tokens);
@@ -36,11 +36,11 @@ void cmdrun(string argv){
     eysysenv.run();
 }
 void cmdview(string argv){
-    ifstream file(argv + ".ey");
+    ifstream file(argv);
     istreambuf_iterator<char> begin(file);
     istreambuf_iterator<char> end;
     string content(begin, end);
-    cout<<_FONT_YELLOW<<"file["<<argv<<".ey] content:\n"<<_FONT_GREEN<<content<<_NORMAL<<endl;
+    cout<<_FONT_YELLOW<<"file["<<argv<<"] content:\n"<<_FONT_GREEN<<content<<_NORMAL<<endl;
 }
 void cmdinfo(string argv){
     string path = getenv("EY");
