@@ -13,30 +13,32 @@ You can select a language to read development documents
 
 ## Grammar  
 Eytion is a lightweight interpretation language that currently supports the following syntax:  
-> primExpr->Number|(addExpr);  
-> mulExpr->primExpr (mulOperator primExpr)*  
-> mulOperator-> "*"|"/"|"%""  
-> addExpr->mulExpr (addOperator mulExpr)*  
-> addOperator->"+"|"-""  
->   
-> cmpOp->'=='|'!='|'>'|'<'|'>='|'<='  
-> cmpExpr->addExpr (cmpOp addExpr)*  
-> boolOp->'&' | '|' | '&&' | '||'  
-> boolExpr->cmpExpr (boolOp cmpExpr) 
-> notExpr->'!' boolExpr  
-> primExpr->number|string|'('expr')'  
->   
-> expr->addExpr | boolExpr | notExpr  
-> stmt->outStmt  
-> stat->stmt*  
->   
-> OutStmt->"out" addExpr ";"  
-> VorcStmt->("var"|"const)" "<"type">"iden "=" (value | value_expr) ";"  
-> AssignStmt->iden "=" (value | value_expr) ";"  
-> DeleteStmt->"delete" iden ";"  
-> BlockStmt->"{" stmts "}"  
-> InputStmt->"input" "(" content ")" "=>" identifier ";"  
-> 
+```
+mulExpr->primExpr (mulOperator primExpr)*
+mulOperator-> "*"|"/"|"%""
+addExpr->mulExpr (addOperator mulExpr)*
+addOperator->"+"|"-""
+
+cmpOp->'=='|'!='|'>'|'<'|'>='|'<='
+cmpExpr->addExpr (cmpOp addExpr)
+boolOp->'&&' | '||'
+boolExpr->cmpExpr (boolOp cmpExpr)*
+notExpr->'!'* boolExpr
+primExpr->number|string|'('expr')'
+
+expr->notExpr
+stmt->outStmt
+stat->stmt*
+
+OutStmt->"out" addExpr ";"
+VorcStmt->("var"|"const)" "<"type">"iden "=" (value | value_expr) ";"
+AssignStmt->iden "=" (value | value_expr) ";"
+DeleteStmt->"delete" iden ";"
+InputStmt->"input" "(" content ")" "=>" identifier ";"
+WhileStmt->"while" boolExpr | notBoolExpr ":" block
+IfStmt->"if" boolExpr | notBoolExpr ":" block
+BlockStmt->"{" stmts "}"
+```
 More syntax waiting to be updated  
   
 ---  
