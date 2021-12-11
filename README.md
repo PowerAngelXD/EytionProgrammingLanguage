@@ -1,5 +1,5 @@
 # EytionLang -- an programming language
-[![https://img.shields.io/badge/Eytion-v0.1.34Alpha-red](https://img.shields.io/badge/Eytion-v0.1.34Alpha-red)]()
+[![https://img.shields.io/badge/Eytion-v0.1.45Alpha-red](https://img.shields.io/badge/Eytion-v0.1.45Alpha-red)]()
 [![https://img.shields.io/badge/Platform-Windows-blue](https://img.shields.io/badge/Platform-Windows-blue)]()
 [![https://img.shields.io/badge/License-MIT-green](https://img.shields.io/badge/License-MIT-green)]()  
 ***Tip: all documents are translated through translation software. If there is anything inappropriate, please give feedback***  
@@ -10,7 +10,8 @@ You can select a language to read development documents
 [EnglishDevelopDocument](doc/en-us.md)  
   
 ---
- 
+
+## Grammar  
 Eytion is a lightweight interpretation language that currently supports the following syntax:  
 > primExpr->Number|(addExpr);  
 > mulExpr->primExpr (mulOperator primExpr)*  
@@ -40,7 +41,7 @@ More syntax waiting to be updated
   
 ---  
 
-***Install***  
+## Install  
   
 You can use the following command to get your first compilation:  
 ```
@@ -52,7 +53,7 @@ cmake --build build
 ```  
 
 ---
-***Project Preview***  
+## Project Preview  
   
 The following files are available in Eyton's project directory(only src):  
 ```
@@ -113,7 +114,7 @@ Next, briefly describe the functions of all the first level subfolders and inter
 
 ---
 
-***Run .ey files***  
+## Run .ey files  
 ```
 eytion -f file.ey
 ```  
@@ -126,7 +127,7 @@ run file.ey
 ```
 
 ---
-***Examples***  
+## Examples    
 > HelloWorld
 ```go
 out "Hello, World!";
