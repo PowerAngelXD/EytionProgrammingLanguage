@@ -31,10 +31,22 @@ bool EyValue::getValueAsBool(){
     return *bool_value;
 }
 
-int EyValue::getArrayValueAsInt() {}
-float EyValue::getArrayValueAsDecimal() {}
-std::string EyValue::getArrayValueAsString() {}
-bool EyValue::getArrayValueAsBool() {}
+int EyValue::getArrayValueAsInt() {
+    chkty(Integer);
+    return array_int_value->at(apoint);
+}
+float EyValue::getArrayValueAsDecimal() {
+    chkty(Decimal);
+    return array_decimal_value->at(apoint);
+}
+std::string EyValue::getArrayValueAsString() {
+    chkty(String);
+    return array_string_value->at(apoint);
+}
+bool EyValue::getArrayValueAsBool() {
+    chkty(Bool);
+    return array_bool_value->at(apoint);
+}
 
 void EyValue::setValue(int value) {
     if(isconst != false){
@@ -65,10 +77,27 @@ void EyValue::setValue(bool value){
     else{throw "Cannot assign a value to a constant";}
 }
 
+void EyValue::setArrayValue(int value) {
+    chkty(Integer);
+    array_int_value->at(apoint) = value;   
+}
+void EyValue::setArrayValue(float value) {
+    chkty(Decimal);
+    array_decimal_value->at(apoint) = value;   
+}
+void EyValue::setArrayValue(std::string value) {
+    chkty(String);
+    array_string_value->at(apoint) = value;   
+}
+void EyValue::setArrayValue(bool value) {
+    chkty(Bool);
+    array_bool_value->at(apoint) = value;   
+}
+
+void EyValue::setApoint(int p) {apoint = p;}
 eytype::EybType EyValue::getType() {
     return type;
 }
-
 bool EyValue::getConst(){
     return isconst;
 }
