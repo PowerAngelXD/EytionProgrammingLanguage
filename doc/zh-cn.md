@@ -56,7 +56,7 @@ src
 该文件是方便开发过程中所创建的文件，引用了很多的头文件，并且自带一些方便的函数，，它的命名空间为``osstd``，下面教您如何使用它里面的函数和宏：
 如果您要引用该库，您应该这样做：
 ```C++
-#influde "src/osstd.h"
+#include "src/osstd.h"
 using namespace osstd; // 如果为了方便，您可以引用该命名空间
 ```
 下面，介绍几个库中常用的函数/宏
@@ -89,7 +89,7 @@ std::vector<std::string> split(const std::string &str, const std::string &patter
 字符串分割函数，只能用于字符串当中，按照某个字符把整个字符串分割成一个vector；其中参数``pattern``是’需要按照哪种字符进行分割‘  
 示例：
 ```C++
-#influde "src/osstd.h"
+#include "src/osstd.h"
 int main(){
     string str = "1,2,345,6,7,89";
     std::vector<std::string> list = osstd::split(str, ','); // 按照逗号分割

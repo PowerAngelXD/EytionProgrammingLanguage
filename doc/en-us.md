@@ -55,7 +55,7 @@ Next, briefly describe the functions of all the first level subfolders and inter
 1，file ``osstd``  
 This file is a file created during the development process. It references a lot of header files and comes with some convenient functions. Its namespace is `` osstd ``. Here is how to use its functions and macros:
 ```C++
-#influde "src/osstd.h"
+#include "src/osstd.h"
 using namespace osstd; // You can refer to this namespace for convenience
 ```
 Next, several functions / macros commonly used in libraries are introduced
@@ -87,7 +87,7 @@ std::vector<std::string> split(const std::string &str, const std::string &patter
 ```
 String segmentation function, which can only be used in strings, divides the whole string into a vector according to a character; Where the parameter `` pattern `` yes' is the character to be divided according to‘
 ```C++
-#influde "src/osstd.h"
+#include "src/osstd.h"
 int main(){
     string str = "1,2,345,6,7,89";
     std::vector<std::string> list = osstd::split(str, ','); // Separated by commas
