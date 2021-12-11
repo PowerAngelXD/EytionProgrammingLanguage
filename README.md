@@ -43,9 +43,13 @@ More syntax waiting to be updated
 ***Install***  
   
 You can use the following command to get your first compilation:  
-```cmake --build```  
+```
+cmake --build
+```  
 In subsequent compilation, you should use the following commands:  
-```cmake --build build```  
+```
+cmake --build build
+```  
 
 ---
 ***Project Preview***  
@@ -110,10 +114,16 @@ Next, briefly describe the functions of all the first level subfolders and inter
 ---
 
 ***Run .ey files***  
-```eytion -f file.ey```  
+```
+eytion -f file.ey
+```  
 *or*  
-```eytion -shell```  
-```run file.ey```
+```
+eytion -shell
+```  
+```
+run file.ey
+```
 
 ---
 ***Examples***  
