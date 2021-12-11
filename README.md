@@ -1,18 +1,17 @@
 # EytionLang -- an programming language
-![https://img.shields.io/badge/Eytion-v0.1.34Alpha-red](https://img.shields.io/badge/Eytion-v0.1.34Alpha-red)
-![https://img.shields.io/badge/Copyright\(c\)-CodeAreaDevelopTeam-blue](https://img.shields.io/badge/Copyright\(c\)-CodeAreaDevelopTeam-blue)
-![https://img.shields.io/badge/Copyright\(c\)-XtherDevTeam-blue](https://img.shields.io/badge/Copyright\(c\)-XtherDevTeam-blue)
-![https://img.shields.io/badge/License-MIT-green](https://img.shields.io/badge/License-MIT-green)  
-***提示，所有文档都是通过翻译软件翻译而成，如有不妥当之处欢迎反馈***  
-***当前版本并不是稳定版本，如果您想要使用eytion，请下载release中的最新版本，开源代码仅供学习交流使用，不推荐日常生活使用***  
+[![https://img.shields.io/badge/Eytion-v0.1.34Alpha-red](https://img.shields.io/badge/Eytion-v0.1.34Alpha-red)]()
+[![https://img.shields.io/badge/Platform-Windows-blue](https://img.shields.io/badge/Platform-Windows-blue)]()
+[![https://img.shields.io/badge/License-MIT-green](https://img.shields.io/badge/License-MIT-green)]()  
+***Tip: all documents are translated through translation software. If there is anything inappropriate, please give feedback***  
+***The current version is not a stable version. If you want to use eytion, please download the latest version in the release. The open source code is only for learning and communication. It is not recommended to use it in daily life***  
 
-您可以选择一个语言进行阅读开发文档  
+You can select a language to read development documents  
 [简体中文开发文档](doc/zh-cn.md)  
 [EnglishDevelopDocument](doc/en-us.md)  
   
 ---
  
-Eytion是一个轻量级的解释语言，目前它支持以下语法:    
+Eytion is a lightweight interpretation language that currently supports the following syntax:  
 > primExpr->Number|(addExpr);  
 > mulExpr->primExpr (mulOperator primExpr)*  
 > mulOperator-> "*"|"/"|"%""  
@@ -37,33 +36,140 @@ Eytion是一个轻量级的解释语言，目前它支持以下语法:
 > BlockStmt->"{" stmts "}"  
 > InputStmt->"input" "(" content ")" "=>" identifier ";"  
 > 
-更多的语法等待更新  
+More syntax waiting to be updated  
   
 ---  
+
+***Install***  
   
-如果您想写一个eytion程序，务必看看这个:  
-***eytion程序的注意事项***
-|事项|说明|
-|:---:|:---:|
-|配置文件|eytion的全局配置文件的路径为.\settings\eyconfig.json|  
+You can use the following command to get your first compilation:  
+```cmake --build```  
+In subsequent compilation, you should use the following commands:  
+```cmake --build build```  
+
+---
+***Project Preview***  
   
-***eytion关键字(以当前版本为准)***
-|关键字|用途|关键字|用途|
-|:---:|:---:|:---:|:---:|
-|***out***|输出内容|***var***|声明变量|
-|***delete***|删除标识符|***const***|声明常量|
-|***input***|输入内容||
-|***int***|整型|***string***|字符串|
-|***deci***|小数|***bool***|布尔|
+The following files are available in Eyton's project directory(only src):  
+```
+SRC
+│  eymain.cpp
+│  osstd.cpp
+│  osstd.h
+│
+├─eexception
+│      eexcp.cpp
+│      eexcp.h
+│
+├─ey
+│  ├─scope
+│  │      eyscope.cpp
+│  │      eyscope.h
+│  │
+│  └─value
+│          eytype.cpp
+│          eytype.h
+│          eyvalue.cpp
+│          eyvalue.h
+│
+├─eycodegen
+│      generator.cpp
+│      generator.h
+│
+├─eyexec
+│      executer.cpp
+│      executer.h
+│
+├─eylexer
+│      lex.cpp
+│      lex.h
+│
+├─eyparser
+│      ast.cpp
+│      ast.h
+│      parser.cpp
+│      parser.h
+│
+└─eysystem
+        command.cpp
+        command.h
+        econfig.cpp
+        econfig.h
+```  
+Next, briefly describe the functions of all the first level subfolders and internal files under the SRC directory
+|Folder name|Important sub files|Role of folders and important sub files|
+|:---:|:---:|:---:|
+|***eysystem***|econfig.* and ***command.****|Eyton's shell and configuration system are implemented here. Econfig is the configuration file implementation and command is the shell implementation|
+|***eylexer***|lex.*|The lexer of eytion is implemented here|
+|***eyparser***|parser.*|The parser of eytion is implemented here|
+|***eycodegen***|generator.*|The intermediate code generator for eytion is implemented here|
+|***eyexec***|executer.*|Eyton's running code system|
+|***eexception***|eexcp.*|Eyton's abnormal system|
+|***ey***|value/eyvalue.* scope/eyscope.*|Eytion language content implementation part, variable / constant system in value folder, scope scope scope and code block system|
+
+---
+
+***Run .ey files***  
+```eytion -f file.ey```  
+*or*  
+```eytion -shell```  
+```run file.ey```
+
+---
+***Examples***  
+> HelloWorld
+```go
+out "Hello, World!";
+```  
+  
+> variable/constant  
+```go
+var <string> str = "eytion";
+var <int> n1 = 2;
+var <deci> n2 = 1.5;
+out str;
+str = "test";
+const <deci> number = n1 + n2;
+out number;
+out str;
+```  
+  
+> input  
+```go
+var <string> str = " ";
+input("please input: ")=>str;
+out str;
+```
+
+> if  
+```go
+var <string> str = " ";
+input("please input: ")=>str;
+if str == "hello world!":{
+    out "hello!!!!!!";
+}
+```
+
+> while
+```go
+var <int> i = 0;
+var <string> str = " ";
+input("please input: ")=>str;
+while i == 5:{
+    out str;
+    i = i + 1;
+}
+```
+
 ---
   
-感谢下列人员为本项目提供支持(均为网名):
+Thank the following people for their support for this project:  
 > theflysong  
 > xiaokang00010
 
 ---  
   
-本项目所使用的第三方库:    
+Third party libraries used in the project:  
 > CJsonObject (by Bwar)[CJsonObject](https://github.com/Bwar/CJsonObject)
 
 ---
