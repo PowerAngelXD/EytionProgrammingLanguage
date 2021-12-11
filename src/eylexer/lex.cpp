@@ -27,6 +27,10 @@ std::string eylex::toString(Symbol symbol) {
         return "leftparen";
     case Symbol::RightParen:
         return "rightparen";
+    case Symbol::GT:
+        return "GT";
+    case Symbol::LT:
+        return "LT";
     case Symbol::KeyWord:
         return "keyword";
     case Symbol::Identifier:
@@ -312,6 +316,8 @@ Token Lexer::Start() {
             return {":", Symbol::Colon, line, column}; //符号
         case ';':
             return {";", Symbol::EndMark, line, column};
+        case ',':
+            return {";", Symbol::Comma, line, column};
         case '=':
         case '>':
         case '<':
