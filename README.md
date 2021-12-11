@@ -40,9 +40,6 @@ IfStmt->"if" boolExpr | notBoolExpr ":" block
 BlockStmt->"{" stmts "}"
 ```
 More syntax waiting to be updated  
-  
----  
-
 ## Install  
   
 You can use the following command to get your first compilation:  
@@ -53,8 +50,6 @@ In subsequent compilation, you should use the following commands:
 ```
 cmake --build build
 ```  
-
----
 ## Project Preview  
   
 The following files are available in Eyton's project directory(only src):  
@@ -114,8 +109,6 @@ Next, briefly describe the functions of all the first level subfolders and inter
 |***eexception***|eexcp.*|Eyton's abnormal system|
 |***ey***|value/eyvalue.* scope/eyscope.*|Eytion language content implementation part, variable / constant system in value folder, scope scope scope and code block system|
 
----
-
 ## Run .ey files  
 ```
 eytion -f file.ey
@@ -127,8 +120,6 @@ eytion -shell
 ```
 run file.ey
 ```
-
----
 ## Examples    
 > HelloWorld
 ```go
@@ -173,14 +164,10 @@ while i == 5:{
     i = i + 1;
 }
 ```
-
----
-  
+## Thanks
 Thank the following people for their support for this project:  
 > theflysong  
 > xiaokang00010
-
----  
   
 Third party libraries used in the project:  
 > CJsonObject (by Bwar)[CJsonObject](https://github.com/Bwar/CJsonObject)
