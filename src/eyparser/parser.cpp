@@ -80,10 +80,35 @@ MulOperatorNode* Parser::MulOperator() {
     throw EyparseError("SymbolError", "expect '*', '/' or '%'", line, col);
 }
 
+bool Parser::IsArrayElt() {
+    int line = peek().line;
+    int col = peek().column;
+    if (! IsToken())
+        return false;
+    return input[cur_pos].symbol == Symbol::Identifier && peek(1).content == "[";
+}
+
+ArrayNode* Parser::ArrayElt() {
+    int line = peek().line;
+    int col = peek().column;
+    if(!IsArrayElt())
+        throw EyparseError("SyntaxError", "not a right arrayelement!", line, col);
+    ArrayNode* node = new ArrayNode;
+    node->_Iden = token();
+    node->_Left = token();
+    if(IsAddExpr()) node->_Index = AddExpr();
+    else throw EyparseError("SyntaxError", "index must be a number!", line, col);
+    if(peek().content == "]") node->_Right = token();
+    else throw EyparseError("SyntaxError", "expect ']'", line, col);
+
+    return node;
+}
+
 bool Parser::IsPrimExpr() {
     if (! IsToken())
         return false;
-    return input[cur_pos].symbol == Symbol::Number || input[cur_pos].symbol == Symbol::LeftParen || input[cur_pos].symbol == Symbol::Identifier || input[cur_pos].symbol == Symbol::String;
+    return input[cur_pos].symbol == Symbol::Number || input[cur_pos].symbol == Symbol::LeftParen || input[cur_pos].symbol == Symbol::Identifier || 
+    input[cur_pos].symbol == Symbol::String || input[cur_pos].symbol == Symbol::KeyWord;
 }
 
 PrimExprNode* Parser::PrimExpr() {
@@ -97,8 +122,14 @@ PrimExprNode* Parser::PrimExpr() {
         return node;
     }
     else if (input[cur_pos].symbol == Symbol::Identifier) {
-        node->_Iden = token();
-        return node;
+        if (IsArrayElt()) {
+            node->_ArrayElt = ArrayElt();
+            return node;
+        }
+        else {
+            node->_Iden = token();
+            return node;
+        }
     }
     else if (input[cur_pos].content == "true" || input[cur_pos].content == "false") {
         node->_ConstBool = token();
@@ -326,9 +357,7 @@ OutStmtNode* Parser::OutStmt() {
         throw EyparseError("StmtError", "not out-stmt", line ,col);
     OutStmtNode* node = new OutStmtNode;
     node->_OutMark = token();
-    if(IsBoolExpr()) {node->_Expr = Expr();}
-    else if(IsAddExpr()) node->_Expr = Expr();
-    else if(peek().symbol == Symbol::String) node->_Expr = Expr();
+    if(IsExpr()) {node->_Expr = Expr();}
     else
         throw EyparseError("TypeError", "not avaliable", line ,col);
     if(peek().content == ";"){
@@ -462,6 +491,102 @@ VorcStmtNode* Parser::VorcStmt(){
     return node;
 }
 
+bool Parser::IsArrayDefineStmt(){
+    if (!IsToken()) return false;
+    if(peek().content == "array"){
+        return true;
+    }
+    return false;
+}
+
+ArrayDefineStmtNode* Parser::ArrayDefineStmt(){
+    int line = peek().line;
+    int col = peek().column;
+    if (!IsArrayDefineStmt())
+        throw EyparseError("StmtError", "not array-define-stmt", line ,col);
+    ArrayDefineStmtNode* node = new ArrayDefineStmtNode;
+    node->_ArrayDefineMark = token();
+    {// this is a define-setting part
+        if(peek().symbol == eylex::Symbol::LT) node->_LeftB = token();
+        else {throw EyparseError("SymbolError", "expect '<'", line ,col);}
+
+        if(peek().symbol == eylex::Symbol::LeftBracket) node->_Left = token();
+        else {throw EyparseError("SymbolError", "expect '['", line ,col);}
+
+        if(peek().symbol == eylex::Symbol::Number) node->_Number = token();
+        else {throw EyparseError("SyntaxError", "expect number", line ,col);}
+
+        if(peek().symbol == eylex::Symbol::RightBracket) node->_Right = token();
+        else {throw EyparseError("SymbolError", "expect ']'", line ,col);}
+
+        if(peek().symbol == eylex::Symbol::KeyWord) node->_Type = token();
+        else {throw EyparseError("SyntaxError", "expect a type", line ,col);}
+
+        if(peek().symbol == eylex::Symbol::GT) node->_RightB = token();
+        else {throw EyparseError("SymbolError", "expect '>'", line ,col);}
+
+        if(peek().symbol == eylex::Symbol::Identifier) node->_Iden = token();
+        else {throw EyparseError("SyntaxError", "expect an identifier", line ,col);}
+    }
+    {// this is a init part
+        if(peek().symbol == eylex::Symbol::Assign) node->_Eq = token();
+        else {throw EyparseError("SymbolError", "expect '='", line ,col);}
+        if(peek().symbol == eylex::Symbol::LeftBracket) node->_GroupBegin = token();
+        else {throw EyparseError("SymbolError", "expect '['", line ,col);}
+        if(IsPrimExpr()){
+            node->_Elts.push_back(Expr());
+            while(true) {
+                try {
+                    if (peek().symbol != eylex::Symbol::Comma)
+                        break;
+                    node->_Dots.push_back(token());
+                    node->_Elts.push_back(Expr());
+                }
+                catch (EyparseError e){
+                    cerr<<e.what()<<endl;
+                    delete node;
+                }
+                catch (const char* e) {
+                    std::cerr << e <<std::endl;
+                    delete node;
+                }
+            }
+        }
+        else {throw EyparseError("SyntaxError", "array cannot be null!", line ,col);}
+        if(peek().symbol == eylex::Symbol::RightBracket) node->_GroupEnd = token();
+        else {throw EyparseError("SymbolError", "expect ']'", line ,col);}
+    }
+    if(peek().content == ";") {node->_EndMark = token();}
+    else {throw EyparseError("SymbolError", "expect ';'", line ,col);}
+    return node;
+}
+
+bool Parser::IsArrayAssignStmt(){
+    if (!IsToken()) return false;
+    if(IsArrayElt()){
+        return true;
+    }
+    return false;
+}
+
+AssignArrayElementStmtNode* Parser::ArrayAssignStmt(){
+    int line = peek().line;
+    int col = peek().column;
+    if (!IsArrayAssignStmt())
+        throw EyparseError("StmtError", "not array-assign-stmt", line ,col);
+    AssignArrayElementStmtNode* node = new AssignArrayElementStmtNode;
+
+    node->_ArrayElt = ArrayElt();
+    if(peek().content == "=") node->_Eq = token();
+    else {throw EyparseError("SymbolError", "expect '='", line ,col);}
+    if(IsExpr()) node->_Expr = Expr();
+    else {throw EyparseError("SyntaxError", "expect a value or exprssion", line ,col);}
+    if(peek().content == ";") {node->_EndMark = token();}
+    else {throw EyparseError("SymbolError", "expect ';'", line ,col);}
+
+    return node;
+}
+
 bool Parser::IsAssignStmt() {
     if (!IsToken()) return false;
     if(peek().symbol == eylex::Symbol::Identifier && peek(1).symbol == eylex::Symbol::Assign){
@@ -544,7 +669,7 @@ BlockStmtNode* Parser::BlockStmt(){
 
 bool Parser::IsStmt() {
     if (!IsToken()) return false;
-    return IsOutStmt() || IsVorcStmt() || IsAssignStmt() || IsBlockStmt() || IsDelStmt() || IsInputStmt() || IsWhileStmt() || IsIfStmt();
+    return IsOutStmt() || IsVorcStmt() || IsArrayDefineStmt() || IsArrayAssignStmt() || IsAssignStmt() || IsBlockStmt() || IsDelStmt() || IsInputStmt() || IsWhileStmt() || IsIfStmt();
 }
 
 StmtNode* Parser::Stmt() {
@@ -563,6 +688,14 @@ StmtNode* Parser::Stmt() {
     }
     else if (IsVorcStmt()) {
         stmt->_VorcStmt = VorcStmt();
+        return stmt;
+    }
+    else if (IsArrayDefineStmt()) {
+        stmt->_ArrayDefineStmt = ArrayDefineStmt();
+        return stmt;
+    }
+    else if (IsArrayAssignStmt()) {
+        stmt->_AssignArrayStmt = ArrayAssignStmt();
         return stmt;
     }
     else if (IsAssignStmt()) {

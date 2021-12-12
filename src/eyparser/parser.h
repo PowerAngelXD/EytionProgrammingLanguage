@@ -25,6 +25,8 @@ namespace eyparser{
         MulOperatorNode* MulOperator();
         bool IsAddOperator();
         AddOperatorNode* AddOperator();
+        bool IsArrayElt();
+        ArrayNode* ArrayElt();
         bool IsPrimExpr();
         PrimExprNode* PrimExpr();
         bool IsMulExpr();
@@ -45,6 +47,10 @@ namespace eyparser{
         ExprNode* Expr();
         bool IsOutStmt();
         OutStmtNode* OutStmt();
+        bool IsArrayDefineStmt();
+        ArrayDefineStmtNode* ArrayDefineStmt();
+        bool IsArrayAssignStmt();
+        AssignArrayElementStmtNode* ArrayAssignStmt();
         bool IsVorcStmt();
         VorcStmtNode* VorcStmt();
         bool IsAssignStmt();
