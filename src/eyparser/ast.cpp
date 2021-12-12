@@ -46,6 +46,16 @@ std::string MulOperatorNode::toString() {
     return (std::string)"MulOp: {" + _MulOperator->toString() + "}";
 }
 
+//ArrayElt Part
+TokenNode* ArrayNode::Iden(){return _Iden;}
+TokenNode* ArrayNode::Left(){return _Left;}
+AddExprNode* ArrayNode::Index(){return _Index;}
+TokenNode* ArrayNode::Right(){return _Right;}
+
+string ArrayNode::toString(){
+    return "ArrayNode: {" + _Iden->toString() + ", " + _Left->toString() + ", " + _Index->toString() + ", " + _Right->toString() + "}";
+}
+
 // PrimExprNode Part
 
 PrimExprNode::PrimExprNode() : _Number(0), _Iden(0), _LeftParen(0), _AddExpr(0), _RightParen(0) {};
@@ -70,6 +80,10 @@ TokenNode* PrimExprNode::String() {
     return _String;
 }
 
+ArrayNode* PrimExprNode::ArrayElt() {
+    return _ArrayElt;
+}
+
 TokenNode* PrimExprNode::ConstBool() {
     return _ConstBool;
 }
@@ -88,19 +102,22 @@ TokenNode* PrimExprNode::RightParen() {
 
 std::string PrimExprNode::toString() {
     if (_Number != nullptr) {
-        return (std::string)"PrimExpr:{" + _Number->toString() + "}";
+        return (std::string)"PrimExpr(Number):{" + _Number->toString() + "}";
     }
     else if (_Iden != nullptr) {
-        return (std::string)"PrimExpr:{" + _Iden->toString() + "}";
+        return (std::string)"PrimExpr(Iden):{" + _Iden->toString() + "}";
     }
     else if (_String != nullptr) {
-        return (std::string)"PrimExpr:{" + _String->toString() + "}";
+        return (std::string)"PrimExpr(String):{" + _String->toString() + "}";
     }
     else if (_ConstBool != nullptr) {
-        return (std::string)"PrimExpr:{" + _ConstBool->toString() + "}";
+        return (std::string)"PrimExpr(ConstBool):{" + _ConstBool->toString() + "}";
+    }
+    else if (_ArrayElt != nullptr) {
+        return (std::string)"PrimExpr(ArrayElt):{" + _ArrayElt->toString() + "}";
     }
     else {
-        return (std::string)"PrimExpr:{" + _AddExpr->toString() + "}";
+        return (std::string)"PrimExpr(AddExpr):{" + _AddExpr->toString() + "}";
     }
 }
 
@@ -293,6 +310,43 @@ std::string VorcStmtNode::toString(){
             return "VorcStmt(const):{" + this->_ConstMark->toString() + ",Type:" + this->_Type->toString() + "," + this->_IdenName->toString() + "," + this->_Equ->toString() + "," + this->_Expr->toString() + "}";
     }
 }
+// ArrayDefineStmt Part
+TokenNode* ArrayDefineStmtNode::ArrayDefineMark(){return _ArrayDefineMark;}
+TokenNode *ArrayDefineStmtNode::LeftB() { return _LeftB; }
+TokenNode *ArrayDefineStmtNode::Left() { return _Left; }
+TokenNode *ArrayDefineStmtNode::Number() { return _Number; }
+TokenNode *ArrayDefineStmtNode::Right() { return _Right; }
+TokenNode *ArrayDefineStmtNode::Type() { return _Type; }
+TokenNode *ArrayDefineStmtNode::RightB() { return _RightB; }
+TokenNode *ArrayDefineStmtNode::Iden() { return _Iden; }
+TokenNode *ArrayDefineStmtNode::Eq() { return _Eq; }
+TokenNode *ArrayDefineStmtNode::GroupBegin() { return _GroupBegin; }
+vector<ExprNode*> ArrayDefineStmtNode::Elts() { return _Elts; }
+vector<TokenNode*> ArrayDefineStmtNode::Dots() { return _Dots; }
+TokenNode *ArrayDefineStmtNode::GroupEnd() { return _GroupEnd; }
+TokenNode *ArrayDefineStmtNode::EndMark() { return _EndMark; }
+string ArrayDefineStmtNode::toString() {
+    string content = "ArrayDefineStmt: {";
+    string sub = "defineList:[";
+    for (int i = 0 ; i < _Dots.size() ; i++) {
+        auto op = _Dots[i]->toString();
+        auto op_elt = _Elts[i + 1]->toString();
+        sub += "," + op + "," + op_elt;
+    }
+    content += _ArrayDefineMark->toString() + ", " + 
+                _LeftB->toString() + ", " + _Left->toString() + ", " + _Number->toString() + ", " + _Right->toString() + ", " + _Type->toString() + ", " + _RightB->toString() + ", " + 
+                _Iden->toString() + ", " + _Eq->toString() + ", " + _GroupBegin->toString() + ", " + sub + ", " + _GroupEnd->toString() + ", " + _EndMark->toString();
+    return content;
+}
+
+//ArrayAssign Part
+ArrayNode* AssignArrayElementStmtNode::ArrayElt(){return _ArrayElt;}
+TokenNode* AssignArrayElementStmtNode::Eq(){return _Eq;}
+ExprNode* AssignArrayElementStmtNode::Expr(){return _Expr;}
+TokenNode* AssignArrayElementStmtNode::EndMark(){return _EndMark;}
+string AssignArrayElementStmtNode::toString(){
+    return "ArrayElementAssignStmt: {" + _ArrayElt->toString() + ", " + _Eq->toString() + ", " + _Expr->toString() + ", " + _EndMark->toString() + "}";
+}
 
 //AssignStmt Part
 
@@ -362,6 +416,8 @@ AssignStmtNode* StmtNode::AssignStmt() {return _AssignStmt;}
 BlockStmtNode* StmtNode::BlockStmt(){return _BlockStmt;}
 DeleteStmtNode* StmtNode::DeleteStmt(){return _DeleteStmt;}
 InputStmtNode* StmtNode::InputStmt(){return _InputStmt;}
+ArrayDefineStmtNode* StmtNode::ArrayDefineStmt(){return _ArrayDefineStmt;}
+AssignArrayElementStmtNode* StmtNode::AssignArrayStmt(){return _AssignArrayStmt;}
 WhileStmtNode* StmtNode::WhileStmt(){return _WhileStmt;}
 IfStmtNode* StmtNode::IfStmt(){return _IfStmt;}
 
@@ -372,6 +428,12 @@ std::string StmtNode::toString() {
     }
     else if(_VorcStmt) {
         str += "{" + _VorcStmt->toString() + "}";
+    }
+    else if(_ArrayDefineStmt) {
+        str += "{" + _ArrayDefineStmt->toString() + "}";
+    }
+    else if(_AssignArrayStmt) {
+        str += "{" + _AssignArrayStmt->toString() + "}";
     }
     else if(_AssignStmt) {
         str += "{" + _AssignStmt->toString() + "}";

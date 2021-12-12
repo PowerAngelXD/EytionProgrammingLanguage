@@ -48,11 +48,29 @@ namespace eyast {
         std::string toString();
     };
 
+    // 数组node
+    class ArrayNode {
+    public:
+        TokenNode* _Iden;
+        TokenNode* _Left;
+        AddExprNode* _Index;
+        TokenNode* _Right;
+
+        ArrayNode()=default;
+        TokenNode* Iden();
+        TokenNode* Left();
+        AddExprNode* Index();
+        TokenNode* Right();
+
+        string toString();
+    };
+
     // 粗俗理解：大expr里的子expr，优先级最高
     class PrimExprNode {
     public:
         TokenNode* _Number = nullptr;
         TokenNode* _Iden = nullptr;
+        ArrayNode* _ArrayElt = nullptr;
         TokenNode* _String = nullptr;
         TokenNode* _ConstBool = nullptr;
         TokenNode* _LeftParen;
@@ -64,6 +82,7 @@ namespace eyast {
 
         TokenNode* Number();
         TokenNode* Iden();
+        ArrayNode* ArrayElt();
         TokenNode* String();
         TokenNode* ConstBool();
         TokenNode* LeftParen();
@@ -240,6 +259,57 @@ namespace eyast {
         std::string toString();
         
     };
+    class ArrayDefineStmtNode{
+        // array <[3]string> list = ["1","2","3"];
+    public:
+        TokenNode* _ArrayDefineMark;
+        TokenNode* _LeftB;  // <
+        TokenNode* _Left;   // [
+        TokenNode* _Number;
+        TokenNode* _Right;  // ]
+        TokenNode* _Type;
+        TokenNode* _RightB; // >
+        TokenNode* _Iden;
+        TokenNode* _Eq;
+        TokenNode* _GroupBegin;
+        vector<ExprNode*> _Elts;
+        vector<TokenNode*> _Dots;
+        TokenNode* _GroupEnd;
+        TokenNode* _EndMark;
+
+        ArrayDefineStmtNode()=default;
+        TokenNode* ArrayDefineMark();
+        TokenNode* LeftB();  // <
+        TokenNode* Left();   // [
+        TokenNode* Number();
+        TokenNode* Right();  // ]
+        TokenNode* Type();
+        TokenNode* RightB(); // >
+        TokenNode* Iden();
+        TokenNode* Eq();
+        TokenNode* GroupBegin();
+        vector<ExprNode*> Elts();
+        vector<TokenNode*> Dots();
+        TokenNode* GroupEnd();
+        TokenNode* EndMark();
+        string toString();
+    };
+
+    class AssignArrayElementStmtNode{
+        // list[0] = 1;
+    public:
+        ArrayNode* _ArrayElt;
+        TokenNode* _Eq;
+        ExprNode* _Expr;
+        TokenNode* _EndMark;
+
+        AssignArrayElementStmtNode()=default;
+        ArrayNode* ArrayElt();
+        TokenNode* Eq();
+        ExprNode* Expr();
+        TokenNode* EndMark();
+        string toString();
+    };
 
     // 赋值语句的stmt
     class AssignStmtNode{
@@ -336,6 +406,8 @@ namespace eyast {
     public:
         OutStmtNode* _OutStmt = nullptr;
         VorcStmtNode* _VorcStmt = nullptr;
+        ArrayDefineStmtNode* _ArrayDefineStmt = nullptr;
+        AssignArrayElementStmtNode* _AssignArrayStmt = nullptr;
         AssignStmtNode* _AssignStmt = nullptr;
         BlockStmtNode* _BlockStmt = nullptr;
         DeleteStmtNode* _DeleteStmt = nullptr;
@@ -345,6 +417,8 @@ namespace eyast {
 
         StmtNode()=default;
         OutStmtNode* OutStmt();
+        ArrayDefineStmtNode* ArrayDefineStmt();
+        AssignArrayElementStmtNode* AssignArrayStmt();
         VorcStmtNode* VorcStmt();
         AssignStmtNode* AssignStmt();
         BlockStmtNode* BlockStmt();
