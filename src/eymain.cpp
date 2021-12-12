@@ -11,17 +11,20 @@ using namespace neb;
 using namespace osstd;
 using namespace std;
 int main(int argc, char *argv[]){
-#ifdef __RELEASE
     string env = getenv("EY");
     if(env.empty()){
         cout<<_FONT_RED<<"cannot found the ENVIRONMENT VARIABLE 'EY'"<<_NORMAL<<endl;
         exit(0);
     }
+    econfig::EyConfig efig;
+    econfig::ConfigReader read(env + "/settings/eyconfig.json");
+    efig = read.Get();
+#ifdef __RELEASE
     system("title EytionLang Shell (20211017a-v0.1.45-alpha)");
     if(argc == 2){
         if(strcmp(argv[1], "-shell") == 0){
             string cmd;
-            eysys::run(cmd);
+            eysys::run(cmd, efig);
             system("pause");
         }
         else if(strcmp(argv[1], "-v") == 0){
@@ -39,23 +42,32 @@ int main(int argc, char *argv[]){
                 eylex::Lexer lexer(file);
                 auto tokens = lexer.getTokenGroup();
 
-                #ifdef __INSIDE_DEBUG
-                for(auto tok : tokens){
-                    log(tok.format());
+                if(efig.IsDebug == true && efig.DebugMode.lex_TokenGroupMsg == true){
+                    log((string)"because you turned on the debug mode, now show some debug details");
+                    log((string)"log for tokens:");
+                    for(auto tok : tokens) {
+                        log(tok.format());
+                    }
                 }
-                #endif
 
                 eyparser::Parser p(tokens);
                 auto stat = p.Stat();
 
-                #ifdef __INSIDE_DEBUG
-                log(stat->toString());
-                #endif
+                if (efig.IsDebug == true && efig.DebugMode.ast_StatMsg == true){
+                    log((string)"log for stat:");
+                    log(stat->toString());
+                }
                 
                 eycodegen::CodeGenerator gen;
                 gen.visitStat(stat);
                 eyexec::Executer eysysenv;
                 eysysenv.setInstructions(gen.instructions);
+
+                if (efig.IsDebug == true && efig.DebugMode.ast_StatMsg == true){
+                    log((string)"log for eyexec-instructions:");
+                    log(eysysenv.getEnvironment().toString());
+                }
+
                 eysysenv.getEnvironment().ConstantPool = gen.ConstantPool;
                 eysysenv.run();
             }

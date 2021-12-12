@@ -4,35 +4,34 @@
 using namespace osstd;
 using namespace eysys;
 using namespace econfig;
-EyConfig efig;
+
+econfig::EyConfig _efig;
 
 void cmdrun(string argv){
     ifstream file(argv);
     eylex::Lexer lexer(file);
     auto tokens = lexer.getTokenGroup();
-    eyparser::Parser p(tokens);
-    auto stat = p.Stat();
-    eycodegen::CodeGenerator gen;
-    gen.visitStat(stat);
-    eyexec::Executer eysysenv;
-
-    log((string)"log for stat:");
-    log(stat->toString());
-    if(efig.IsDebug == true && efig.DebugMode.lex_TokenGroupMsg == true){
+    if(_efig.IsDebug == true && _efig.DebugMode.lex_TokenGroupMsg == true){
         log((string)"because you turned on the debug mode, now show some debug details");
         log((string)"log for tokens:");
         for(auto tok : tokens) {
             log(tok.format());
         }
     }
-    if (efig.IsDebug == true && efig.DebugMode.ast_StatMsg == true){
+    eyparser::Parser p(tokens);
+    auto stat = p.Stat();
+    if (_efig.IsDebug == true && _efig.DebugMode.ast_StatMsg == true){
         log((string)"log for stat:");
         log(stat->toString());
     }
-
+    eycodegen::CodeGenerator gen;
+    gen.visitStat(stat);
+    eyexec::Executer eysysenv;
     eysysenv.setInstructions(gen.instructions);
     eysysenv.getEnvironment().ConstantPool = gen.ConstantPool;
-    log(eysysenv.getEnvironment().toString());
+    if (_efig.IsDebug == true && _efig.DebugMode.cgen_OutputGeneratoringCode == true){
+        log(eysysenv.getEnvironment().toString());
+    }
     eysysenv.run();
 }
 void cmdview(string argv){
@@ -86,9 +85,8 @@ eysys::eycommand cmdlist[5] = {eysys::eycommand("run", &cmdrun, true),
                                eysys::eycommand("help", &cmdhelp, true),
                                eysys::eycommand("test", &cmdtest, true)};
 
-void eysys::run(std::string text){
-    ConfigReader read("./settings/eyconfig.json");
-    efig = read.Get();
+void eysys::run(std::string text, econfig::EyConfig fig){
+    _efig = fig;
     std::cout<<_FONT_BLUE<<"build date: "<<_FONT_GREEN<<__DATE__<<endl;
     cout<<_NORMAL;
     cout<<"Eytion [Shell]"<<endl;
@@ -98,7 +96,7 @@ void eysys::run(std::string text){
             cout<<"\ney > ";
             getline(cin, text);
             if(text == "quit" || text == "exit" || text == "q" || text =="e") {
-                if(efig.ExitTip == true){
+                if(_efig.ExitTip == true){
                     cout<<"Do you really want to quit?(You can set it in the settings file in './settings/eyconfig.json' without this prompt)"<<endl;
                     cout<<"[Yes(y)]     [No(n)]"<<endl;
                     if (_getch() == 'y'){

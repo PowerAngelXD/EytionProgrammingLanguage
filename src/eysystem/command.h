@@ -25,7 +25,7 @@ namespace eysys{
         void toggle_active();
     };
 
-    void run(std::string text);
+    void run(std::string text, econfig::EyConfig fig);
 }
 
 #endif
