@@ -7,17 +7,17 @@ using namespace osstd;
 
 namespace eyv{
     class EyValue{
-        union {
+        struct {
             void* value = nullptr;
-            int* int_value;
-            float* decimal_value;
-            std::string* string_value;
-            bool* bool_value;
+            int* int_value = nullptr;
+            float* decimal_value = nullptr;
+            std::string* string_value = nullptr;
+            bool* bool_value = nullptr;
 
-            vector<int>* array_int_value;
-            vector<float>* array_decimal_value;
-            vector<std::string>* array_string_value;
-            vector<bool>* array_bool_value;
+            vector<int>* array_int_value = nullptr;
+            vector<float>* array_decimal_value = nullptr;
+            vector<std::string>* array_string_value = nullptr;
+            vector<bool>* array_bool_value = nullptr;
         };
         int const maxlen;
         int apoint;    // current array element

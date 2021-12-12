@@ -49,28 +49,28 @@ bool EyValue::getArrayValueAsBool() {
 }
 
 void EyValue::setValue(int value) {
-    if(isconst != false){
+    if(isconst == false){
         chkty(Integer);
         *int_value = value;   
     }
     else{throw "Cannot assign a value to a constant";}
 }
 void EyValue::setValue(float value) {
-    if(isconst != false){
+    if(isconst == false){
         chkty(Decimal);
         *decimal_value = value;   
     }
     else{throw "Cannot assign a value to a constant";}
 }
 void EyValue::setValue(std::string value) {
-    if(isconst != false){
+    if(isconst == false){
         chkty(String);
         *string_value = value;   
     }
     else{throw "Cannot assign a value to a constant";}
 }
 void EyValue::setValue(bool value){
-    if(isconst != false){
+    if(isconst == false){
         chkty(Bool);
         *bool_value = value;   
     }
