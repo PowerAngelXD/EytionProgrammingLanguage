@@ -1,4 +1,4 @@
-#include<stdlib.h>
+#include<stdlib.h> // use cmake
 #include "osstd.h"
 #include "eylexer/lex.h"
 #include "eysystem/command.h"
@@ -10,7 +10,13 @@
 using namespace neb;
 using namespace osstd;
 using namespace std;
+void segcontrol(int i){
+    cout<<_FONT_RED<<"Because of some exceptions, eytion stop! code: "<<i<<_NORMAL<<endl;
+    getch();
+}
+
 int main(int argc, char *argv[]){
+    signal(SIGSEGV, segcontrol);
     string env = getenv("EY");
     if(env.empty()){
         cout<<_FONT_RED<<"cannot found the ENVIRONMENT VARIABLE 'EY'"<<_NORMAL<<endl;
@@ -62,12 +68,6 @@ int main(int argc, char *argv[]){
                 gen.visitStat(stat);
                 eyexec::Executer eysysenv;
                 eysysenv.setInstructions(gen.instructions);
-
-                if (efig.IsDebug == true && efig.DebugMode.ast_StatMsg == true){
-                    log((string)"log for eyexec-instructions:");
-                    log(eysysenv.getEnvironment().toString());
-                }
-
                 eysysenv.getEnvironment().ConstantPool = gen.ConstantPool;
                 eysysenv.run();
             }
@@ -85,7 +85,7 @@ int main(int argc, char *argv[]){
 #endif
 #ifdef __DEBUG
     string cmd;
-    eysys::run(cmd);
+    eysys::run(cmd, efig);
     system("pause");
 #endif // DEBUG
     return 0;
