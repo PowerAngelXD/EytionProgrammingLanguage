@@ -7,10 +7,10 @@ EyValue::EyValue(float value, bool isconst) : type(eytype::Decimal), isconst(isc
 EyValue::EyValue(std::string value, bool isconst) : type(eytype::String), isconst(isconst), maxlen(1), apoint(0), isarray(false) {string_value = new std::string(value);}
 EyValue::EyValue(bool value, bool isconst) : type(eytype::Bool), isconst(isconst), maxlen(1), apoint(0), isarray(false) {bool_value = new bool(value);}
 
-EyValue::EyValue(std::vector<int>* value, int max, bool isconst) : type(eytype::Bool), isconst(isconst), maxlen(max), apoint(0), isarray(true) {array_int_value = value;}
-EyValue::EyValue(std::vector<float>* value, int max, bool isconst) : type(eytype::Bool), isconst(isconst), maxlen(max), apoint(0), isarray(true) {array_decimal_value = value;}
-EyValue::EyValue(std::vector<std::string>* value, int max, bool isconst) : type(eytype::Bool), isconst(isconst), maxlen(max), apoint(0), isarray(true) {array_string_value = value;}
-EyValue::EyValue(std::vector<bool>* value, int max, bool isconst) : type(eytype::Bool), isconst(isconst), maxlen(max), apoint(0), isarray(true) {array_bool_value = value;}
+EyValue::EyValue(std::vector<int>* value, int max) : type(eytype::Integer), isconst(false), maxlen(max), apoint(0), isarray(true) {array_int_value = value;}
+EyValue::EyValue(std::vector<float>* value, int max) : type(eytype::Decimal), isconst(false), maxlen(max), apoint(0), isarray(true) {array_decimal_value = value;}
+EyValue::EyValue(std::vector<std::string>* value, int max) : type(eytype::String), isconst(false), maxlen(max), apoint(0), isarray(true) {array_string_value = value;}
+EyValue::EyValue(std::vector<bool>* value, int max) : type(eytype::Bool), isconst(false), maxlen(max), apoint(0), isarray(true) {array_bool_value = value;}
 
 #define chkty(except) if (eytype::except != type) throw "cannot control a not avaliable type value!";
 
@@ -33,19 +33,19 @@ bool EyValue::getValueAsBool(){
 
 int EyValue::getArrayValueAsInt() {
     chkty(Integer);
-    return array_int_value->at(apoint);
+    return (*array_int_value).at(apoint);
 }
 float EyValue::getArrayValueAsDecimal() {
     chkty(Decimal);
-    return array_decimal_value->at(apoint);
+    return (*array_decimal_value).at(apoint);
 }
 std::string EyValue::getArrayValueAsString() {
     chkty(String);
-    return array_string_value->at(apoint);
+    return (*array_string_value).at(apoint);
 }
 bool EyValue::getArrayValueAsBool() {
     chkty(Bool);
-    return array_bool_value->at(apoint);
+    return (*array_bool_value).at(apoint);
 }
 
 void EyValue::setValue(int value) {
@@ -79,24 +79,30 @@ void EyValue::setValue(bool value){
 
 void EyValue::setArrayValue(int value) {
     chkty(Integer);
-    array_int_value->at(apoint) = value;   
+    (*array_int_value)[apoint] = value;
 }
 void EyValue::setArrayValue(float value) {
     chkty(Decimal);
-    array_decimal_value->at(apoint) = value;   
+    (*array_decimal_value)[apoint] = value;
 }
 void EyValue::setArrayValue(std::string value) {
     chkty(String);
-    array_string_value->at(apoint) = value;   
+    (*array_string_value)[apoint] = value;
 }
 void EyValue::setArrayValue(bool value) {
     chkty(Bool);
-    array_bool_value->at(apoint) = value;   
+    (*array_bool_value)[apoint] = value;
 }
 
 void EyValue::setApoint(int p) {apoint = p;}
 eytype::EybType EyValue::getType() {
     return type;
+}
+int EyValue::getApoint(){
+    return apoint;
+}
+bool EyValue::getArray(){
+    return isarray;
 }
 bool EyValue::getConst(){
     return isconst;

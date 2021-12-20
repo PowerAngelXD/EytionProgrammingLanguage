@@ -30,10 +30,10 @@ namespace eyv{
         EyValue(std::string value, bool isconst);
         EyValue(bool value, bool isconst);
 
-        EyValue(vector<int>* value, int max, bool isconst);
-        EyValue(vector<float>* value, int max, bool isconst);
-        EyValue(vector<std::string>* value, int max, bool isconst);
-        EyValue(vector<bool>* value, int max, bool isconst);
+        EyValue(vector<int>* value, int max);
+        EyValue(vector<float>* value, int max);
+        EyValue(vector<std::string>* value, int max);
+        EyValue(vector<bool>* value, int max);
         //~EyValue();
 
         int getValueAsInt();
@@ -57,6 +57,8 @@ namespace eyv{
         void setArrayValue(bool value);
 
         void setApoint(int p);
+        int getApoint();
+        bool getArray();
         bool getConst();
 
         eytype::EybType getType();
