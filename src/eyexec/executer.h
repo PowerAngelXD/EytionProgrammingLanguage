@@ -8,6 +8,15 @@
 #include <iostream>
 #include <string>
 #include <map>
+
+#define TY_NULL 0 //空类型
+#define TY_IMM 1 //立即数
+#define TY_DEC 2 //小数
+#define TY_CON 3 //常量池编号
+#define TY_BOL 4 // bool
+#define TY_ARR 5 //数组
+
+
 using namespace eexcp;
 
 namespace eyexec {
@@ -15,56 +24,66 @@ namespace eyexec {
         __null__,
         __A__, __B__, __C__, __D__, __E__, __F__, __G__,
     };
-    class Instruction {
+    enum Ins {
+        NOP = 0,
+        PUSH,
+        POP,
+        ADD,
+        SUB,
+        MUL,
+        DIV,
+        MOD,
+        //cmp
+        MRET, LEST, // > and <
+        EQ, NEQ, // == and !=
+        MREQT, LEREQT, // >= and <=
+        //bool
+        LAND, LOR, // && and ||
+        NOT, // !
+        STRING,
+        IDEN,
+        OSOUT,
+        OSINPUT,
+        OSWHILE, 
+        DEL,
+        ASSIGN,
+        GOTO, 
+        GOTO_WITHCOND, 
+        SCOPE_BEGIN,
+        SCOPE_END,
+        DEFINE_VORC,
+        DEFINE_ARRAY,
+        ASSIGN_ARRAY,
+    };
+    struct Instruction {
     public:
-        // os 内置命令
-        enum Ins {
-            NOP = 0,
-            PUSH,
-            POP,
-            ADD,
-            SUB,
-            MUL,
-            DIV,
-            MOD,
-            //cmp
-            MRET, LEST, // > and <
-            EQ, NEQ, // == and !=
-            MREQT, LEREQT, // >= and <=
-            //bool
-            LAND, LOR, // && and ||
-            NOT, // !
-            STRING,
-            IDEN,
-            OSOUT,
-            OSINPUT,
-            OSWHILE, 
-            DEL,
-            ASSIGN,
-            GOTO, 
-            GOTO_WITHCOND, 
-            SCOPE_BEGIN,
-            SCOPE_END,
-            DEFINE_VORC
-        };
         Ins ins_type = NOP;
+        int line = 0;
+        int col = 0;
         float op = 0.0;
+        int op_int = 0;
         string op_str = "__null__";
         bool op_bool = false;
-        char op_type = 9;
-        int line, col;
-        Pool p;
-        #define TY_IMM 0 //立即数
-        #define TY_DEC 1 //小数
-        #define TY_CON 2 //常量池编号
-        #define TY_BOL 3 // bool
+        int op_type = 9;
         Instruction()=default;
-        Instruction(Ins ins_type, int l = 0, int c = 0, float op = 0, char op_type = TY_DEC);
-        Instruction(Ins ins_type, int l = 0, int c = 0, string op1 = " ", float op = 0, char op_type = TY_DEC, bool op_bool = false, Pool pp = Pool::__null__);
         string toString();
     };
 
-    std::string to_string(Instruction::Ins ins); 
+    std::string to_string(Instruction ins); 
+    /**
+     * @brief new_ei: Create a eytion inside command
+     * @param itype command type
+     * @param l line
+     * @param c column
+     * @param op float argument
+     * @param opint int argument
+     * @param opstr string argument
+     * @param opbool bool argument
+     * @param opty value type (not command type!!)
+     * 
+     * @return eyexec::Instruction
+     */
+    Instruction new_ei(Ins itype=NOP, int l=0, int c=0, float op=0.0, int opint=0, string opstr="__null__", bool opbool=false, int opty=TY_NULL);
 
     class Executer;
 
