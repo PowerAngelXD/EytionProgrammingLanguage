@@ -1,3 +1,0 @@
-stat:[{stmt:{OutStmt:{keyword:"out",string:""hello world!"",endMark:";"}}},
-{stmt:{OutStmt:{keyword:"out",AddExpr: {MulExpr: {PrimExpr:{number:"1"}},AddOp: {add:"+"},MulExpr: {PrimExpr:{number:"2"}}},endMark:";"}}},
-{stmt:{OutStmt:{keyword:"out",string:""op"",endMark:";"}}},]
