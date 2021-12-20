@@ -317,7 +317,7 @@ Token Lexer::Start() {
         case ';':
             return {";", Symbol::EndMark, line, column};
         case ',':
-            return {";", Symbol::Comma, line, column};
+            return {",", Symbol::Comma, line, column};
         case '=':
         case '>':
         case '<':
