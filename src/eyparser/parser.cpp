@@ -537,7 +537,7 @@ ArrayDefineStmtNode* Parser::ArrayDefineStmt(){
             node->_Elts.push_back(Expr());
             while(true) {
                 try {
-                    if (peek().symbol != eylex::Symbol::Comma)
+                    if (peek().content != ",")
                         break;
                     node->_Dots.push_back(token());
                     node->_Elts.push_back(Expr());
