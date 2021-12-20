@@ -15,6 +15,7 @@
 #include <thread>
 #include <math.h>
 #include <algorithm>
+#include <signal.h>
 #include <ostream>
 #include <iomanip>
 #include <sstream>

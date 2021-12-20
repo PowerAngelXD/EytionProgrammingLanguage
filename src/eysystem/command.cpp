@@ -29,9 +29,6 @@ void cmdrun(string argv){
     eyexec::Executer eysysenv;
     eysysenv.setInstructions(gen.instructions);
     eysysenv.getEnvironment().ConstantPool = gen.ConstantPool;
-    if (_efig.IsDebug == true && _efig.DebugMode.cgen_OutputGeneratoringCode == true){
-        log(eysysenv.getEnvironment().toString());
-    }
     eysysenv.run();
 }
 void cmdview(string argv){
