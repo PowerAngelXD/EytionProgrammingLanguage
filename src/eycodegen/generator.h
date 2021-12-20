@@ -8,6 +8,7 @@ using namespace eyexec;
 using namespace eylex;
 
 namespace eycodegen {
+
     class CodeGenerator {
     public:
         std::vector<Instruction> instructions;
@@ -31,6 +32,8 @@ namespace eycodegen {
         void visitCBool(TokenNode* node);
         void visitOutStmt(OutStmtNode* node);
         void visitVorcStmt(VorcStmtNode* node);
+        void visitArrayDefineStmt(ArrayDefineStmtNode* node);
+        void visitArrayAssignStmt(AssignArrayElementStmtNode* node);
         void visitAssignStmt(AssignStmtNode* node);
         void visitDelStmt(DeleteStmtNode* node);
         void visitInputStmt(InputStmtNode* node);
