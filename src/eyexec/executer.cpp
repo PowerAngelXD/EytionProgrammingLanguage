@@ -1,5 +1,4 @@
 #include "executer.h"
-
 using namespace eyexec;
 
 Instruction eyexec::new_ei(Ins itype, int l, int c, float op, int opint, string opstr, bool opbool, int opty) {
@@ -193,13 +192,13 @@ void Executer::run() {
                     auto current = env.ScopeUnit.ScopeStack.at(env.ScopeUnit.findWhere(ins.op_str)).BoardPool.at(ins.op_str);
                     if(current.getArray() == true){
                         auto aindex = (int)env.pop().second;
+                        if(aindex > current.getLength() - 1) throw EyparseError("[Runtime]ArrayError", "Out of range", ins.line, ins.col);
                         if(current.getType() == eytype::EybType::String) {
-                            current.setApoint(aindex);
+                            current.setApoint(aindex + 1);
                             env.ConstantPool.push_back(current.getArrayValueAsString());
                             env.push(Environment::runit(Environment::ValueType::STRING, env.ConstantPool.size()-1));
-
                             if(env.instructions.at(pos + 1).ins_type == Ins::OSOUT){
-                                cout<<current.getValueAsString();
+                                cout<<current.getArrayValueAsString();
                                 pos += 1;
                             }
                         }
@@ -478,6 +477,12 @@ void Executer::run() {
                         value_string.push_back(env.ConstantPool[env.pop().second]);
                     }
                     reverse(value_string.begin(), value_string.end());
+                    std::vector<string> temp;
+                    temp.push_back("__null__");
+                    for(auto elt : value_string){
+                        temp.push_back(elt);
+                    }
+                    value_string = temp;
                 }
                 else if(ins.op_type == TY_DEC){
                     for(int i = 0; i < max_length; i++){
@@ -492,37 +497,45 @@ void Executer::run() {
                     reverse(value_bool.begin(), value_bool.end());
                 }
                 env.ScopeUnit.ScopeStack.at(env.ScopeUnit.now).IdenTable.push_back(ins.op_str);
-                if(ins.op_type == TY_IMM) {env.ScopeUnit.ScopeStack.at(env.ScopeUnit.now).BoardPool.insert(std::pair<std::string, eyv::EyValue>(ins.op_str, eyv::EyValue(&value_int, max_length)));}
-                else if(ins.op_type == TY_CON) {env.ScopeUnit.ScopeStack.at(env.ScopeUnit.now).BoardPool.insert(std::pair<std::string, eyv::EyValue>(ins.op_str, eyv::EyValue(&value_string, max_length)));}
-                else if(ins.op_type == TY_DEC) {env.ScopeUnit.ScopeStack.at(env.ScopeUnit.now).BoardPool.insert(std::pair<std::string, eyv::EyValue>(ins.op_str, eyv::EyValue(&value_deci, max_length)));}
-                else if(ins.op_type == TY_BOL) {env.ScopeUnit.ScopeStack.at(env.ScopeUnit.now).BoardPool.insert(std::pair<std::string, eyv::EyValue>(ins.op_str, eyv::EyValue(&value_bool, max_length)));}
+                if(ins.op_type == TY_IMM) {env.ScopeUnit.ScopeStack.at(env.ScopeUnit.now).BoardPool.insert(std::pair<std::string, eyv::EyValue>(ins.op_str, eyv::EyValue(value_int, max_length)));}
+                else if(ins.op_type == TY_CON) {env.ScopeUnit.ScopeStack.at(env.ScopeUnit.now).BoardPool.insert(std::pair<std::string, eyv::EyValue>(ins.op_str, eyv::EyValue(value_string, max_length + 1)));}
+                else if(ins.op_type == TY_DEC) {env.ScopeUnit.ScopeStack.at(env.ScopeUnit.now).BoardPool.insert(std::pair<std::string, eyv::EyValue>(ins.op_str, eyv::EyValue(value_deci, max_length)));}
+                else if(ins.op_type == TY_BOL) {env.ScopeUnit.ScopeStack.at(env.ScopeUnit.now).BoardPool.insert(std::pair<std::string, eyv::EyValue>(ins.op_str, eyv::EyValue(value_bool, max_length)));}
                 break;
-            }
+            }//Attempt to take address of value not located in memory.
             case Ins::ASSIGN_ARRAY: {
                 std::string value = "__null__";
                 int value_int = 0;
                 float value_deci = 0;
                 bool value_bool = false;
+                auto temp = (int)env.pop().second;
                 auto target_index = (int)env.pop().second;
                 if(ins.op_type == TY_CON){
-                    value = env.ConstantPool[env.pop().second];
+                    value = env.ConstantPool[temp];
                 }
                 else if(ins.op_type == TY_IMM){
-                    value_int = env.pop().second;
+                    value_int = temp;
                 }
                 else if(ins.op_type == TY_BOL){
-                    if(env.pop().second == 0){
+                    if(temp == 0){
                         value_bool = false;
                     }
                     else value_bool = true;
                 }
                 else if(ins.op_type == TY_DEC){
-                    value_deci = env.pop().second;
+                    value_deci = temp;
                 }
                 else throw EyparseError("[Runtime]TypeError", "Unknown Type", ins.line, ins.col);
-                env.ScopeUnit.ScopeStack.at(env.ScopeUnit.findWhere(ins.op_str)).BoardPool.at(ins.op_str).setApoint(target_index);
+                if (target_index > env.ScopeUnit.ScopeStack.at(env.ScopeUnit.findWhere(ins.op_str)).BoardPool.at(ins.op_str).getLength() - 1)
+                    throw EyparseError("[Runtime]ArrayError", "Out of range", ins.line, ins.col);
+
+
+                if(ins.op_type != TY_CON)
+                    env.ScopeUnit.ScopeStack.at(env.ScopeUnit.findWhere(ins.op_str)).BoardPool.at(ins.op_str).setApoint(target_index);
+                else
+                    env.ScopeUnit.ScopeStack.at(env.ScopeUnit.findWhere(ins.op_str)).BoardPool.at(ins.op_str).setApoint(target_index + 1);
                 if(env.ScopeUnit.findAll(ins.op_str)){
-                    if(ins.op_type == TY_IMM) {env.ScopeUnit.ScopeStack.at(env.ScopeUnit.findWhere(ins.op_str)).BoardPool.at(ins.op_str).setArrayValue(value_int);log((string)"y");}
+                    if(ins.op_type == TY_IMM) {env.ScopeUnit.ScopeStack.at(env.ScopeUnit.findWhere(ins.op_str)).BoardPool.at(ins.op_str).setArrayValue(value_int);}
                     else if(ins.op_type == TY_DEC) {env.ScopeUnit.ScopeStack.at(env.ScopeUnit.findWhere(ins.op_str)).BoardPool.at(ins.op_str).setArrayValue(value_deci);}
                     else if(ins.op_type == TY_CON) {env.ScopeUnit.ScopeStack.at(env.ScopeUnit.findWhere(ins.op_str)).BoardPool.at(ins.op_str).setArrayValue(value);}
                     else if(ins.op_type == TY_BOL) {env.ScopeUnit.ScopeStack.at(env.ScopeUnit.findWhere(ins.op_str)).BoardPool.at(ins.op_str).setArrayValue(value_bool);}
