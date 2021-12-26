@@ -5,7 +5,7 @@ namespace eycodegen {
 
     CodeGenerator::CodeGenerator() : CPoolIndex(0) {}
 
-    float CodeGenerator::visitNumber(TokenNode* node) {
+    float CodeGenerator::visitNumber(BasicNode* node) {
         return atof(node->token().content.c_str());
     }
 
@@ -40,8 +40,8 @@ namespace eycodegen {
                 else instructions.push_back(new_ei(Ins::PUSH, 0, 0, visitNumber(node->Number()), 0, "__null__", false, TY_DEC));
             }
             else if(node->ArrayElt() != nullptr) {
-                visitAddExpr(node->ArrayElt()->Index());// 可以正常运行
-                instructions.push_back(new_ei(Ins::POP, 0, 0, 0, 0, node->ArrayElt()->Iden()->token().content, false, TY_ARR)); // TODO:  bug here
+                visitAddExpr(node->ArrayElt()->Index());
+                instructions.push_back(new_ei(Ins::POP, 0, 0, 0, 0, node->ArrayElt()->Iden()->token().content, false, TY_ARR));
             }
             else if(node->Iden() != nullptr) {
                 instructions.push_back(new_ei(Ins::POP, 0, 0, 0, 0, node->Iden()->token().content, false, TY_NULL));
@@ -106,7 +106,7 @@ namespace eycodegen {
             instructions.push_back(new_ei(Ins::LOR, node->Op()->token().line, node->Op()->token().column, 0));
     }
 
-    void CodeGenerator::visitNotBoolOperator(TokenNode* node){
+    void CodeGenerator::visitNotBoolOperator(BasicNode* node){
         if (node->token().symbol == Symbol::Not)
             instructions.push_back(new_ei(Ins::NOT, node->token().line, node->token().column, 0));
     }
@@ -124,7 +124,7 @@ namespace eycodegen {
         visitNotBoolOperator(node->Op());
     }
 
-    void CodeGenerator::visitString(TokenNode* node){
+    void CodeGenerator::visitString(BasicNode* node){
         string text = split(" "+node->token().content+" ", "\"").at(1);
         string result;
         for(int i=0; i<text.size(); i++){
@@ -151,7 +151,7 @@ namespace eycodegen {
         instructions.push_back(new_ei(Ins::PUSH, node->token().line, node->token().column, CPoolIndex, 0, "__null__", false, TY_CON));
     }
 
-    void CodeGenerator::visitCBool(TokenNode* node) {
+    void CodeGenerator::visitCBool(BasicNode* node) {
         int torf;
         if(node->token().content == "true") torf = 1;
         else torf = 0;
@@ -180,7 +180,7 @@ namespace eycodegen {
         }
     }
 
-    void CodeGenerator::visitOutStmt(OutStmtNode* node) {// TODO: bug here
+    void CodeGenerator::visitOutStmt(OutStmtNode* node) {
         char op_type = TY_IMM;
         if(node->Expr()->BoolExpr() != nullptr) {
             op_type = TY_BOL;
