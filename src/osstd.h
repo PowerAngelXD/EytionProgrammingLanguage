@@ -3,8 +3,6 @@
 #include <vector>
 #include <string.h>
 #include <exception>
-#include <conio.h>
-#include <windows.h>
 #include <cstdio>
 #include <cstring>
 #include <stdio.h>
@@ -19,10 +17,12 @@
 #include <ostream>
 #include <iomanip>
 #include <sstream>
+#include <any>
 #include <string_view>
 #include <regex>
 #include <sstream>
 #include "../include/CJsonObject.hpp"
+#define var any
 using namespace neb;
 using namespace std;
 
@@ -57,7 +57,6 @@ using namespace std;
 17>纯蓝色的条
 14>浅黄色
 */
-#define _OC(e) SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), e);
 
 /*033Helper
 字色              背景              颜色
@@ -90,5 +89,4 @@ namespace osstd{
     //输出调试信息
     void log(std::string text);
     void log(int text);
-    void log(char const* text);
 };

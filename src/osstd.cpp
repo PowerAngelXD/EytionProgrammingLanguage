@@ -2,30 +2,19 @@
 
 void osstd::log(std::string text)
 {
-    _OC(8);
-    std::cout << "[Debug]: " << text << std::endl;
-    _OC(7);
+    std::cout << text << std::endl;
 }
 
 void osstd::log(int text)
 {
-    _OC(8);
-    std::cout << "[Debug]: " << text << std::endl;
-    _OC(7);
+    std::cout << text << std::endl;
 }
 
-void log(char const* text){
-    _OC(8);
-    std::cout << "[Debug]: " << text << std::endl;
-    _OC(7);
-}
 
 void log(std::vector<std::string> sg) {
-    _OC(8);
     for(auto str : sg){
-        std::cout << "[Debug]: " << str << std::endl;
+        std::cout << str << std::endl;
     }
-    _OC(7);
 }
 
 std::vector<std::string> osstd::split(const std::string &str, const std::string &pattern)
