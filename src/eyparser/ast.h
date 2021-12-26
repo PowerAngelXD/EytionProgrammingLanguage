@@ -1,7 +1,7 @@
 #pragma once
 
-#include "..\eylexer\lex.h"
-#include "..\eexception\eexcp.h"
+#include "../eylexer/lex.h"
+#include "../eexception/eexcp.h"
 using namespace eylex;
 using namespace eexcp;
 
@@ -10,12 +10,12 @@ namespace eyast {
     class BlockStmtNode;
     class ExprNode;
 
-    class TokenNode {
+    class BasicNode {
     public:
         Token _token;
 
-        TokenNode();
-        TokenNode(Token _token);
+        BasicNode();
+        BasicNode(Token _token);
 
         Token token();
         std::string toString();
@@ -25,42 +25,42 @@ namespace eyast {
     // 加减法优先级运算符
     class AddOperatorNode {
     public:
-        TokenNode* _AddOperator;
+        BasicNode* _AddOperator;
 
         AddOperatorNode();
-        AddOperatorNode(TokenNode* _AddOperator);
+        AddOperatorNode(BasicNode* _AddOperator);
         ~AddOperatorNode();
 
-        TokenNode* AddOperator();
+        BasicNode* AddOperator();
         std::string toString();
     };
 
     // 乘除法优先级运算符
     class MulOperatorNode{
     public:
-        TokenNode* _MulOperator;
+        BasicNode* _MulOperator;
 
         MulOperatorNode();
-        MulOperatorNode(TokenNode* _MulOperator);
+        MulOperatorNode(BasicNode* _MulOperator);
         ~MulOperatorNode();
 
-        TokenNode* MulOperator();
+        BasicNode* MulOperator();
         std::string toString();
     };
 
     // 数组node
     class ArrayNode {
     public:
-        TokenNode* _Iden;
-        TokenNode* _Left;
+        BasicNode* _Iden;
+        BasicNode* _Left;
         AddExprNode* _Index;
-        TokenNode* _Right;
+        BasicNode* _Right;
 
         ArrayNode()=default;
-        TokenNode* Iden();
-        TokenNode* Left();
+        BasicNode* Iden();
+        BasicNode* Left();
         AddExprNode* Index();
-        TokenNode* Right();
+        BasicNode* Right();
 
         string toString();
     };
@@ -68,25 +68,25 @@ namespace eyast {
     // 粗俗理解：大expr里的子expr，优先级最高
     class PrimExprNode {
     public:
-        TokenNode* _Number = nullptr;
-        TokenNode* _Iden = nullptr;
+        BasicNode* _Number = nullptr;
+        BasicNode* _Iden = nullptr;
         ArrayNode* _ArrayElt = nullptr;
-        TokenNode* _String = nullptr;
-        TokenNode* _ConstBool = nullptr;
-        TokenNode* _LeftParen;
+        BasicNode* _String = nullptr;
+        BasicNode* _ConstBool = nullptr;
+        BasicNode* _LeftParen;
         AddExprNode* _AddExpr;
-        TokenNode* _RightParen;
+        BasicNode* _RightParen;
 
         PrimExprNode();
         ~PrimExprNode();
 
-        TokenNode* Number();
-        TokenNode* Iden();
+        BasicNode* Number();
+        BasicNode* Iden();
         ArrayNode* ArrayElt();
-        TokenNode* String();
-        TokenNode* ConstBool();
-        TokenNode* LeftParen();
-        TokenNode* RightParen();
+        BasicNode* String();
+        BasicNode* ConstBool();
+        BasicNode* LeftParen();
+        BasicNode* RightParen();
         AddExprNode* AddExpr();
         std::string toString();
     };
@@ -127,12 +127,12 @@ namespace eyast {
     // 比较运算符
     class CmpOperatorNode{
     public:
-        TokenNode* _Op;
+        BasicNode* _Op;
 
         CmpOperatorNode()=default;
         ~CmpOperatorNode()=default;
 
-        TokenNode* Op();
+        BasicNode* Op();
         string toString();
         
     };
@@ -158,11 +158,11 @@ namespace eyast {
 
     class BoolOperatorNode{
     public:
-        TokenNode* _Op;
+        BasicNode* _Op;
 
         BoolOperatorNode()=default;
         ~BoolOperatorNode()=default;
-        TokenNode* Op();
+        BasicNode* Op();
         string toString();
         
     };
@@ -186,13 +186,13 @@ namespace eyast {
 
     class NotBoolExprNode{
     public:
-        TokenNode* _Op;
+        BasicNode* _Op;
         BoolExprNode* _Boolexpr;
 
         NotBoolExprNode()=default;
         ~NotBoolExprNode()=default;
         string toString();
-        TokenNode* Op();
+        BasicNode* Op();
         BoolExprNode* Boolexpr();
         
     };
@@ -217,14 +217,14 @@ namespace eyast {
     // 输出语句的ast
     class OutStmtNode {
     public:
-        TokenNode* _OutMark;
-        TokenNode* _StmtEndMark;
+        BasicNode* _OutMark;
+        BasicNode* _StmtEndMark;
         ExprNode* _Expr;
 
         OutStmtNode();
         ~OutStmtNode();
 
-        TokenNode* OutMark();
+        BasicNode* OutMark();
         ExprNode* Expr();
         std::string toString();
         
@@ -233,28 +233,28 @@ namespace eyast {
     // 变量声明语句的ast
     class VorcStmtNode{
     public:
-        TokenNode* _VarMark = nullptr;
-        TokenNode* _ConstMark = nullptr;
-        TokenNode* _LT;
-        TokenNode* _Type;
-        TokenNode* _GT;
-        TokenNode* _IdenName;
-        TokenNode* _Equ;
+        BasicNode* _VarMark = nullptr;
+        BasicNode* _ConstMark = nullptr;
+        BasicNode* _LT;
+        BasicNode* _Type;
+        BasicNode* _GT;
+        BasicNode* _IdenName;
+        BasicNode* _Equ;
 
         ExprNode* _Expr = nullptr;
 
-        TokenNode* _EndMark;
+        BasicNode* _EndMark;
 
         VorcStmtNode();
         ~VorcStmtNode();
 
-        TokenNode* VarMark();
-        TokenNode* ConstMark();
-        TokenNode* LT();
-        TokenNode* Type();
-        TokenNode* GT();
-        TokenNode* IdenName();
-        TokenNode* Equ();
+        BasicNode* VarMark();
+        BasicNode* ConstMark();
+        BasicNode* LT();
+        BasicNode* Type();
+        BasicNode* GT();
+        BasicNode* IdenName();
+        BasicNode* Equ();
         ExprNode* Expr();
         std::string toString();
         
@@ -262,36 +262,36 @@ namespace eyast {
     class ArrayDefineStmtNode{
         // array <[3]string> list = ["1","2","3"];
     public:
-        TokenNode* _ArrayDefineMark;
-        TokenNode* _LeftB;  // <
-        TokenNode* _Left;   // [
-        TokenNode* _Number;
-        TokenNode* _Right;  // ]
-        TokenNode* _Type;
-        TokenNode* _RightB; // >
-        TokenNode* _Iden;
-        TokenNode* _Eq;
-        TokenNode* _GroupBegin;
+        BasicNode* _ArrayDefineMark;
+        BasicNode* _LeftB;  // <
+        BasicNode* _Left;   // [
+        BasicNode* _Number;
+        BasicNode* _Right;  // ]
+        BasicNode* _Type;
+        BasicNode* _RightB; // >
+        BasicNode* _Iden;
+        BasicNode* _Eq;
+        BasicNode* _GroupBegin;
         vector<ExprNode*> _Elts;
-        vector<TokenNode*> _Dots;
-        TokenNode* _GroupEnd;
-        TokenNode* _EndMark;
+        vector<BasicNode*> _Dots;
+        BasicNode* _GroupEnd;
+        BasicNode* _EndMark;
 
         ArrayDefineStmtNode()=default;
-        TokenNode* ArrayDefineMark();
-        TokenNode* LeftB();  // <
-        TokenNode* Left();   // [
-        TokenNode* Number();
-        TokenNode* Right();  // ]
-        TokenNode* Type();
-        TokenNode* RightB(); // >
-        TokenNode* Iden();
-        TokenNode* Eq();
-        TokenNode* GroupBegin();
+        BasicNode* ArrayDefineMark();
+        BasicNode* LeftB();  // <
+        BasicNode* Left();   // [
+        BasicNode* Number();
+        BasicNode* Right();  // ]
+        BasicNode* Type();
+        BasicNode* RightB(); // >
+        BasicNode* Iden();
+        BasicNode* Eq();
+        BasicNode* GroupBegin();
         vector<ExprNode*> Elts();
-        vector<TokenNode*> Dots();
-        TokenNode* GroupEnd();
-        TokenNode* EndMark();
+        vector<BasicNode*> Dots();
+        BasicNode* GroupEnd();
+        BasicNode* EndMark();
         string toString();
     };
 
@@ -299,35 +299,35 @@ namespace eyast {
         // list[0] = 1;
     public:
         ArrayNode* _ArrayElt;
-        TokenNode* _Eq;
+        BasicNode* _Eq;
         ExprNode* _Expr;
-        TokenNode* _EndMark;
+        BasicNode* _EndMark;
 
         AssignArrayElementStmtNode()=default;
         ArrayNode* ArrayElt();
-        TokenNode* Eq();
+        BasicNode* Eq();
         ExprNode* Expr();
-        TokenNode* EndMark();
+        BasicNode* EndMark();
         string toString();
     };
 
     // 赋值语句的stmt
     class AssignStmtNode{
     public:
-        TokenNode* _Iden;
-        TokenNode* _Equ;
+        BasicNode* _Iden;
+        BasicNode* _Equ;
 
         ExprNode* _Expr;
 
-        TokenNode* _EndMark;
+        BasicNode* _EndMark;
 
         AssignStmtNode();
         ~AssignStmtNode();
 
-        TokenNode* Iden();
-        TokenNode* Equ();
+        BasicNode* Iden();
+        BasicNode* Equ();
         ExprNode* Expr();
-        TokenNode* EndMark();
+        BasicNode* EndMark();
 
         std::string toString();
 
@@ -336,16 +336,16 @@ namespace eyast {
 
     class DeleteStmtNode{
     public:
-        TokenNode* _DeleteMark;
-        TokenNode* _Iden;
-        TokenNode* _EndMark;
+        BasicNode* _DeleteMark;
+        BasicNode* _Iden;
+        BasicNode* _EndMark;
 
         DeleteStmtNode()=default;
         ~DeleteStmtNode();
 
-        TokenNode* DeleteMark();
-        TokenNode* Iden();
-        TokenNode* EndMark();
+        BasicNode* DeleteMark();
+        BasicNode* Iden();
+        BasicNode* EndMark();
         string toString();
 
         
@@ -353,18 +353,18 @@ namespace eyast {
 
     class InputStmtNode{
     public:
-        TokenNode* _InputMark;
+        BasicNode* _InputMark;
         AddExprNode* _Content;
-        TokenNode* _Give;
-        TokenNode* _Iden;
-        TokenNode* _EndMark;
+        BasicNode* _Give;
+        BasicNode* _Iden;
+        BasicNode* _EndMark;
 
         InputStmtNode()=default;
-        TokenNode* InputMark();
+        BasicNode* InputMark();
         AddExprNode* Content();
-        TokenNode* Give();
-        TokenNode* Iden();
-        TokenNode* EndMark();
+        BasicNode* Give();
+        BasicNode* Iden();
+        BasicNode* EndMark();
 
         string toString();
         
@@ -372,30 +372,30 @@ namespace eyast {
 
     class WhileStmtNode{
     public:
-        TokenNode* _WhileMark;
+        BasicNode* _WhileMark;
         ExprNode* _Cond;
-        TokenNode* _To;
+        BasicNode* _To;
         BlockStmtNode* _Block;
 
         WhileStmtNode()=default;
-        TokenNode* WhileMark();
+        BasicNode* WhileMark();
         ExprNode* Cond();
-        TokenNode* To();
+        BasicNode* To();
         BlockStmtNode* Block();
         string toString();
     };
 
     class IfStmtNode{
     public:
-        TokenNode* _IfMark;
+        BasicNode* _IfMark;
         ExprNode* _Cond;
-        TokenNode* _To;
+        BasicNode* _To;
         BlockStmtNode* _Block;
 
         IfStmtNode()=default;
-        TokenNode* IfMark();
+        BasicNode* IfMark();
         ExprNode* Cond();
-        TokenNode* To();
+        BasicNode* To();
         BlockStmtNode* Block();
         string toString();
 
@@ -449,15 +449,15 @@ namespace eyast {
     // blockSTMT
     class BlockStmtNode{
     public:
-        TokenNode* _Left;
+        BasicNode* _Left;
         vector<StmtNode*> _Stmt;
-        TokenNode* _Right;
+        BasicNode* _Right;
     public:
         BlockStmtNode()=default;
 
-        TokenNode* Left();
+        BasicNode* Left();
         vector<StmtNode*> Stmts();
-        TokenNode* Right();
+        BasicNode* Right();
         string toString();
 
         

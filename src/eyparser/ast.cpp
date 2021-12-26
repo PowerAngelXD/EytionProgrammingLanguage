@@ -1,28 +1,28 @@
 #include "ast.h"
 using namespace eyast;
-//TokenNode Part
+//BasicNode Part
 
-TokenNode::TokenNode() {}
-TokenNode::TokenNode(Token _token) : _token(_token) {}
+BasicNode::BasicNode() {}
+BasicNode::BasicNode(Token _token) : _token(_token) {}
 
-Token TokenNode::token() {
+Token BasicNode::token() {
     return _token;
 }
 
-std::string TokenNode::toString() {
+std::string BasicNode::toString() {
     return ::toString(this->_token.symbol) + ":\"" + this->_token.content + "\"";
 }
 
 // AddOperatorNode Part
 
 AddOperatorNode::AddOperatorNode() : _AddOperator(0) {}
-AddOperatorNode::AddOperatorNode(TokenNode* _AddOperator) : _AddOperator(_AddOperator) {}
+AddOperatorNode::AddOperatorNode(BasicNode* _AddOperator) : _AddOperator(_AddOperator) {}
 
 AddOperatorNode::~AddOperatorNode() {
     delete _AddOperator;
 }
 
-TokenNode* AddOperatorNode::AddOperator() {
+BasicNode* AddOperatorNode::AddOperator() {
     return _AddOperator;
 }
 
@@ -33,12 +33,12 @@ std::string AddOperatorNode::toString() {
 // MulOperator Part
 
 MulOperatorNode::MulOperatorNode() : _MulOperator(0) {}
-MulOperatorNode::MulOperatorNode(TokenNode* _MulOperator) : _MulOperator(_MulOperator) {}
+MulOperatorNode::MulOperatorNode(BasicNode* _MulOperator) : _MulOperator(_MulOperator) {}
 MulOperatorNode::~MulOperatorNode() {
     delete _MulOperator;
 }
 
-TokenNode* MulOperatorNode::MulOperator() {
+BasicNode* MulOperatorNode::MulOperator() {
     return _MulOperator;
 }
 
@@ -47,10 +47,10 @@ std::string MulOperatorNode::toString() {
 }
 
 //ArrayElt Part
-TokenNode* ArrayNode::Iden(){return _Iden;}
-TokenNode* ArrayNode::Left(){return _Left;}
+BasicNode* ArrayNode::Iden(){return _Iden;}
+BasicNode* ArrayNode::Left(){return _Left;}
 AddExprNode* ArrayNode::Index(){return _Index;}
-TokenNode* ArrayNode::Right(){return _Right;}
+BasicNode* ArrayNode::Right(){return _Right;}
 
 string ArrayNode::toString(){
     return "ArrayNode: {" + _Iden->toString() + ", " + _Left->toString() + ", " + _Index->toString() + ", " + _Right->toString() + "}";
@@ -68,15 +68,15 @@ PrimExprNode::~PrimExprNode() {
         delete _AddExpr;
 };
 
-TokenNode* PrimExprNode::Number() {
+BasicNode* PrimExprNode::Number() {
     return _Number;
 }
 
-TokenNode* PrimExprNode::Iden() {
+BasicNode* PrimExprNode::Iden() {
     return _Iden;
 }
 
-TokenNode* PrimExprNode::String() {
+BasicNode* PrimExprNode::String() {
     return _String;
 }
 
@@ -84,11 +84,11 @@ ArrayNode* PrimExprNode::ArrayElt() {
     return _ArrayElt;
 }
 
-TokenNode* PrimExprNode::ConstBool() {
+BasicNode* PrimExprNode::ConstBool() {
     return _ConstBool;
 }
 
-TokenNode* PrimExprNode::LeftParen() {
+BasicNode* PrimExprNode::LeftParen() {
     return _LeftParen;
 }
 
@@ -96,7 +96,7 @@ AddExprNode* PrimExprNode::AddExpr() {
     return _AddExpr;
 }
 
-TokenNode* PrimExprNode::RightParen() {
+BasicNode* PrimExprNode::RightParen() {
     return _RightParen;
 }
 
@@ -198,7 +198,7 @@ std::string AddExprNode::toString() {
 }
 
 //Bool Expr Part
-TokenNode* CmpOperatorNode::Op(){return _Op;}
+BasicNode* CmpOperatorNode::Op(){return _Op;}
 string CmpOperatorNode::toString(){return "CmpOp: {" + _Op->toString() + "}";}
 
 AddExprNode* CmpExprNode::Expr(){return _Expr;}
@@ -210,7 +210,7 @@ string CmpExprNode::toString(){
     return "CmpExpr: {" + _Expr->toString() + "}";    
 }
 
-TokenNode* BoolOperatorNode::Op(){return _Op;}
+BasicNode* BoolOperatorNode::Op(){return _Op;}
 string BoolOperatorNode::toString(){return "BoolOp: {" + _Op->toString() + "}";}
 
 string BoolExprNode::toString(){
@@ -233,7 +233,7 @@ vector<CmpExprNode*> BoolExprNode::Sub(){return _Sub;}
 string NotBoolExprNode::toString(){
     return "NotBoolExpr: {" + _Boolexpr->toString() + "}";
 }
-TokenNode* NotBoolExprNode::Op(){return _Op;}
+BasicNode* NotBoolExprNode::Op(){return _Op;}
 BoolExprNode* NotBoolExprNode::Boolexpr(){return _Boolexpr;}
 
 //Expr Part
@@ -263,7 +263,7 @@ string ExprNode::toString(){
 
 //OutStmt Part
 
-TokenNode* OutStmtNode::OutMark(){return this->_OutMark;}
+BasicNode* OutStmtNode::OutMark(){return this->_OutMark;}
 ExprNode* OutStmtNode::Expr(){return this->_Expr;}
 
 OutStmtNode::OutStmtNode(){}
@@ -288,13 +288,13 @@ VorcStmtNode::~VorcStmtNode(){
     delete _EndMark;
 }
 
-TokenNode* VorcStmtNode::VarMark(){return _VarMark;}
-TokenNode* VorcStmtNode::ConstMark(){return _ConstMark;}
-TokenNode* VorcStmtNode::LT(){return this->_LT;}
-TokenNode* VorcStmtNode::Type(){return this->_Type;}
-TokenNode* VorcStmtNode::GT(){return this->_GT;}
-TokenNode* VorcStmtNode::IdenName(){return _IdenName;}
-TokenNode* VorcStmtNode::Equ(){return _Equ;}
+BasicNode* VorcStmtNode::VarMark(){return _VarMark;}
+BasicNode* VorcStmtNode::ConstMark(){return _ConstMark;}
+BasicNode* VorcStmtNode::LT(){return this->_LT;}
+BasicNode* VorcStmtNode::Type(){return this->_Type;}
+BasicNode* VorcStmtNode::GT(){return this->_GT;}
+BasicNode* VorcStmtNode::IdenName(){return _IdenName;}
+BasicNode* VorcStmtNode::Equ(){return _Equ;}
 ExprNode* VorcStmtNode::Expr(){return _Expr;}
 std::string VorcStmtNode::toString(){
     if(this->_Expr == nullptr) {
@@ -311,20 +311,20 @@ std::string VorcStmtNode::toString(){
     }
 }
 // ArrayDefineStmt Part
-TokenNode* ArrayDefineStmtNode::ArrayDefineMark(){return _ArrayDefineMark;}
-TokenNode *ArrayDefineStmtNode::LeftB() { return _LeftB; }
-TokenNode *ArrayDefineStmtNode::Left() { return _Left; }
-TokenNode *ArrayDefineStmtNode::Number() { return _Number; }
-TokenNode *ArrayDefineStmtNode::Right() { return _Right; }
-TokenNode *ArrayDefineStmtNode::Type() { return _Type; }
-TokenNode *ArrayDefineStmtNode::RightB() { return _RightB; }
-TokenNode *ArrayDefineStmtNode::Iden() { return _Iden; }
-TokenNode *ArrayDefineStmtNode::Eq() { return _Eq; }
-TokenNode *ArrayDefineStmtNode::GroupBegin() { return _GroupBegin; }
+BasicNode* ArrayDefineStmtNode::ArrayDefineMark(){return _ArrayDefineMark;}
+BasicNode *ArrayDefineStmtNode::LeftB() { return _LeftB; }
+BasicNode *ArrayDefineStmtNode::Left() { return _Left; }
+BasicNode *ArrayDefineStmtNode::Number() { return _Number; }
+BasicNode *ArrayDefineStmtNode::Right() { return _Right; }
+BasicNode *ArrayDefineStmtNode::Type() { return _Type; }
+BasicNode *ArrayDefineStmtNode::RightB() { return _RightB; }
+BasicNode *ArrayDefineStmtNode::Iden() { return _Iden; }
+BasicNode *ArrayDefineStmtNode::Eq() { return _Eq; }
+BasicNode *ArrayDefineStmtNode::GroupBegin() { return _GroupBegin; }
 vector<ExprNode*> ArrayDefineStmtNode::Elts() { return _Elts; }
-vector<TokenNode*> ArrayDefineStmtNode::Dots() { return _Dots; }
-TokenNode *ArrayDefineStmtNode::GroupEnd() { return _GroupEnd; }
-TokenNode *ArrayDefineStmtNode::EndMark() { return _EndMark; }
+vector<BasicNode*> ArrayDefineStmtNode::Dots() { return _Dots; }
+BasicNode *ArrayDefineStmtNode::GroupEnd() { return _GroupEnd; }
+BasicNode *ArrayDefineStmtNode::EndMark() { return _EndMark; }
 string ArrayDefineStmtNode::toString() {
     string content = "ArrayDefineStmt: {";
     string sub = "defineList:[";
@@ -341,9 +341,9 @@ string ArrayDefineStmtNode::toString() {
 
 //ArrayAssign Part
 ArrayNode* AssignArrayElementStmtNode::ArrayElt(){return _ArrayElt;}
-TokenNode* AssignArrayElementStmtNode::Eq(){return _Eq;}
+BasicNode* AssignArrayElementStmtNode::Eq(){return _Eq;}
 ExprNode* AssignArrayElementStmtNode::Expr(){return _Expr;}
-TokenNode* AssignArrayElementStmtNode::EndMark(){return _EndMark;}
+BasicNode* AssignArrayElementStmtNode::EndMark(){return _EndMark;}
 string AssignArrayElementStmtNode::toString(){
     return "ArrayElementAssignStmt: {" + _ArrayElt->toString() + ", " + _Eq->toString() + ", " + _Expr->toString() + ", " + _EndMark->toString() + "}";
 }
@@ -358,10 +358,10 @@ AssignStmtNode::~AssignStmtNode(){
     delete _EndMark;
 }
 
-TokenNode* AssignStmtNode::Iden(){return _Iden;}
-TokenNode* AssignStmtNode::Equ(){return _Equ;}
+BasicNode* AssignStmtNode::Iden(){return _Iden;}
+BasicNode* AssignStmtNode::Equ(){return _Equ;}
 ExprNode* AssignStmtNode::Expr(){return _Expr;}
-TokenNode* AssignStmtNode::EndMark(){return _EndMark;}
+BasicNode* AssignStmtNode::EndMark(){return _EndMark;}
 
 std::string AssignStmtNode::toString(){
     return "AssigntStmt:{" + this->_Iden->toString() + "," + this->_Equ->toString() + "," + this->_Expr->toString() + "}";
@@ -374,37 +374,37 @@ DeleteStmtNode::~DeleteStmtNode(){
     delete this->_Iden;
 }
 
-TokenNode* DeleteStmtNode::DeleteMark(){return this->_DeleteMark;}
-TokenNode* DeleteStmtNode::Iden(){return this->_Iden;}
-TokenNode* DeleteStmtNode::EndMark(){return this->_EndMark;}
+BasicNode* DeleteStmtNode::DeleteMark(){return this->_DeleteMark;}
+BasicNode* DeleteStmtNode::Iden(){return this->_Iden;}
+BasicNode* DeleteStmtNode::EndMark(){return this->_EndMark;}
 string DeleteStmtNode::toString(){
     return "DeleteStmt:{" + this->DeleteMark()->toString() + "," + this->Iden()->toString()  + "," + this->EndMark()->toString() +  "}";
 }
 
 //InputStmt Part
-TokenNode* InputStmtNode::InputMark(){return _InputMark;}
+BasicNode* InputStmtNode::InputMark(){return _InputMark;}
 AddExprNode* InputStmtNode::Content(){return _Content;}
-TokenNode* InputStmtNode::Give(){return _Give;}
-TokenNode* InputStmtNode::Iden(){return _Iden;}
-TokenNode* InputStmtNode::EndMark(){return _EndMark;}
+BasicNode* InputStmtNode::Give(){return _Give;}
+BasicNode* InputStmtNode::Iden(){return _Iden;}
+BasicNode* InputStmtNode::EndMark(){return _EndMark;}
 
 string InputStmtNode::toString(){
     return "InputStmt: {" + _InputMark->toString() + ", " + _Content->toString() + ", " + _Give->toString() + ", " + _Iden->toString() + ", " + _EndMark->toString() + "}";
 }
 
 //RepeatStmt Part
-TokenNode* WhileStmtNode::WhileMark(){return _WhileMark;}
+BasicNode* WhileStmtNode::WhileMark(){return _WhileMark;}
 ExprNode* WhileStmtNode::Cond(){return _Cond;}
-TokenNode* WhileStmtNode::To(){return _To;}
+BasicNode* WhileStmtNode::To(){return _To;}
 BlockStmtNode* WhileStmtNode::Block(){return _Block;}
 string WhileStmtNode::toString(){
     return "WhileStmt: {" + _WhileMark->toString() + ", Cond[" + _Cond->toString() + "], " + _To->toString() + ", " + _Block->toString() + "}";
 }
 
 //IfStmt Part
-TokenNode* IfStmtNode::IfMark(){return _IfMark;}
+BasicNode* IfStmtNode::IfMark(){return _IfMark;}
 ExprNode* IfStmtNode::Cond(){return _Cond;}
-TokenNode* IfStmtNode::To(){return _To;}
+BasicNode* IfStmtNode::To(){return _To;}
 BlockStmtNode* IfStmtNode::Block(){return _Block;}
 string IfStmtNode::toString(){return "IfStmt: {" + _IfMark->toString() + ", Cond[" + _Cond->toString() + "], " + _To->toString() + ", " + _Block->toString() + "}";}
 
@@ -472,9 +472,9 @@ std::string StatNode::toString(){
 }
 
 //BlockStmt Part
-TokenNode* BlockStmtNode::Left(){return this->_Left;}
+BasicNode* BlockStmtNode::Left(){return this->_Left;}
 vector<StmtNode*> BlockStmtNode::Stmts(){return this->_Stmt;}
-TokenNode* BlockStmtNode::Right(){return this->_Right;}
+BasicNode* BlockStmtNode::Right(){return this->_Right;}
 string BlockStmtNode::toString(){
     std::string str = "blockStmt:{stmts:[";
     for(auto stmt : _Stmt){
