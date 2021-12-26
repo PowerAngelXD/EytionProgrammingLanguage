@@ -5,25 +5,31 @@
 #include "ey/value/eyvalue.h"
 #include "eexception/eexcp.h"
 #include "../include/CJsonObject.hpp"
-#define __RELEASE
+#define __DEBUG
+#define __WORK_ON_LINUX
 #define __INSIDE_DEBUG
 using namespace neb;
 using namespace osstd;
 using namespace std;
 void segcontrol(int i){
     cout<<_FONT_RED<<"Because of some exceptions, eytion stop! code: "<<i<<_NORMAL<<endl;
-    getch();
 }
 
 int main(int argc, char *argv[]){
+#ifndef __WORK_ON_LINUX
     signal(SIGSEGV, segcontrol);
     string env = getenv("EY");
     if(env.empty()){
         cout<<_FONT_RED<<"cannot found the ENVIRONMENT VARIABLE 'EY'"<<_NORMAL<<endl;
         exit(0);
     }
+#endif
     econfig::EyConfig efig;
+#ifdef __WORK_ON_LINUX
+    econfig::ConfigReader read("/settings/eyconfig.json");
+#else
     econfig::ConfigReader read(env + "/settings/eyconfig.json");
+#endif
     efig = read.Get();
 #ifdef __RELEASE
     system("title EytionLang Shell (20211017a-v0.1.45-alpha)");
@@ -47,23 +53,8 @@ int main(int argc, char *argv[]){
                 ifstream file(argv[2]);
                 eylex::Lexer lexer(file);
                 auto tokens = lexer.getTokenGroup();
-
-                if(efig.IsDebug == true && efig.DebugMode.lex_TokenGroupMsg == true){
-                    log((string)"because you turned on the debug mode, now show some debug details");
-                    log((string)"log for tokens:");
-                    for(auto tok : tokens) {
-                        log(tok.format());
-                    }
-                }
-
                 eyparser::Parser p(tokens);
                 auto stat = p.Stat();
-
-                if (efig.IsDebug == true && efig.DebugMode.ast_StatMsg == true){
-                    log((string)"log for stat:");
-                    log(stat->toString());
-                }
-                
                 eycodegen::CodeGenerator gen;
                 gen.visitStat(stat);
                 eyexec::Executer eysysenv;
@@ -73,7 +64,9 @@ int main(int argc, char *argv[]){
             }
             catch(char const* e){cout<<_FONT_YELLOW<<"\nEytionScript has some error:\n    "<<_FONT_RED<<e<<_NORMAL<<endl;}
             catch(std::string e){cout<<_FONT_YELLOW<<"\nEytionScript has some error:\n    "<<_FONT_RED<<e<<_NORMAL<<endl;}
-            catch(std::logic_error e){}
+            catch(std::logic_error e){
+                cout<<_FONT_YELLOW<<"\nEytionScript has some error:\n    "<<_FONT_RED<<eyerr.what()<<_NORMAL<<endl;
+            }
             catch(eexcp::EyparseError eyerr){
                 cout<<_FONT_YELLOW<<"\nEytionScript has some error:\n    "<<_FONT_RED<<eyerr.what()<<_NORMAL<<endl;
             }
