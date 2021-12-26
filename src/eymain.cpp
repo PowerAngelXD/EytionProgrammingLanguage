@@ -5,8 +5,8 @@
 #include "ey/value/eyvalue.h"
 #include "eexception/eexcp.h"
 #include "../include/CJsonObject.hpp"
-#define __DEBUG
-#define __WORK_ON_LINUX
+#define __RELEASE
+//#define __WORK_ON_LINUX
 #define __INSIDE_DEBUG
 using namespace neb;
 using namespace osstd;
@@ -32,7 +32,7 @@ int main(int argc, char *argv[]){
 #endif
     efig = read.Get();
 #ifdef __RELEASE
-    system("title EytionLang Shell (20211017a-v0.1.45-alpha)");
+    system("title EytionLang Shell (20211226-v0.1.47-alpha)");
     if(argc == 2){
         if(strcmp(argv[1], "-shell") == 0){
             string cmd;
@@ -40,7 +40,7 @@ int main(int argc, char *argv[]){
             system("pause");
         }
         else if(strcmp(argv[1], "-v") == 0){
-            cout<<"now eytion version: alpha-0.1.45"<<endl;
+            cout<<"now eytion version: alpha-0.1.47"<<endl;
             cout<<"you can use argument '-shell' to run the EytionShell"<<endl;
         }
         else{
@@ -65,7 +65,7 @@ int main(int argc, char *argv[]){
             catch(char const* e){cout<<_FONT_YELLOW<<"\nEytionScript has some error:\n    "<<_FONT_RED<<e<<_NORMAL<<endl;}
             catch(std::string e){cout<<_FONT_YELLOW<<"\nEytionScript has some error:\n    "<<_FONT_RED<<e<<_NORMAL<<endl;}
             catch(std::logic_error e){
-                cout<<_FONT_YELLOW<<"\nEytionScript has some error:\n    "<<_FONT_RED<<eyerr.what()<<_NORMAL<<endl;
+                cout<<_FONT_YELLOW<<"\nEytionScript has some error:\n    "<<_FONT_RED<<e.what()<<_NORMAL<<endl;
             }
             catch(eexcp::EyparseError eyerr){
                 cout<<_FONT_YELLOW<<"\nEytionScript has some error:\n    "<<_FONT_RED<<eyerr.what()<<_NORMAL<<endl;
