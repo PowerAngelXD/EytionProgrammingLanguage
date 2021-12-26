@@ -11,19 +11,8 @@ void cmdrun(string argv){
     ifstream file(argv);
     eylex::Lexer lexer(file);
     auto tokens = lexer.getTokenGroup();
-    if(_efig.IsDebug == true && _efig.DebugMode.lex_TokenGroupMsg == true){
-        log((string)"because you turned on the debug mode, now show some debug details");
-        log((string)"log for tokens:");
-        for(auto tok : tokens) {
-            log(tok.format());
-        }
-    }
     eyparser::Parser p(tokens);
     auto stat = p.Stat();
-    if (_efig.IsDebug == true && _efig.DebugMode.ast_StatMsg == true){
-        log((string)"log for stat:");
-        log(stat->toString());
-    }
     eycodegen::CodeGenerator gen;
     gen.visitStat(stat);
     eyexec::Executer eysysenv;
@@ -62,7 +51,7 @@ void cmdinfo(string argv){
     string content(begin, end);
     cout<<"License content:"<<endl;
     cout<<_FONT_GREEN<<content<<_NORMAL<<endl;
-    cout<<"now version: v0.1.45-alpha-20211205"<<endl;
+    cout<<"now version: v0.1.47-alpha-20211226"<<endl;
 }
 void cmdhelp(string argv){
     string path = getenv("EY");
@@ -96,9 +85,9 @@ void eysys::run(std::string text, econfig::EyConfig fig){
                 if(_efig.ExitTip == true){
                     cout<<"Do you really want to quit?(You can set it in the settings file in './settings/eyconfig.json' without this prompt)"<<endl;
                     cout<<"[Yes(y)]     [No(n)]"<<endl;
-                    if (_getch() == 'y'){
-                        exit(0);
-                    }
+                    string t;
+                    getline(cin, t);
+                    if (t == "y") exit(0);
                 }
                 else exit(0);
             }
