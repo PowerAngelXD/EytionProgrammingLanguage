@@ -1,6 +1,6 @@
 #pragma once
-#ifndef __COMMAND_H__
-#define __COMMAND_H__
+#ifndef __ESHELL_H__
+#define __ESHELL_H__
 #include "../osstd.h"
 #include "../eylexer/lex.h"
 #include "../eyparser/parser.h"

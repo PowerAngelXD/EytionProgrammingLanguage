@@ -1,6 +1,6 @@
-#ifndef __COMMAND_CPP__
-#define __COMMAND_CPP__
-#include "command.h"
+#ifndef __ESHELL_CPP__
+#define __ESHELL_CPP__
+#include "eshell.h"
 using namespace osstd;
 using namespace eysys;
 using namespace econfig;
