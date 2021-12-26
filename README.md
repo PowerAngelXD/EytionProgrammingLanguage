@@ -165,7 +165,7 @@ while i == 5:{
 }
 ```
 
-> while
+> array
 ```go
 array<[5]string> sl = ["hel", "lo", "wo", "rl", "d"];
 var <int> i  = 0;
