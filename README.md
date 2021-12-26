@@ -164,6 +164,16 @@ while i == 5:{
     i = i + 1;
 }
 ```
+
+> while
+```go
+array<[5]string> sl = ["hel", "lo", "wo", "rl", "d"];
+var <int> i  = 0;
+while i == 5:{
+    out sl[i];
+    i=i+1;
+}
+```
 ## Thanks
 Thank the following people for their support for this project:  
 > theflysong  
