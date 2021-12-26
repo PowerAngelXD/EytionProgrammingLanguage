@@ -7,18 +7,15 @@ using namespace osstd;
 
 namespace eyv{
     class EyValue{
-        struct {
-            void* value = nullptr;
-            int* int_value = nullptr;
-            float* decimal_value = nullptr;
-            std::string* string_value = nullptr;
-            bool* bool_value = nullptr;
+        int int_value;
+        float decimal_value;
+        std::string string_value;
+        bool bool_value;
 
-            vector<int>* array_int_value = nullptr;
-            vector<float>* array_decimal_value = nullptr;
-            vector<std::string>* array_string_value = nullptr;
-            vector<bool>* array_bool_value = nullptr;
-        };
+        vector<int> array_int_value;
+        vector<float> array_decimal_value;
+        vector<std::string> array_string_value;
+        vector<bool> array_bool_value;
         int const maxlen;
         int apoint;    // current array element
         bool isarray = false;
@@ -30,10 +27,10 @@ namespace eyv{
         EyValue(std::string value, bool isconst);
         EyValue(bool value, bool isconst);
 
-        EyValue(vector<int>* value, int max);
-        EyValue(vector<float>* value, int max);
-        EyValue(vector<std::string>* value, int max);
-        EyValue(vector<bool>* value, int max);
+        EyValue(vector<int> value, int max);
+        EyValue(vector<float> value, int max);
+        EyValue(vector<std::string> value, int max);
+        EyValue(vector<bool> value, int max);
         //~EyValue();
 
         int getValueAsInt();
@@ -58,6 +55,7 @@ namespace eyv{
 
         void setApoint(int p);
         int getApoint();
+        int getLength();
         bool getArray();
         bool getConst();
 
