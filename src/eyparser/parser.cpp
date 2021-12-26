@@ -9,10 +9,10 @@ eylex::Token Parser::peek(int move){
         return input[cur_pos+move];
 }
 
-TokenNode* Parser::tokenIncopy() {
+BasicNode* Parser::tokenIncopy() {
     if (! IsToken())
-        return new TokenNode({"eof", Symbol::Eof});
-    return new TokenNode(copy[copy_pos ++]);
+        return new BasicNode({"eof", Symbol::Eof});
+    return new BasicNode(copy[copy_pos ++]);
 }
 
 eylex::Token Parser::peekIncopy(int move) {
@@ -28,16 +28,16 @@ bool Parser::IsToken() {
     return cur_pos < input.size();
 }
 
-TokenNode* Parser::token() {
+BasicNode* Parser::token() {
     if (! IsToken())
-        return new TokenNode({"eof", Symbol::Eof});
-    return new TokenNode(input[cur_pos ++]);
+        return new BasicNode({"eof", Symbol::Eof});
+    return new BasicNode(input[cur_pos ++]);
 }
 
-TokenNode* Parser::peeknode(){
+BasicNode* Parser::peeknode(){
     if (! IsToken())
-        return new TokenNode({"eof", Symbol::Eof});
-    return new TokenNode(input[cur_pos]);
+        return new BasicNode({"eof", Symbol::Eof});
+    return new BasicNode(input[cur_pos]);
 }
 
 bool Parser::IsAddOperator() {
@@ -51,7 +51,7 @@ AddOperatorNode* Parser::AddOperator() {
     int col = peek().column;
     if (! IsAddOperator())
         throw EyparseError("SymbolError", "expect '+' or '-'", line, col);
-    TokenNode* op = token();
+    BasicNode* op = token();
     if (op->_token.symbol == Symbol::Add || op->_token.symbol == Symbol::Sub) {
         return new AddOperatorNode(op);
     }
@@ -72,7 +72,7 @@ MulOperatorNode* Parser::MulOperator() {
     int col = peek().column;
     if (!IsMulOperator())
         throw EyparseError("SymbolError", "expect '*', '/' or '%'", line, col);
-    TokenNode* op = token();
+    BasicNode* op = token();
     if (op->_token.symbol == Symbol::Mul || op->_token.symbol == Symbol::Div || op->_token.symbol == Symbol::Mod) {
         return new MulOperatorNode(op);
     }

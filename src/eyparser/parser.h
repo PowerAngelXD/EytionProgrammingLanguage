@@ -1,8 +1,8 @@
 #pragma once
 
-#include "..\eylexer\lex.h"
-#include "..\eexception\eexcp.h"
-#include "..\eyparser\ast.h"
+#include "../eylexer/lex.h"
+#include "../eexception/eexcp.h"
+#include "../eyparser/ast.h"
 using namespace eylex;
 using namespace eexcp;
 using namespace eyast;
@@ -16,10 +16,10 @@ namespace eyparser{
     public:
         Parser(std::vector<Token> input);
         bool IsToken();
-        TokenNode* token();
+        BasicNode* token();
         eylex::Token peek(int move = 0);
-        TokenNode* peeknode();
-        TokenNode* tokenIncopy();
+        BasicNode* peeknode();
+        BasicNode* tokenIncopy();
         eylex::Token peekIncopy(int move = 0);
         bool IsMulOperator();
         MulOperatorNode* MulOperator();
