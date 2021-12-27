@@ -1,13 +1,13 @@
 #include<stdlib.h> // use cmake
 #include "osstd.h"
 #include "eylexer/lex.h"
-#include "eysystem/command.h"
+#include "eysystem/eshell.h"
 #include "ey/value/eyvalue.h"
 #include "eexception/eexcp.h"
 #include "../include/CJsonObject.hpp"
+//#define __DEBUG
 #define __RELEASE
 //#define __WORK_ON_LINUX
-#define __INSIDE_DEBUG
 using namespace neb;
 using namespace osstd;
 using namespace std;
@@ -20,7 +20,7 @@ int main(int argc, char *argv[]){
     signal(SIGSEGV, segcontrol);
     string env = getenv("EY");
     if(env.empty()){
-        cout<<_FONT_RED<<"cannot found the ENVIRONMENT VARIABLE 'EY'"<<_NORMAL<<endl;
+        cout<<_FONT_RED<<"cannot found the ENVIRONMENT VARIABLE 'EY'(You need to manually add the environment variable 'ey' to the current directory)"<<_NORMAL<<endl;
         exit(0);
     }
 #endif
@@ -34,14 +34,20 @@ int main(int argc, char *argv[]){
 #ifdef __RELEASE
     system("title EytionLang Shell (20211226-v0.1.47-alpha)");
     if(argc == 2){
-        if(strcmp(argv[1], "-shell") == 0){
+        if(strcmp(argv[1], "-shell") == 0|| strcmp(argv[1], "-s") == 0){
             string cmd;
             eysys::run(cmd, efig);
             system("pause");
         }
-        else if(strcmp(argv[1], "-v") == 0){
+        else if(strcmp(argv[1], "-v") == 0 || strcmp(argv[1], "-ver") == 0 || strcmp(argv[1], "-version") == 0){
             cout<<"now eytion version: alpha-0.1.47"<<endl;
             cout<<"you can use argument '-shell' to run the EytionShell"<<endl;
+        }else if(strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "-help") == 0){
+            ifstream file(env + "/data/docs/helpforcmd.txt");
+            istreambuf_iterator<char> begin(file);
+            istreambuf_iterator<char> end;
+            string content(begin, end);
+            cout<<_FONT_GREEN<<content<<_NORMAL<<endl;
         }
         else{
             cout<<"'"<<argv[1]<<"' not a right argument for eytion"<<endl;
