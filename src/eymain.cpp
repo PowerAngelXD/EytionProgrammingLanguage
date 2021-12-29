@@ -53,7 +53,7 @@ int main(int argc, char *argv[]){
             cout<<"'"<<argv[1]<<"' not a right argument for eytion"<<endl;
         }
     }
-    else if(argc == 3){
+    else if(argc >= 3){
         if(strcmp(argv[1], "-f") == 0){
             try{
                 ifstream file(argv[2]);
@@ -67,6 +67,42 @@ int main(int argc, char *argv[]){
                 eysysenv.setInstructions(gen.instructions);
                 eysysenv.getEnvironment().ConstantPool = gen.ConstantPool;
                 eysysenv.run();
+                if(strcmp(argv[3], "-ad") == 0){
+                    cout<<endl;
+                    cout<<"Debug Information:"<<endl;
+                    cout<<"\033[0m=================Token Gruops>"<<endl;
+                    for(auto tok : tokens){
+                        cout<<"\033[33;1m"<<tok.format();
+                    }
+                    cout<<endl;
+                    cout<<"\033[0m=================Ast>"<<endl;
+                    cout<<"\033[33;1m"<<stat->toString()<<endl;
+                    cout<<"\033[0m=================Inside Code>"<<endl;
+                    cout<<"\033[33;1m"<<eysysenv.getEnvironment().toString()<<endl;
+                    cout<<_NORMAL<<endl;
+                }
+                else {
+                    if(strcmp(argv[3], "-a") == 0){
+                        cout<<endl;
+                        cout<<"\033[0m=================Ast>"<<endl;
+                        cout<<"\033[33;1m"<<stat->toString()<<endl;
+                        cout<<_NORMAL<<endl;
+                    }
+                    if(strcmp(argv[3], "-t") == 0){
+                        cout<<endl;
+                        cout<<"\033[0m=================Token Gruops>"<<endl;
+                        for(auto tok : tokens){
+                            cout<<"\033[33;1m"<<tok.format();
+                        }
+                        cout<<_NORMAL<<endl;
+                    }
+                    if(strcmp(argv[3], "-ic") == 0){
+                        cout<<endl;
+                        cout<<"\033[0m=================Inside Code>"<<endl;
+                        cout<<"\033[33;1m"<<eysysenv.getEnvironment().toString()<<endl;
+                        cout<<_NORMAL<<endl;
+                    }
+                }
             }
             catch(char const* e){cout<<_FONT_YELLOW<<"\nEytionScript has some error:\n    "<<_FONT_RED<<e<<_NORMAL<<endl;}
             catch(std::string e){cout<<_FONT_YELLOW<<"\nEytionScript has some error:\n    "<<_FONT_RED<<e<<_NORMAL<<endl;}
