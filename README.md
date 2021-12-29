@@ -1,5 +1,5 @@
 # EytionLang -- an programming language
-[![doc/img/Ey.png](doc/img/Ey.png)](doc/img/Ey.png)
+[![doc/img/Ey.png](doc/img/Ey.png)](doc/img/Ey.png)\
 [![https://img.shields.io/badge/Eytion-v0.1.45Alpha-red](https://img.shields.io/badge/Eytion-v0.1.45Alpha-red)]()
 [![https://img.shields.io/badge/Platform-Windows-blue](https://img.shields.io/badge/Platform-Windows-blue)]()
 [![https://img.shields.io/badge/License-MIT-green](https://img.shields.io/badge/License-MIT-green)]()  
