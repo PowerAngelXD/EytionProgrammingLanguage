@@ -277,12 +277,30 @@ std::string OutStmtNode::toString(){
     return "OutStmt:{" + this->_OutMark->toString() + "," + this->_Expr->toString() + "," + this->_StmtEndMark->toString() + "}";
 }
 
-//LetStmt Part
+//TypeExpl Part
+BasicNode* TypeExplNode::Left(){return _Left;}
+BasicNode* TypeExplNode::ArrLeft(){return _ArrLeft;}
+BasicNode* TypeExplNode::ArrLength(){return _ArrLength;}
+BasicNode* TypeExplNode::ArrRight(){return _ArrRight;}
+BasicNode* TypeExplNode::TypeName(){return _TypeName;}
+BasicNode* TypeExplNode::Right(){return _Right;}
+BasicNode* TypeExplNode::Iden(){return _Iden;}
+
+string TypeExplNode::toString(){
+    if (_ArrLeft != nullptr)
+        return "TypeExpl: {" + _Left->toString() + ", " + _ArrLeft->toString() + ", " + _ArrLength->toString() + ", " + _ArrRight->toString() + ", "
+                             + _TypeName->toString() + ", " + _Right->toString() + ", " + _Iden->toString() + "}";
+    else
+        return "TypeExpl: {" + _Left->toString() + ", " + _TypeName->toString() + ", " + _Right->toString() + ", " + _Iden->toString() + "}";
+}
+
+
+//VorcStmt Part
 
 VorcStmtNode::VorcStmtNode(){}
 VorcStmtNode::~VorcStmtNode(){
     delete _VarMark;
-    delete _IdenName;
+    delete _DefineExpl;
     delete _Equ;
     delete _Expr;
     delete _EndMark;
@@ -290,24 +308,21 @@ VorcStmtNode::~VorcStmtNode(){
 
 BasicNode* VorcStmtNode::VarMark(){return _VarMark;}
 BasicNode* VorcStmtNode::ConstMark(){return _ConstMark;}
-BasicNode* VorcStmtNode::LT(){return this->_LT;}
-BasicNode* VorcStmtNode::Type(){return this->_Type;}
-BasicNode* VorcStmtNode::GT(){return this->_GT;}
-BasicNode* VorcStmtNode::IdenName(){return _IdenName;}
 BasicNode* VorcStmtNode::Equ(){return _Equ;}
+TypeExplNode* VorcStmtNode::DefineExpl(){return _DefineExpl;};
 ExprNode* VorcStmtNode::Expr(){return _Expr;}
 std::string VorcStmtNode::toString(){
     if(this->_Expr == nullptr) {
         if (this->_VarMark != nullptr)
-            return "VorcStmt(var):{" + this->_VarMark->toString() + ",Type:" + this->_Type->toString() + "," + this->_IdenName->toString() + "}";
+            return "VorcStmt(var):{" + this->_VarMark->toString() + ",Type:" + this->_DefineExpl->_TypeName->toString() + "," + this->_DefineExpl->_Iden->toString() + "}";
         else
-            return "VorcStmt(const):{" + this->_ConstMark->toString() + ",Type:" + this->_Type->toString() + "," + this->_IdenName->toString() + "}";
+            return "VorcStmt(const):{" + this->_ConstMark->toString() + ",Type:" + this->_DefineExpl->_TypeName->toString() + "," + this->_DefineExpl->_Iden->toString() + "}";
     }
     else {
         if (this->_VarMark != nullptr)
-            return "VorcStmt(var):{" + this->_VarMark->toString() + ",Type:" + this->_Type->toString() + "," + this->_IdenName->toString() + "," + this->_Equ->toString() + "," + this->_Expr->toString() + "}";
+            return "VorcStmt(var):{" + this->_VarMark->toString() + ",Type:" + this->_DefineExpl->_TypeName->toString() + "," + this->_DefineExpl->_Iden->toString() + "," + this->_Equ->toString() + "," + this->_Expr->toString() + "}";
         else
-            return "VorcStmt(const):{" + this->_ConstMark->toString() + ",Type:" + this->_Type->toString() + "," + this->_IdenName->toString() + "," + this->_Equ->toString() + "," + this->_Expr->toString() + "}";
+            return "VorcStmt(const):{" + this->_ConstMark->toString() + ",Type:" + this->_DefineExpl->_TypeName->toString() + "," + this->_DefineExpl->_Iden->toString() + "," + this->_Equ->toString() + "," + this->_Expr->toString() + "}";
     }
 }
 // ArrayDefineStmt Part

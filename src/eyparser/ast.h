@@ -214,6 +214,32 @@ namespace eyast {
         
     };
 
+    // 类型ast
+    class TypeExplNode {
+    public:
+        BasicNode* _Left;
+        BasicNode* _ArrLeft = nullptr;
+        BasicNode* _ArrLength = nullptr;
+        BasicNode* _ArrRight = nullptr;
+        BasicNode* _TypeName;
+        BasicNode* _Right;
+        BasicNode* _Iden;
+        bool isArr = false;
+
+        TypeExplNode()=default;
+        ~TypeExplNode()=default;
+
+        BasicNode* Left();
+        BasicNode* ArrLeft();
+        BasicNode* ArrLength();
+        BasicNode* ArrRight();
+        BasicNode* TypeName();
+        BasicNode* Right();
+        BasicNode* Iden();
+
+        string toString();
+    };
+
     // 输出语句的ast
     class OutStmtNode {
     public:
@@ -229,16 +255,21 @@ namespace eyast {
         std::string toString();
         
     };
+
+    // 函数声明ast
+    class FunctionDefineStmtNode{
+        // func <int>add(<int>a, <int>b):{}
+    public:
+        BasicNode* _FunctionDefineMark;
+
+    };
     
     // 变量声明语句的ast
     class VorcStmtNode{
     public:
         BasicNode* _VarMark = nullptr;
         BasicNode* _ConstMark = nullptr;
-        BasicNode* _LT;
-        BasicNode* _Type;
-        BasicNode* _GT;
-        BasicNode* _IdenName;
+        TypeExplNode* _DefineExpl;
         BasicNode* _Equ;
 
         ExprNode* _Expr = nullptr;
@@ -250,10 +281,7 @@ namespace eyast {
 
         BasicNode* VarMark();
         BasicNode* ConstMark();
-        BasicNode* LT();
-        BasicNode* Type();
-        BasicNode* GT();
-        BasicNode* IdenName();
+        TypeExplNode* DefineExpl();
         BasicNode* Equ();
         ExprNode* Expr();
         std::string toString();
