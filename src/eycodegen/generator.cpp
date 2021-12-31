@@ -206,27 +206,27 @@ namespace eycodegen {
     void CodeGenerator::visitVorcStmt(VorcStmtNode* node) {
         char op_type = TY_IMM;
         if(node->VarMark() != nullptr){
-            if(node->Type()->token().content == "int") {
+            if(node->DefineExpl()->TypeName()->token().content == "int") {
                 if(node->Expr()->AddExpr() != nullptr) {
                     visitAddExpr(node->Expr()->AddExpr());
                 }
                 else {throw "you tried to declare an integer quantity, but the value you specified does not correspond to it";}
             }
-            else if(node->Type()->token().content == "string") {
+            else if(node->DefineExpl()->TypeName()->token().content == "string") {
                 if(node->Expr()->AddExpr() != nullptr) {
                     visitAddExpr(node->Expr()->AddExpr());
                     op_type = TY_CON;
                 }
                 else {throw "you tried to declare an string quantity, but the value you specified does not correspond to it";}
             }
-            else if(node->Type()->token().content == "deci") {
+            else if(node->DefineExpl()->TypeName()->token().content == "deci") {
                 op_type = TY_DEC;
                 if(node->Expr()->AddExpr() != nullptr) {
                     visitAddExpr(node->Expr()->AddExpr());
                 }
                 else {throw "you tried to declare an decimal quantity, but the value you specified does not correspond to it";}
             }
-            else if(node->Type()->token().content == "bool") {
+            else if(node->DefineExpl()->TypeName()->token().content == "bool") {
                 op_type = TY_BOL;
                 if(node->Expr()->BoolExpr() != nullptr) {
                     visitBoolExpr(node->Expr()->BoolExpr());
@@ -241,30 +241,30 @@ namespace eycodegen {
             }
             else {throw "it is not a right type";}
             instructions.push_back(new_ei(Ins::DEFINE_VORC, node->VarMark()->token().line, node->VarMark()->token().column, 
-                                           0, 0, node->IdenName()->token().content, false, op_type));
+                                           0, 0, node->DefineExpl()->Iden()->token().content, false, op_type));
         }
         else {
-            if(node->Type()->token().content == "int") {
+            if(node->DefineExpl()->TypeName()->token().content == "int") {
                 if(node->Expr()->AddExpr() != nullptr) {
                     visitAddExpr(node->Expr()->AddExpr());
                 }
                 else {throw "you tried to declare an integer cc, but the value you specified does not correspond to it";}
             }
-            else if(node->Type()->token().content == "string") {
+            else if(node->DefineExpl()->TypeName()->token().content == "string") {
                 if(node->Expr()->AddExpr() != nullptr) {
                     visitAddExpr(node->Expr()->AddExpr());
                     op_type = TY_CON;
                 }
                 else {throw "you tried to declare an string quantity, but the value you specified does not correspond to it";}
             }
-            else if(node->Type()->token().content == "deci") {
+            else if(node->DefineExpl()->TypeName()->token().content == "deci") {
                 op_type = TY_DEC;
                 if(node->Expr()->AddExpr() != nullptr) {
                     visitAddExpr(node->Expr()->AddExpr());
                 }
                 else {throw "you tried to declare an decimal quantity, but the value you specified does not correspond to it";}
             }
-            else if(node->Type()->token().content == "bool") {
+            else if(node->DefineExpl()->TypeName()->token().content == "bool") {
                 op_type = TY_BOL;
                 if(node->Expr()->BoolExpr() != nullptr) {
                     visitBoolExpr(node->Expr()->BoolExpr());
@@ -279,7 +279,7 @@ namespace eycodegen {
             }
             else {throw "it is not a right type";}
             instructions.push_back(new_ei(Ins::DEFINE_VORC, node->ConstMark()->token().line, node->ConstMark()->token().column, 
-                                           0, 0, node->IdenName()->token().content, true, op_type));
+                                           0, 0, node->DefineExpl()->Iden()->token().content, true, op_type));
         }
     }
 
