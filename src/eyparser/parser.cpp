@@ -1,4 +1,5 @@
 #include "parser.h"
+#include "../../eydevkit/edk.h"
 using namespace eyparser;
 //???? PARSER ????//
 
@@ -342,6 +343,40 @@ ExprNode* Parser::Expr(){
     return node;
 }
 
+bool Parser::IsTypeExpl() {
+    if (!IsToken()) return false;
+    return peek().content == "<" && (peek(1).content == "[" || peek(2).content == ">");
+}
+
+TypeExplNode* Parser::TypeExpl(bool isArray) {
+    int line = peek().line;
+    int col = peek().column;
+    bool set = isArray;
+    bool isArrayType = false;
+    if (!IsTypeExpl())
+        throw EyparseError("SyntaxError", "not a right type/identifier explain", line ,col);
+    TypeExplNode* node = new TypeExplNode;
+    node->_Left = token();
+    if(peek().content == "[") {
+        if (set == false) throw EyparseError("SyntaxError", "you cannot declare this variable as an array", line, col);
+        else {node->_ArrLeft = token(); isArrayType = true;}
+    }
+    if(peek().symbol == eylex::Symbol::Number) node->_ArrLength = token();
+    if(peek().content == "]" && isArrayType == true) node->_ArrRight = token();
+    else {
+        if(set == true) throw EyparseError("SyntaxError", "expect ']'", line, col);
+        else;
+    }
+
+    if(peek().symbol == eylex::Symbol::Identifier || peek().symbol == eylex::Symbol::KeyWord) node->_TypeName = token();
+    else throw EyparseError("SyntaxError", "expect a type-name", line, col);
+    if(peek().content == ">") node->_Right = token();
+    else throw EyparseError("SyntaxError", "expect '>'", line, col);
+    if(peek().symbol == eylex::Symbol::Identifier) node->_Iden = token();
+    else throw EyparseError("SyntaxError", "expect an identifier", line, col);
+    return node;
+}
+
 bool Parser::IsOutStmt() {
     if (!IsToken()) return false;
     if(peek().content == "out"){
@@ -469,15 +504,8 @@ VorcStmtNode* Parser::VorcStmt(){
     else
         node->_ConstMark = token();
     
-    if(peek().symbol == eylex::Symbol::LT) {node->_LT = token();}
-    else {throw EyparseError("SyntaxError", "the defined type must be complete", line ,col);}
-    if(peek().symbol == eylex::Symbol::KeyWord) {node->_Type = token();}
-    else {throw EyparseError("SyntaxError", "the defined type must be complete", line ,col);}
-    if(peek().symbol == eylex::Symbol::GT) {node->_GT = token();}
-    else {throw EyparseError("SyntaxError", "the defined type must be complete", line ,col);}
-
-    if(peek().symbol == eylex::Symbol::Identifier) {node->_IdenName = token();}
-    else {throw EyparseError("SyntaxError", "please put the (Vorciable/constant) behind the 'var' or 'const'(sometimes behind the 'const')", line ,col);}
+    if(IsTypeExpl()) node->_DefineExpl = TypeExpl(false);
+    else throw EyparseError("SyntaxError", "a type description field is required", line ,col);
 
     if(peek().content == "=") {node->_Equ = token();}
 

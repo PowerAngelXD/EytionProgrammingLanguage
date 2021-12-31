@@ -45,6 +45,8 @@ namespace eyparser{
         NotBoolExprNode* NotBoolExpr();
         bool IsExpr();
         ExprNode* Expr();
+        bool IsTypeExpl();
+        TypeExplNode* TypeExpl(bool isArray);
         bool IsOutStmt();
         OutStmtNode* OutStmt();
         bool IsArrayDefineStmt();
