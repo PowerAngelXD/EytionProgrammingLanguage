@@ -261,7 +261,13 @@ namespace eyast {
         // func <int>add(<int>a, <int>b):{}
     public:
         BasicNode* _FunctionDefineMark;
-
+        TypeExplNode* _Name;
+        BasicNode* _Left;
+        vector<TypeExplNode*> _Argvs;
+        vector<BasicNode*> _Dots;
+        BasicNode* _Right;
+        BasicNode* _M;
+        BlockStmtNode* _Block;
     };
     
     // 变量声明语句的ast
