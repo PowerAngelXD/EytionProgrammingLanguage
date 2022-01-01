@@ -319,11 +319,11 @@ void Executer::run() {
                 auto op2 = env.pop();
                 auto op1 = env.pop();
                 if(op1.first == Environment::ValueType::DECI && op2.first == Environment::ValueType::DECI)
-                    env.push(Environment::runit(Environment::ValueType::BOOL, op2.second < op1.second));
+                    env.push(Environment::runit(Environment::ValueType::BOOL, op1.second < op2.second));
                 else if(op1.first == Environment::INT && op2.first == Environment::INT)
-                    env.push(Environment::runit(Environment::ValueType::BOOL, op2.second < op1.second));
+                    env.push(Environment::runit(Environment::ValueType::BOOL, op1.second < op2.second));
                 else if(op1.first == Environment::STRING && op2.first == Environment::STRING)
-                    env.push(Environment::runit(Environment::ValueType::BOOL, env.ConstantPool[op2.second].size() < env.ConstantPool[op1.second].size()));
+                    env.push(Environment::runit(Environment::ValueType::BOOL, env.ConstantPool[op1.second].size() < env.ConstantPool[op2.second].size()));
                 else
                     throw EyparseError("[Runtime]TypeError", "Cannot compare two diffierent type value", 0, 0);
                 break;
@@ -357,15 +357,23 @@ void Executer::run() {
             case Ins::LAND: {
                 auto op1 = env.pop().second;
                 auto op2 = env.pop().second;
-                if (op1 == 1){
-                    if (op2 == 1) env.push(Environment::runit(Environment::ValueType::BOOL, 1));
+                if (op2 == 1){
+                    if (op1 == 1) env.push(Environment::runit(Environment::ValueType::BOOL, 1));
+                    else env.push(Environment::runit(Environment::ValueType::BOOL, 0));
                 }
-                env.push(Environment::runit(Environment::ValueType::BOOL, 0));
+                else env.push(Environment::runit(Environment::ValueType::BOOL, 0));
                 break;
             }
             case Ins::LOR: {
                 auto op1 = env.pop().second;
                 auto op2 = env.pop().second;
+                if (op2 == 1){
+                    env.push(Environment::runit(Environment::ValueType::BOOL, 1));
+                }
+                else if (op1 == 1){
+                    env.push(Environment::runit(Environment::ValueType::BOOL, 1));
+                }
+                else env.push(Environment::runit(Environment::ValueType::BOOL, 0));
                 break;
             }
             case Ins::NOT: {
