@@ -112,10 +112,10 @@ namespace eycodegen {
     }
 
     void CodeGenerator::visitBoolExpr(BoolExprNode* node){
-        visitCmpExpr(node->Root());
+        visitCmpExpr(node->Sub(0));
         for (int i = 0 ; i < node->Op().size(); i++) {
-            visitCmpExpr(node->Sub(i));
-            visitBoolOperator(node->Op(i + 1));
+            visitCmpExpr(node->Sub(i + 1));
+            visitBoolOperator(node->Op(i));
         }
     }
 

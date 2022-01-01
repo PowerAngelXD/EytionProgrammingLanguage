@@ -287,7 +287,7 @@ BoolExprNode* Parser::BoolExpr(){
     if(!IsBoolExpr())
         throw EyparseError("ExprError", "Not a right Boolexpr!", line, col);
     BoolExprNode* node = new BoolExprNode;
-    node->_Root = CmpExpr();
+    node->_Sub.push_back(CmpExpr());
     while(true) {
         try {
             if (!IsBoolOp())

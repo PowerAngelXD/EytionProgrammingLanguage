@@ -215,7 +215,7 @@ string BoolOperatorNode::toString(){return "BoolOp: {" + _Op->toString() + "}";}
 
 string BoolExprNode::toString(){
     std::string str = "BoolExpr: {";
-    str += _Root->toString();
+    str += _Sub[0]->toString();
     for (int i = 0 ; i < _Op.size() ; i ++) {
         auto op = _Op[i]->toString();
         auto op_num = _Sub[i + 1]->toString();
