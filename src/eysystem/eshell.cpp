@@ -6,6 +6,7 @@ using namespace eysys;
 using namespace econfig;
 
 econfig::EyConfig _efig;
+eyexec::Executer _global_env;
 
 void cmdrun(string argv){
     ifstream file(argv);
@@ -96,6 +97,21 @@ void eysys::run(std::string text, econfig::EyConfig fig){
             }
             else if(text == "help"){
                 cmdlist[3].run(" ");
+            }
+            else if(text == "reset"){
+                _global_env.env.reset();
+            }
+            else if(text[0] == '`'){
+                std::stringstream ss(text);
+                eylex::Lexer lexer(ss);
+                auto tokens = lexer.getTokenGroup();
+                eyparser::Parser p(tokens);
+                auto stat = p.Stat();
+                eycodegen::CodeGenerator gen;
+                gen.visitStat(stat);
+                _global_env.setInstructions(gen.instructions);
+                _global_env.getEnvironment().ConstantPool = gen.ConstantPool;
+                _global_env.run();
             }
             string head, argv;
             head = split(text, " ").at(0);
